@@ -6,8 +6,9 @@ urlpatterns = [
     path('user-signup',views.user_signup,name='user_signup'),
     path('user-logout',views.user_logout,name='user_logout'),
     path('user-otp-verification',views.user_otp_verification,name='user_otp_verification'),
+    path('',views.user_index,name='user_index'),
 
-    path('user-index',views.user_index,name='user_index'),
+
     path('user-404',views.user_404,name='user_404'),
     path('user-account',views.user_account,name='user_account'),
     path('user-contact',views.user_contact,name='user_contact'),

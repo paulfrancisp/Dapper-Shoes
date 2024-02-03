@@ -61,14 +61,14 @@
                     <div class="account_form register  " data-aos="fade-up" data-aos-delay="200">
                         
                       
-                        <form method="post" id="form" action="" >
+                        <form method="post" id="form" action="{% url 'user_app:user_otp_verification' %}" >
                             {% csrf_token %}<h3>OTP Verification</h3>
                             <h5 class="mt-5">
-                                <span>Enter the OTP sent to paulfrancis98@gmail.com{{email}}</span>
+                                <span>Enter the OTP sent to {{email}}</span>
                             </h5>
                             <div class="d-flex-col   justify-content-center align-items-center ms-5 ps-5 mt-50 mb-50">
                                 <div class="default-form-box input-control" style=" position: relative;margin-top: 15px;width: 300px;flex-wrap: wrap;align-items: center; justify-content: center;">
-                                    <input type="text" class="mt-5 pt-5"  name="enteredotp" placeholder="Your OTP" autocomplete="off" required style="display: flex; width: 300px;background: transparent;outline: none; padding: 5px 20px;position: relative; z-index: 10;" >
+                                    <input type="text" class="mt-5 pt-5"  name="otp_entered" placeholder="Your OTP" autocomplete="off" required style="display: flex; width: 300px;background: transparent;outline: none; padding: 5px 20px;position: relative; z-index: 10;" >
                                     {% if messages %}
                                     {% for message in messages %}
                                     <span class="error" style="position: absolute;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
@@ -79,7 +79,9 @@
                                     <input name='email' value='{{email}}' >
                                 </div> -->
                                 <div class="login_submit"style="display:flex ;width: 300px; position: relative;margin-top: 15px;align-items: center; justify-content: center; ">
+                                    <a href="">
                                     <button class="btn  btn-black-default-hover "   type="submit">Verify</button>
+                                    </a>
                                 </div>
                             </div>
                             
