@@ -37,32 +37,37 @@
         <nav>
             <ul class="menu-aside">
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_dashboard'%}"> <i class="icon material-icons md-home"></i>
+                    <a class="menu-link" href="{% url 'admin_app:admin_dashboard'%}"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_products_list' %}"> <i class="icon material-icons md-shopping_bag"></i>
+                    <a class="menu-link" href="{% url 'admin_app:admin_products_list' %}"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products List</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_orders' %}"> <i class="icon material-icons md-shopping_cart"></i>
+                    <a class="menu-link" href="{% url 'admin_app:admin_orders' %}"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders List</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_catagories' %}"> <i class="icon material-icons md-store"></i>
+                    <a class="menu-link" href="{% url 'category_app:admin_categories' %}"> <i class="icon material-icons md-store"></i>
                         <span class="text">Catagories</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_add_products' %}"> <i class="icon material-icons md-add_box"></i>
+                    <a class="menu-link" href="{% url 'category_app:admin_sub_categories' %}"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Sub-catagories</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="{% url 'admin_app:admin_add_products' %}"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">Add new product</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_users_list' %}"> <i class="icon material-icons md-person"></i>
+                    <a class="menu-link" href="{% url 'admin_app:admin_users_list' %}"> <i class="icon material-icons md-person"></i>
                         <span class="text">Users List</span>
                     </a>
                 </li>
@@ -128,7 +133,7 @@
                             <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="{% url 'admin_logout'%}"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            <a class="dropdown-item text-danger" href="{% url 'admin_app:admin_logout'%}"><i class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
                 </ul>

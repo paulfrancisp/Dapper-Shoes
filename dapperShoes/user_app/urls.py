@@ -5,8 +5,13 @@ urlpatterns = [
     path('user-login',views.user_login,name='user_login'),
     path('user-signup',views.user_signup,name='user_signup'),
     path('user-logout',views.user_logout,name='user_logout'),
+    path('user-send-otp',views.user_send_otp,name='user_send_otp'),  #To send OTP
     path('user-otp-verification',views.user_otp_verification,name='user_otp_verification'),
     path('',views.user_index,name='user_index'),
+    
+
+    path('user-login/forgot-password',views.forgot_password,name='forgot_password'),
+    path('user-login/forgot-password-verification',views.forgot_password,name='forgot_password_verification'),
 
 
     path('user-404',views.user_404,name='user_404'),

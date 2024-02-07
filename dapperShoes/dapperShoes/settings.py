@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'admin_app',
     'user_app',
+    'category',
 ]
 
 MIDDLEWARE = [
@@ -133,7 +134,8 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT =  os.path.join(BASE_DIR,'media/')
 
 #email_host
 EMAIL_BACKEND = config('EMAIL_BACKEND')

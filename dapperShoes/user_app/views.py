@@ -51,39 +51,48 @@ def user_signup(request):
         if len(passw) < 8:
             messages.info(request,'Password should be of 8 character')
             return redirect('user_app:user_signup')
-
-            
+        
         request.session['username'] = uname
         request.session['password'] = passw
-        request.session['email'] = email
+        request.session['email_session'] = email
 
-        otp_value = random.randint(100000, 999999)
-        request.session['otp_session'] = otp_value
-        # request.session.modified = True 
-        request.session.set_expiry(300)
-
-
-        #send_mail( 'Subject', 'Message body', 'Senders email', ['Recipients email'], Fail silently)
-        send_mail(
-            'OTP verification from Dapper Shoes',
-            f" Dear User,\n\n Your One-Time Password (OTP) for verification is:{request.session['otp_session']}. \n\nPlease use above OPT to complete your signup to Dapper Shoes website.",
-            'dappershoes.official@gmail.com',
-            [request.session['email']],
-            fail_silently=False
-        )
-
-        return render(request,'user_side/otp.html',{'email':email})
+        return redirect('user_app:user_send_otp')
     return render(request,'user_side/page-signup.html')
+
+
+
+@never_cache
+def user_send_otp(request):            
+
+    otp_value = random.randint(100000, 999999)
+    request.session['otp_session'] = otp_value
+    request.session.set_expiry(300)
+    email = request.session['email_session']
+    # request.session.modified = True 
+
+    #send_mail( 'Subject', 'Message body', 'Senders email', ['Recipients email'], Fail silently)
+    send_mail(
+        'OTP verification from Dapper Shoes',
+        f" Dear User,\n\n Your One-Time Password (OTP) for verification is:{request.session['otp_session']}. \n\nPlease use above OPT to complete your signup to Dapper Shoes website.",
+        'dappershoes.official@gmail.com',
+        [request.session['email_session']],
+        fail_silently=False
+    )
+
+    return render(request,'user_side/otp.html',{'email':email})
+
 
 # @cache_control(no_cache=True, must_revalidate=True, no_store=True) 
 @never_cache
 def user_otp_verification(request):
+
+    uname = request.session.get('username')
+    email_session = request.session.get('email')
+    passw = request.session.get('password')
+
     if request.method == "POST":
         otp_entered = request.POST.get('otp_entered')
         otp_session =request.session.get('otp_session')
-        uname = request.session.get('username')
-        email_session = request.session.get('email')
-        passw = request.session.get('password')
 
         if str(otp_entered) == str(otp_session):
             customer = User.objects.create_user(username = uname, email = email_session, password = passw )
@@ -93,11 +102,10 @@ def user_otp_verification(request):
                 login(request,customer)
                 return redirect('user_app:user_index')
         else:
-            messages.error(request,'Invalid OTP')
-            return redirect('user_app:user-otp-verification') 
+            messages.error(request,'Invalid OTP. Please enter again.')
+            return redirect('user_app:user_otp_verification') 
     return render(request,'user_side/otp.html',{'email': email_session})
-
-
+    
 
 
 # @cache_control(no_cache=True, must_revalidate=True, no_store=True) 
@@ -113,20 +121,38 @@ def user_login(request):
             if user is not None:
                 login(request,user)                                      
                 return redirect('user_app:user_index')                                  
-            
-            else:                                                        
-                return HttpResponse('Username or password is incorrect !!!')  
+            else:      
+                messages.info(request,"Invalid credentials!!")                                                  
+                return redirect('user_app:user_login')  
         return render(request,'user_side/page-login.html')
+
+
+@never_cache
+def forgot_password(request):
+    # if request.method=='POST':
+    #     email = request.POST.get("email")
+    #     request.session['email'] = email
+    #     return redirect('user_app:user_send_otp')        
+    return render(request,'user_side/forgot_password.html')
+
+
+
+@never_cache
+def forgot_password_verification(request):
+    # if request.method=='POST':
+    #     email_session=request.session['email']
+    return render(request,'user_side/forgot_password_otp_verification.html',{'email': email_session})
+
 
 
 # @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @never_cache
 def user_index(request):         
-    if request.user.is_authenticated:       
-        # if request.user.is_superuser:
-        #     return redirect("admin_dashboard")
-        return render(request,'user_side/index.html')  
-    return redirect('user_login') 
+    # if request.user.is_authenticated:       
+    #     # if request.user.is_superuser:
+    #     #     return redirect("admin_dashboard")
+    #     return render(request,'user_side/index.html')  
+    return render(request,'user_side/index.html')
 
 
 
@@ -136,8 +162,6 @@ def user_index(request):
 
 
 #######################################################################
-def user_index(request):
-    return render(request,'user_side/index.html')
 
 def user_404(request):
     return render(request,'user_side/page-404.html')

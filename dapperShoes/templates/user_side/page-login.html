@@ -24,6 +24,13 @@
                                     <h3 class="card-title mb-4">Login</h3>
                                     <form action="{% url 'user_app:user_login' %}" method="post">
                                         {% csrf_token %}
+                                        <div class="form-group">
+                                            {% if messages %}
+                                            {% for message in messages %}
+                                            <span class="error" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </div>
                                         <div class="mb-3">
                                             <input class="form-control" placeholder="Username or email" type="text" name="username">
                                         </div> <!-- form-group// -->
@@ -31,7 +38,7 @@
                                             <input class="form-control" placeholder="Password" type="password" name="pass">
                                         </div> <!-- form-group// -->
                                         <div class="mb-3">
-                                            <a href="#" class="float-end font-sm text-muted">Forgot password?</a>
+                                            <a href="{% url 'user_app:forgot_password' %}" class="float-end font-sm text-muted">Forgot password?</a>
                                             <label class="form-check">
                                                 {% comment %} <input type="checkbox" class="form-check-input" checked="">
                                                 <span class="form-check-label">Remember</span> {% endcomment %}
