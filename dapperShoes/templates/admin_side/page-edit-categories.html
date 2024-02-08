@@ -1,0 +1,79 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+{% block content %}
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Edit Category</h2>
+                <p>Add or update category details</p>
+            </div>
+            <div>
+                <input type="text" placeholder="Search Categories" class="form-control bg-white">
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-7">
+                        <form action="{% url 'category_app:edit_categories' id=category_object.id %}" method="post" enctype="multipart/form-data">
+
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <label for="category_name" class="form-label">Name</label>
+                                <input type="text" placeholder="Enter category name" class="form-control" id="category_name" name="name" value="{{ category_object.category_name }}">
+                            </div>
+                            {% comment %} <div class="mb-4">
+                                <label for="category_slug" class="form-label">Slug</label>
+                                <input type="text" placeholder="Enter category slug" class="form-control" id="category_slug" name="slug" value="{{ category_object.cat_slug }}">
+                            </div>  {% endcomment %}
+                            <div class="mb-4">
+                                <label for="category_description" class="form-label">Description</label>
+                                <textarea placeholder="Enter category description" class="form-control" id="category_description" name="description" value="{{ category_object.description}}"> </textarea>
+                            </div>
+                            {% comment %} <div class="mb-4">
+                                <label for="category_image" class="form-label">Image</label>
+                                <input type="file" class="form-control" id="category_image" name="image">
+                            </div> {% endcomment %}
+                            <div class="d-grid">
+                                <button class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-1">
+                    </div>  
+                    {% comment %} <div class="col-md-6">
+                        <!-- Sample Category Details -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Sample Category Details</h4>
+                                <hr>
+                                <p class="card-text"><strong>ID:</strong> {{category_object.id}}</p>
+                                <p class="card-text"><strong>Name:</strong> {{category_object.cat_name}}</p>
+                                <p class="card-text"><strong>Slug:</strong> {{category_object.cat_slug}}</p>
+                                <p class="card-text"><strong>Description:</strong> {{category_object.cat_description}}</p>
+                                <p class="card-text"><strong>Active:</strong> {{category_object.is_active}}</p>
+                                <p class="card-text"><strong>Created Date:</strong> {{category_object.created_on}}</p>
+                            </div>
+                        </div>
+                    </div> {% endcomment %}
+                    <div class="col-lg-3 mt-2 ">
+                        <div class="card mb-4 ">
+                            <div class="card-header ">
+                                <h4>Image</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-upload">
+                                    <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
+                                    <input type="file" class="form-control" id="category_image" name="image"/>
+                                
+                                </div>
+                            </div>
+                        </div> <!-- card end// -->
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

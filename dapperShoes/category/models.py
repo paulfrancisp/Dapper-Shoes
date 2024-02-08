@@ -6,7 +6,7 @@ class Category(models.Model):
     category_name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True, blank=True,max_length=200)
     description = models.TextField(blank=True,max_length=250, default='Write description here!')
-    category_image = models.ImageField(upload_to='category_images/', null=True, blank=True)
+    category_image = models.ImageField(upload_to='category_images/', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active =  models.BooleanField(default=True)
     # parent_category = models.ForeignKey('self', null=True, blank=True, related_name='child_categories', on_delete=models.CASCADE)
@@ -33,7 +33,6 @@ class SubCategory(models.Model):
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     sub_category_image = models.ImageField(upload_to='sub_category_images/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    sorting_order = models.PositiveIntegerField(default=0)
     is_active =  models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
