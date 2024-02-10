@@ -3,115 +3,124 @@
 
 {% block content%}
         <section class="content-main">
+        <form action="{% url 'product_management_app:add_product' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
             <div class="row">
                 <div class="col-9">
                     <div class="content-header">
                         <h2 class="content-title">Add New Product</h2>
                         <div>
-                            <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
-                            <button class="btn btn-md rounded font-sm hover-up">Publich</button>
+                            {% comment %} <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> {% endcomment %}
+                            <button class="btn btn-md rounded font-sm hover-up">Save Changes</button>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <div class="mb-4">
+                            <div class="mb-3">
                                 <label for="product_title" class="form-label">Product title</label>
-                                <input type="text" placeholder="Type here" class="form-control" id="product_title">
+                                <input type="text" placeholder="Type here" class="form-control" id="product_title" name='product_title' value="{{ product.product_name }}" required>
                             </div>
-                            <div class="row gx-3">
-                                <div class="col-md-4  mb-3">
-                                    <label for="product_sku" class="form-label">SKU</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_sku">
-                                </div>
-                                <div class="col-md-4  mb-3">
-                                    <label for="product_color" class="form-label">Color</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_color">
-                                </div>
-                                <div class="col-md-4  mb-3">
-                                    <label for="product_size" class="form-label">Size</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_size">
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <label for="product_brand" class="form-label">Brand</label>
-                                <input type="text" placeholder="Type here" class="form-control" id="product_brand">
-                            </div>
-                        </div>
-                    </div> <!-- card end// -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div>
-                                <label class="form-label">Description</label>
-                                <textarea placeholder="Type here" class="form-control" rows="4"></textarea>
-                            </div>
-                        </div>
-                    </div> <!-- card end// -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div>
-                                <label class="form-label">Images</label>
-                                <input class="form-control" type="file">
-                            </div>
-                        </div>
-                    </div> <!-- card end// -->
-                </div>
-                <div class="col-lg-3">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <label class="form-label">Price</label>
-                                <input type="text" placeholder="Type here" class="form-control">
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Status</label>
-                                <select class="form-select">
-                                    <option>Published</option>
-                                    <option>Draft</option>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Brand</label>
+                                <select class="form-select" id="brandSelect" name="brand" required>
+                                    {% for brand in brands %} 
+                                    <option value="{{brand.id}}" {% if product.product_brand_id == brand.id %} selected {% endif %}>{{brand.Brand_name}}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
-                            <div class="mb-4">
-                                <label class="form-label">Tags</label>
-                                <input type="text" placeholder="Type here" class="form-control">
+                            {% comment %} </div>
+                            <div class="card-body"> {% endcomment %}
+                            <div class="mb-3">
+                                <label class="form-label">Category</label>
+                                <select class="form-select" id="categorySelect" name="category_id" required>
+                                    {% for category in categories %}    
+                                    <option value="{{category.id}}" >{{category.category_name}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Tech</a>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Mobile</a>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Apple</a>
-                            <hr>
-                            <h5 class="mb-3">Categories</h5>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat">
-                                <label class="form-check-label" for="product-cat"> Shirt </label>
+    
+                            <div class="mb-3">
+                                <label class="form-label">Sub-category</label>
+                                <select class="form-select" id="categorySelect" name="sub_category_id" required>
+                                    {% for subcat in subcategory %}    
+                                    <option value="{{subcat.id}}" >{{subcat.sub_category_name}}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-1">
-                                <label class="form-check-label" for="product-cat-1"> T-Shirt </label>
+    
+                            <div class="mb-3">
+                                <label class="form-label">Price</label>
+                                <input type="text" placeholder="Type here" class="form-control" id="price" name="price" value="{{ product.product_price }}" required>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-2">
-                                <label class="form-check-label" for="product-cat-2"> Sneakers </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-3">
-                                <label class="form-check-label" for="product-cat-3"> Joggers </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-4">
-                                <label class="form-check-label" for="product-cat-4"> Vests </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-5">
-                                <label class="form-check-label" for="product-cat-5"> Knitwear </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-8">
-                                <label class="form-check-label" for="product-cat-8"> Shorts </label>
+                            
+                                {% comment %} </div>
+                            </div> <!-- card end// -->
+                                Image
+                                <div class="card mb-4"> {% endcomment %}
+                                {% comment %} <div class="card-body"> {% endcomment %}
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" class="form-control" rows="4" id="description" name="description">{{ product.description }}</textarea>
                             </div>
                         </div>
-                    </div> <!-- card end// -->
                 </div>
+
+
+                <div class="col-lg-12">
+                    <!-- Card for additional images -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="card-header">
+                                <h4>Main Image</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-upload">
+                                    <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
+                                    <input type="file" class="form-control" id="category_image" name="image" required>
+                                </div>
+                            </div>
+                        </div> <!-- card end// -->
+                    </div>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="card-header">
+                                <h4>Additional Images</h4>
+                            </div>
+                            <div class="card-body">
+                                <!-- Additional image fields -->
+                                <div class="input-upload mb-3">
+                                    {% comment %} <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt=""> {% endcomment %}
+                                    <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple required>
+                                </div>
+                                
+                                
+                                <!-- End of additional image fields -->
+                            </div>
+                        </div> <!-- card end// -->
+                    </div>
+                    <!-- End of card for additional images -->
+                    <!-- Card for main image upload -->
+                    {% comment %} <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="card-header">
+                                <h4>Main Image</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="input-upload">
+                                    <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
+                                    <input type="file" class="form-control" id="category_image" name="image" required>
+                                </div>
+                            </div>
+                        </div> <!-- card end// -->
+                    </div> {% endcomment %}
+                    <!-- End of card for main image upload -->
+                </div>
+                
             </div>
+        </form>
         </section>
 
-{% endblock %} 
+{% endblock %}

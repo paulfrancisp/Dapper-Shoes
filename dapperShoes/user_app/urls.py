@@ -7,7 +7,7 @@ urlpatterns = [
     path('user-logout',views.user_logout,name='user_logout'),
     path('user-send-otp',views.user_send_otp,name='user_send_otp'),  #To send OTP
     path('user-otp-verification',views.user_otp_verification,name='user_otp_verification'),
-    path('',views.user_index,name='user_index'),
+    # path('',views.user_index,name='user_index'),
     
 
     path('user-login/forgot-password',views.forgot_password,name='forgot_password'),
@@ -19,9 +19,10 @@ urlpatterns = [
     path('user-contact',views.user_contact,name='user_contact'),
     path('user-cart',views.user_cart,name='user_cart'),
     path('user-checkout',views.user_checkout,name='user_checkout'),
-    path('user-fullwidth',views.user_fullwidth,name='user_fullwidth'),
-    path('user-product-full',views.user_product_full,name='user_product_full'),
     path('user-wishlist',views.user_wishlist,name='user_wishlist'),
+    # path('user-fullwidth',views.user_fullwidth,name='user_fullwidth'),
+    # path('user-product-full',views.user_product_full,name='user_product_full'),
+    
 
 
     # path('user-otp',views.otp,name='otp'),

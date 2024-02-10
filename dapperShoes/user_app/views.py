@@ -14,7 +14,7 @@ from django.http import HttpResponse
 def user_logout(request):
     if request.user.is_authenticated:
         logout(request)  
-    return render(request,'user_side/index.html')
+    return redirect('shop_app:index')
 
 
 # @cache_control(no_cache=True, must_revalidate=True, no_store=True) 
@@ -100,7 +100,7 @@ def user_otp_verification(request):
             customer = authenticate(request, username = uname, password=passw)     #authenticate(email = email_session, password=passw)
             if customer is not None:
                 login(request,customer)
-                return redirect('user_app:user_index')
+                return redirect('shop_app:index')
         else:
             messages.error(request,'Invalid OTP. Please enter again.')
             return redirect('user_app:user_otp_verification') 
@@ -111,8 +111,8 @@ def user_otp_verification(request):
 # @cache_control(no_cache=True, must_revalidate=True, no_store=True) 
 @never_cache
 def user_login(request):
-        # if request.user.is_authenticated:       
-        #     return redirect('user_index')   
+        if request.user.is_authenticated:       
+            return redirect('shop_app:index')
         if request.method=='POST':                  
             username=request.POST.get('username')   
             pass1=request.POST.get('pass')          
@@ -120,7 +120,7 @@ def user_login(request):
 
             if user is not None:
                 login(request,user)                                      
-                return redirect('user_app:user_index')                                  
+                return redirect('shop_app:index')                                  
             else:      
                 messages.info(request,"Invalid credentials!!")                                                  
                 return redirect('user_app:user_login')  
@@ -141,26 +141,18 @@ def forgot_password(request):
 def forgot_password_verification(request):
     # if request.method=='POST':
     #     email_session=request.session['email']
-    return render(request,'user_side/forgot_password_otp_verification.html',{'email': email_session})
+    return render(request,'user_side/forgot_password_otp_verification.html')
 
 
 
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@never_cache
-def user_index(request):         
-    # if request.user.is_authenticated:       
-    #     # if request.user.is_superuser:
-    #     #     return redirect("admin_dashboard")
-    #     return render(request,'user_side/index.html')  
-    return render(request,'user_side/index.html')
-
-
-
-
-
-
-
-
+### @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+### @never_cache
+### def user_index(request):         
+###     # if request.user.is_authenticated:       
+###     #     # if request.user.is_superuser:
+###     #     #     return redirect("admin_dashboard")
+###     #     return render(request,'user_side/index.html')  
+###     return render(request,'user_side/index.html')
 #######################################################################
 
 def user_404(request):
@@ -178,14 +170,14 @@ def user_cart(request):
 def user_checkout(request):
     return render(request,'user_side/shop-checkout.html')
 
-def user_fullwidth(request):
-    return render(request,'user_side/shop-fullwidth.html')
-
-def user_product_full(request):
-    return render(request,'user_side/shop-product-full.html')
-
 def user_wishlist(request):
     return render(request,'user_side/shop-wishlist.html')
+
+# def user_fullwidth(request):
+#     return render(request,'user_side/shop-fullwidth.html')
+
+# def user_product_full(request):
+#     return render(request,'user_side/shop-product-full.html')
 
 # def user_logout(request):
 #     pass

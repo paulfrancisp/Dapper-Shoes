@@ -58,11 +58,26 @@
                                     <td><b>{{customer_detail.username}} </b></td>
                                     {% comment %} <td><template class="__cf_email__" data-cfemail="aec3cfdcd8c7c0eecbd6cfc3dec2cb80cdc1c3">[email&#160;protected]</template></td> {% endcomment %}
                                     <td>{{customer_detail.email}}</td>
-                                    <td><span class="badge rounded-pill alert-warning">{{customer_detail.is_active}}</td>
+                                    <td>{% comment %} <span class="badge rounded-pill alert-warning">{{customer_detail.is_active}} {% endcomment %}
+                                        {% if customer_detail.is_active %}
+                                            <span class="badge rounded-pill alert-success">Active</span>
+                                        {% else %}
+                                            <span class="badge rounded-pill alert-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
                                     {% comment %} <td>{{customer_detail.is_superuser}}</span></td> {% endcomment %}
                                     <td>{{customer_detail.last_login}}</td>
                                     <td class="text-end">
-                                        <a href="#" class="btn btn-md rounded font-sm">Block</a>
+                                        {% comment %} <a href="#" class="btn btn-md rounded font-sm">Block</a> {% endcomment %}
+                                        {% if  customer_detail.is_active %}
+                                        <a   href="{% url 'user_management_app:deactivate_user' customer_detail.id %}"  class="btn btn-sm font-sm alert-danger rounded block-user-btn">
+                                            Block
+                                        </a>
+                                        {% else %}
+                                        <a   href="{% url 'user_management_app:activate_user' customer_detail.id %}" class="btn btn-sm font-sm alert-success rounded unblock-user-btn">
+                                            Unblock
+                                        </a>
+                                        {% endif %} 
                                         {% comment %} <div class="dropdown">
                                             <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
                                             <div class="dropdown-menu">

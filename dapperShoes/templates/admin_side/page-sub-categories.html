@@ -16,22 +16,32 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form>
+                            <form method='post' action="{% url 'category_app:admin_sub_categories'%}" enctype="multipart/form-data">
+                                {% csrf_token %}
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_name" />
+                                    <input type="text" placeholder="Type here" class="form-control" id="sub-category" name="sub-category"/>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_slug" class="form-label">Slug</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_slug" />
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_slug" name="slug"/>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_slug" class="form-label">Category</label>
+                                    {% comment %} <input type="text" placeholder="Type here" class="form-control" id="slug" name="slug" /> {% endcomment %}
+                                    <select type="text" placeholder="Type here" class="form-control" id="parent-category" name="parent-category">
+                                        <option>Men</option>
+                                        <option>Women</option>
+                                        <option>Kids</option>
+                                    </select>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Images</label>
-                                    <input class="form-control" type="file">
+                                    <input class="form-control" type="file" name="image">
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" class="form-control"></textarea>
+                                    <textarea placeholder="Type here" class="form-control" name="description"></textarea>
                                 </div>
                                 <div class="d-grid">
                                     <button class="btn btn-primary">Create category</button>
@@ -51,8 +61,9 @@
                                             <th>ID</th>
                                             <th>Name</th>
                                             <th>Slug</th>
-                                            <th>Description</th>
+                                            <th>Category</th>             
                                             <th>Active</th>
+                                            <th>Description</th>
                                             <th>Image</th>
                                             <th class="text-end">Action</th>
                                         </tr>
@@ -68,24 +79,43 @@
                                             <td>{{sub_category.id}}</td>
                                             <td><b>{{sub_category.sub_category_name}}</b></td>
                                             <td>{{sub_category.sub_slug}}</td>
-                                            <td>{{sub_category.description}}</td>
+                                            {% comment %} <td>{{sub_category.category_id}}</td> {% endcomment %}
+                                            <td>
+                                                {% if sub_category.category_id == 1 %}
+                                                    Men
+                                                {% elif sub_category.category_id == 2 %}
+                                                    Women
+                                                {% elif sub_category.category_id == 3 %}
+                                                    Kids
+                                                {% else %}
+                                                    Unknown Category
+                                                {% endif %}
+                                            </td>      
                                             <td>{{sub_category.is_active}}</td>
+                                            <td>{{sub_category.description}}</td>
+                                            
                                             <td class="pt-2">
-                                                <img src="{{sub_category.sub_category_image.url}}" style="max-width: 40px; height: auto;"></td>
+                                                {% comment %} <img src="{{sub_category.sub_category_image.url}}" style="max-width: 40px; height: auto;"></td> {% endcomment %}
                                             {% comment %} <td>{{category.created_at}}</td> {% endcomment %}
+                                                {% if sub_category.sub_category_image %}
+                                                    <img src="{{ sub_category.sub_category_image.url }}" style="max-width: 40px; height: auto;">
+                                                {% else %}
+                                                    {% comment %} <img src="{{ 'Uavailable' }}" style="max-width: 40px; height: auto;"> {% endcomment %}
+                                                    <span>Unavailable</span>
+                                                {% endif %}
 
                                             <td class="text-end">
                                                 <div class="dropdown">
                                                     <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
                                                     <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
+                                                        {% comment %} <a class="dropdown-item" href="#">View detail</a> {% endcomment %}
+                                                        <a class="dropdown-item" href="{% url 'category_app:edit_sub_categories' id=sub_category.id%}">Edit info</a>
+                                                        <a class="dropdown-item text-danger" href="{% url 'category_app:delete_sub_categories' id=sub_category.id%}">Delete</a> 
                                                     </div>
                                                 </div> <!-- dropdown //end -->
                                             </td>
                                         </tr>
-                                        {% endfor %}
+                                        {% endfor%}
                                         {% comment %} <tr>
                                             <td class="text-center">
                                                 <div class="form-check">

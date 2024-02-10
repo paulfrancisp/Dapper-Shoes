@@ -52,8 +52,9 @@
                                             <th>ID</th>
                                             <th>Name</th>
                                             <th>Slug</th>
-                                            <th>Description</th>
+                                            
                                             <th>Active</th>
+                                            <th>Description</th>
                                             <th>Image</th>
                                             <th class="text-end">Action</th>
                                         </tr>
@@ -69,8 +70,9 @@
                                             <td>{{category.id}}</td>
                                             <td><b>{{category.category_name}}</b></td>
                                             <td>{{category.slug}}</td>
-                                            <td>{{category.description}}</td>
+                                            
                                             <td>{{category.is_active}}</td>
+                                            <td>{{category.description}}</td>
                                             <td class="pt-2">
                                                 {% comment %} <img src="{{category.category_image.url}}" style="max-width: 40px; height: auto;"></td> {% endcomment %}
                                                 {% if category.category_image %}

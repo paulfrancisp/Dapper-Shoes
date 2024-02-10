@@ -15,7 +15,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-7">
-                        <form action="{% url 'category_app:edit_categories' id=category_object.id %}" method="post" enctype="multipart/form-data">
+                        <form action=" " method="post" enctype="multipart/form-data">
 
                             {% csrf_token %}
                             <div class="mb-4">
@@ -35,27 +35,16 @@
                                 <input type="file" class="form-control" id="category_image" name="image">
                             </div> {% endcomment %}
                             <div class="d-grid">
+                                <a href="{% url 'category_app:edit_categories' category_object.id%}">
                                 <button class="btn btn-primary">Save</button>
+                                </a>
                             </div>
-                        </form>
+                        
                     </div>
+
                     <div class="col-md-1">
                     </div>  
-                    {% comment %} <div class="col-md-6">
-                        <!-- Sample Category Details -->
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Sample Category Details</h4>
-                                <hr>
-                                <p class="card-text"><strong>ID:</strong> {{category_object.id}}</p>
-                                <p class="card-text"><strong>Name:</strong> {{category_object.cat_name}}</p>
-                                <p class="card-text"><strong>Slug:</strong> {{category_object.cat_slug}}</p>
-                                <p class="card-text"><strong>Description:</strong> {{category_object.cat_description}}</p>
-                                <p class="card-text"><strong>Active:</strong> {{category_object.is_active}}</p>
-                                <p class="card-text"><strong>Created Date:</strong> {{category_object.created_on}}</p>
-                            </div>
-                        </div>
-                    </div> {% endcomment %}
+
                     <div class="col-lg-3 mt-2 ">
                         <div class="card mb-4 ">
                             <div class="card-header ">
@@ -63,7 +52,12 @@
                             </div>
                             <div class="card-body">
                                 <div class="input-upload">
-                                    <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
+                                    {% if category_object.category_image %}
+                                        <img src="{{ category_object.category_image.url }}" alt="" > {% comment %}style="max-width: 100%; height: auto;"{% endcomment %}
+                                        {% comment %} <input type="file" class="form-control" id="category_image" name="image"/> {% endcomment %}
+                                    {% else %}
+                                        <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
+                                    {% endif %}
                                     <input type="file" class="form-control" id="category_image" name="image"/>
                                 
                                 </div>
@@ -71,7 +65,7 @@
                         </div> <!-- card end// -->
                         
                     </div>
-                    
+                </form>
                 </div>
             </div>
         </div>
