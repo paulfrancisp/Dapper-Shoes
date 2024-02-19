@@ -83,7 +83,7 @@
                                         <li><a href="index-4.html">Home 4</a></li>
                                     </ul> {% endcomment %}
                                 </li>
-                                <li><a href="">Shop </a>             {% comment %} {% url '' %} {% endcomment %}
+                                <li><a href="{% url 'shop_app:index' %}">Shop </a>             {% comment %} {% url '' %} {% endcomment %}
                                     {% comment %} <ul class="sub-menu">
                                         <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
                                         <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
@@ -132,7 +132,8 @@
                         </nav>
                     </div>
                     <div class="header-action-right">
-                        <div class="search-style-2">
+                        {% if request.user.is_authenticated %}
+                        <div class="search-style-1">
                             <form action="#">
                                 {% comment %} <select class="select-active">
                                     <option>Search in</option>
@@ -147,11 +148,19 @@
                                     <option>Shoes</option>
                                     <option>Mother & Kids</option>
                                 </select> {% endcomment %}
-                                {% if request.user.is_authenticated %}
-                                <input type="text" placeholder="Search for items…">
-                                {% endif %}
+                               
+                                <input type="text" placeholder="Search for items…"> 
                             </form>
                         </div>
+                        {% endif %}
+                        
+                        <div class="header-action-icon-2">
+                            <a href="">
+                                <img width="32" height="32" src="https://img.icons8.com/windows/32/gender-neutral-user.png" alt="gender-neutral-user"/>
+                                <!-- You can use your own path and filename for the user profile icon -->
+                            </a>
+                        </div>
+                        
                         <div class="header-action-2">
                             <div class="header-action-icon-2">
                                 <a href="shop-wishlist.html">
@@ -259,7 +268,7 @@
                     <!-- mobile menu start -->
                     <nav>
                         <ul class="mobile-menu">
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="index.html">Home</a>
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'shop_app:index' %}">Home</a>
                                 {% comment %} <ul class="dropdown">
                                     <li><a href="index.html">Home 1</a></li>
                                     <li><a href="index-2.html">Home 2</a></li>

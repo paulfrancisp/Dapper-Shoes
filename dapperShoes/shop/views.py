@@ -43,3 +43,9 @@ def product_detail(request,product_id):
     
     return render(request,'user_side/shop-detail-product-page.html',context)
 
+
+def home(request):
+    return render(request,'user_side/index.html')
+
+def account(request):
+    return render(request,'user_side/page-account.html')

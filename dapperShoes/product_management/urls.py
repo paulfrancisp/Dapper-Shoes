@@ -9,6 +9,11 @@ urlpatterns = [
     path('delete/<slug:slug>',views.delete_product,name='delete_product'),
     
 
+    
+    path('product-activate/<int:id>',views.deactivate_product,name='deactivate_product'),
+    path('product-deactivate/<int:id>',views.activate_product,name='activate_product'),
+
+
     # path('status/<slug:slug>',views.product_status,name='product_status'),
     # path('product_detail/<int:product_id>/', views.product_detail, name='product_detail'),
     # path('search',views.search,name='search'),

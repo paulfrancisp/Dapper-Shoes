@@ -30,9 +30,11 @@
                                     <label for="product_slug" class="form-label">Category</label>
                                     {% comment %} <input type="text" placeholder="Type here" class="form-control" id="slug" name="slug" /> {% endcomment %}
                                     <select type="text" placeholder="Type here" class="form-control" id="parent-category" name="parent-category">
-                                        <option>Men</option>
-                                        <option>Women</option>
-                                        <option>Kids</option>
+                                        {% for category in categories %}
+                                        <option>{{category.category_name}}</option>
+                                        {% comment %} <option>Women</option>
+                                        <option>Kids</option> {% endcomment %}
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="mb-4">
@@ -44,7 +46,7 @@
                                     <textarea placeholder="Type here" class="form-control" name="description"></textarea>
                                 </div>
                                 <div class="d-grid">
-                                    <button class="btn btn-primary">Create category</button>
+                                    <button class="btn btn-primary">Create Sub-Category</button>
                                 </div>
                             </form>
                         </div>
@@ -80,18 +82,14 @@
                                             <td><b>{{sub_category.sub_category_name}}</b></td>
                                             <td>{{sub_category.sub_slug}}</td>
                                             {% comment %} <td>{{sub_category.category_id}}</td> {% endcomment %}
+                                            <td>{{ sub_category.category.category_name}}</td>      
                                             <td>
-                                                {% if sub_category.category_id == 1 %}
-                                                    Men
-                                                {% elif sub_category.category_id == 2 %}
-                                                    Women
-                                                {% elif sub_category.category_id == 3 %}
-                                                    Kids
+                                                {% if sub_category.is_active %}
+                                                    <span class="badge rounded-pill alert-success">Active</span>
                                                 {% else %}
-                                                    Unknown Category
+                                                    <span class="badge rounded-pill alert-danger">Inactive</span>
                                                 {% endif %}
-                                            </td>      
-                                            <td>{{sub_category.is_active}}</td>
+                                            </td>
                                             <td>{{sub_category.description}}</td>
                                             
                                             <td class="pt-2">
@@ -105,14 +103,26 @@
                                                 {% endif %}
 
                                             <td class="text-end">
-                                                <div class="dropdown">
+                                                {% comment %} <div class="dropdown">
                                                     <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
                                                     <div class="dropdown-menu">
-                                                        {% comment %} <a class="dropdown-item" href="#">View detail</a> {% endcomment %}
+                                                        {% comment %} <a class="dropdown-item" href="#">View detail</a> {% endcomment %}{% comment %}
                                                         <a class="dropdown-item" href="{% url 'category_app:edit_sub_categories' id=sub_category.id%}">Edit info</a>
                                                         <a class="dropdown-item text-danger" href="{% url 'category_app:delete_sub_categories' id=sub_category.id%}">Delete</a> 
                                                     </div>
-                                                </div> <!-- dropdown //end -->
+                                                </div> <!-- dropdown //end --> {% endcomment %}
+
+                                                {% if  sub_category.is_active %}
+                                                <a   href="{% url 'category_app:deactivate_sub_category' sub_category.id %}"  class="btn btn-sm font-sm alert-danger rounded block-user-btn">
+                                                    Block
+                                                </a>
+                                                {% else %}
+                                                <a   href="{% url 'category_app:activate_sub_category' sub_category.id %}" class="btn btn-sm font-sm alert-success rounded unblock-user-btn">
+                                                    Unblock
+                                                </a>
+                                                {% endif %} 
+
+
                                             </td>
                                         </tr>
                                         {% endfor%}

@@ -107,8 +107,26 @@ def delete_categories(request,id):
         category = Category.objects.get(id=id)
         category.delete()
         return redirect('category_app:admin_categories')
+    
 
 
+@never_cache
+def activate_category(request, id):
+    current = get_object_or_404(Category, id=id)
+    current.is_active = True
+    current.save()
+    return redirect('category_app:admin_categories')
+
+@never_cache
+def deactivate_category(request, id):
+    current = get_object_or_404(Category, id=id)
+    current.is_active = False
+    current.save()
+    return redirect('category_app:admin_categories')
+
+
+
+#---------------------------------------------
 #---------------------------------------------
 
 ##### Sub-categories #####
@@ -145,9 +163,16 @@ def admin_sub_categories(request):
 
         # Displaying the sub-category from DB
         sub_categories = SubCategory.objects.all().order_by('id')
+
+        # Fetch all categories for dynamic display in the template #Added in 2nd week
+        categories = Category.objects.filter(is_active = True).all()
+
+
         context = {
-            'sub_categories': sub_categories
+            'sub_categories': sub_categories,
+            'categories' : categories
         }
+
         return render(request,'admin_side/page-sub-categories.html',context)
     return redirect('admin_app:admin_login')
 
@@ -184,6 +209,10 @@ def edit_sub_categories(request,id):
             
         
         sub_category_object = SubCategory.objects.get(id=id)
+
+        # Fetch all categories for dynamic display in the template #Added in 2nd week
+        # subcategories = SubCategory.objects.filter(is_active = True).all()
+
         context = {
             'sub_category_object' : sub_category_object
         }
@@ -198,3 +227,19 @@ def delete_sub_categories(request,id):
         Subcategory = SubCategory.objects.get(id=id)
         Subcategory.delete()
         return redirect('category_app:admin_sub_categories')
+    
+
+
+@never_cache
+def activate_sub_category(request, id):
+    current = get_object_or_404(SubCategory, id=id)
+    current.is_active = True
+    current.save()
+    return redirect('category_app:admin_sub_categories')
+
+@never_cache
+def deactivate_sub_category(request, id):
+    current = get_object_or_404(SubCategory, id=id)
+    current.is_active = False
+    current.save()
+    return redirect('category_app:admin_sub_categories')

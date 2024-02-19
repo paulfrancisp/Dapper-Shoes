@@ -70,39 +70,67 @@
                                     </thead>
                                     <tbody>
                                         {% for product in products %}
-                                        <tr>
-                                            {% comment %} <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td> {% endcomment %}
-                                            <td>{{product.id}}</td>
-                                            <td><b>{{product.product_name}}</b></td>
-                                            <td>{{product.category}}</td>
-                                            <td>{{product.sub_category}}</td>
-                                            <td>{{product.product_brand}}</td>
-                                            <td>{{product.is_active}}</td>
-                                            {% comment %} <td>{{product.description}}</td> {% endcomment %}
-                                            <td class="pt-2">
-                                                {% comment %} <img src="{{category.category_image.url}}" style="max-width: 40px; height: auto;"></td> {% endcomment %}
-                                                {% if product.images %}
-                                                    <img src="{{ product.images.url }}" style="max-width: 40px; height: auto;">
-                                                {% else %}
-                                                    {% comment %} <img src="{{ 'Uavailable' }}" style="max-width: 40px; height: auto;"> {% endcomment %}
-                                                    <span>Unavailable</span>
-                                                {% endif %}
-                                            </td>        
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        {% comment %} <a class="dropdown-item" href="#">View detail</a> {% endcomment %}
-                                                        <a class="dropdown-item" href="{% url 'product_management_app:edit_product' id=product.id%}">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="{% url 'product_management_app:delete_product' slug=product.product_slug%}">Delete</a> 
+                                            <tr>
+                                                {% comment %} <td class="text-center">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" />
                                                     </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr>
+                                                </td> {% endcomment %}
+                                                <td>{{product.id}}</td>
+                                                <td>
+                                                    <a href="{% url 'product_management_app:edit_product' id=product.id%}">
+                                                        <strong style="font-weight: bold;">{{product.product_name}}</strong>
+                                                    </a>
+                                                </td>
+                                                <td>{{product.category}}</td>
+                                                <td>{{product.sub_category}}</td>
+                                                <td>{{product.product_brand}}</td>
+                                                <td>
+                                                    {% if product.is_active %}
+                                                        <span class="badge rounded-pill alert-success">Active</span>
+                                                    {% else %}
+                                                        <span class="badge rounded-pill alert-danger">Inactive</span>
+                                                    {% endif %}
+                                                </td>
+                                                {% comment %} <td>{{product.description}}</td> {% endcomment %}
+                                                <td class="pt-2">
+                                                    {% comment %} <img src="{{category.category_image.url}}" style="max-width: 40px; height: auto;"></td> {% endcomment %}
+                                                    {% if product.images %}
+                                                        <img src="{{ product.images.url }}" style="max-width: 40px; height: auto;">
+                                                    {% else %}
+                                                        {% comment %} <img src="{{ 'Uavailable' }}" style="max-width: 40px; height: auto;"> {% endcomment %}
+                                                        <span>Unavailable</span>
+                                                    {% endif %}
+                                                </td>        
+                                                <td class="text-end">
+                                                    {% comment %} <div class="dropdown">
+                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                        <div class="dropdown-menu">
+                                                            {% comment %} <a class="dropdown-item" href="#">View detail</a> {% endcomment %}{% comment %}
+                                                            <a class="dropdown-item" href="{% url 'product_management_app:edit_product' id=product.id%}">Edit info</a>
+                                                            <a class="dropdown-item text-danger" href="{% url 'product_management_app:delete_product' slug=product.product_slug%}">Delete</a> 
+                                                        </div>
+                                                    </div> <!-- dropdown //end --> {% endcomment %}
+
+
+
+                                                    
+
+
+
+                                                    {% if  product.is_active %}
+                                                    <a   href="{% url 'product_management_app:deactivate_product' product.id %}"  class="btn btn-sm font-sm alert-danger rounded block-user-btn">
+                                                        Block
+                                                    </a>
+                                                    {% else %}
+                                                    <a   href="{% url 'product_management_app:activate_product' product.id %}" class="btn btn-sm font-sm alert-success rounded unblock-user-btn">
+                                                        Unblock
+                                                    </a>
+                                                    {% endif %} 
+
+
+                                                </td>
+                                            </tr>
                                         {% endfor %}
                                         {% comment %} <tr>
                                             <td class="text-center">

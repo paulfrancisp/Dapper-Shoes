@@ -129,3 +129,19 @@ def delete_product(request,slug):
         category = Product.objects.get(product_slug=slug)
         category.delete()
         return redirect('product_management_app:product_list')
+    
+
+
+@never_cache
+def activate_product(request, id):
+    current = get_object_or_404(Product, id=id)
+    current.is_active = True
+    current.save()
+    return redirect('product_management_app:product_list')
+
+@never_cache
+def deactivate_product(request, id):
+    current = get_object_or_404(Product, id=id)
+    current.is_active = False
+    current.save()
+    return redirect('product_management_app:product_list')
