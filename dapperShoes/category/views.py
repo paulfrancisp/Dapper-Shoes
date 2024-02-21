@@ -112,16 +112,27 @@ def delete_categories(request,id):
 
 @never_cache
 def activate_category(request, id):
-    current = get_object_or_404(Category, id=id)
-    current.is_active = True
-    current.save()
+    current_category = get_object_or_404(Category, id=id)
+    current_subcategories = SubCategory.objects.filter(category_id=id) #cannot use get_object_or_404() because it only returns sing object
+
+    current_category.is_active = True
+    current_category.save()
+
+    # Update is_active for all related subcategories
+    current_subcategories.update(is_active=True)
+
     return redirect('category_app:admin_categories')
 
 @never_cache
 def deactivate_category(request, id):
-    current = get_object_or_404(Category, id=id)
-    current.is_active = False
-    current.save()
+    current_category = get_object_or_404(Category, id=id)
+    current_subcategories = SubCategory.objects.filter(category_id=id)
+
+    current_category.is_active = False
+    current_category.save()
+
+    current_subcategories.update(is_active=False)
+
     return redirect('category_app:admin_categories')
 
 

@@ -12,7 +12,7 @@
                 <div>
                     {% comment %} <a href="#" class="btn btn-light rounded font-md">Export</a>
                     <a href="#" class="btn btn-light rounded  font-md">Import</a> {% endcomment %}
-                    <a href="product_management_app:product_edit" class="btn btn-primary btn-sm rounded">Create new</a>
+                    <a href="{% url 'product_management_app:add_product' %}" class="btn btn-primary btn-sm rounded">Add new product</a>
                 </div>
             </div>
             <div class="card mb-4">

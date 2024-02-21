@@ -68,7 +68,12 @@
                                                 </div>
                                             </td> {% endcomment %}
                                             <td>{{category.id}}</td>
-                                            <td><b>{{category.category_name}}</b></td>
+                                            <td>
+                                                {% comment %} {{category.category_name}} {% endcomment %}
+                                                <a href="{% url 'category_app:edit_categories' category.id%}">
+                                                    <strong style="font-weight: bold;">{{category.category_name}}</strong>
+                                                </a>
+                                            </td>
                                             <td>{{category.slug}}</td>
                                             
                                             <td>

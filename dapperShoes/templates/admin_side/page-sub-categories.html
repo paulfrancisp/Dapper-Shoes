@@ -79,7 +79,12 @@
                                                 </div>
                                             </td> {% endcomment %}
                                             <td>{{sub_category.id}}</td>
-                                            <td><b>{{sub_category.sub_category_name}}</b></td>
+                                            <td>
+                                                {% comment %} {{sub_category.sub_category_name}} {% endcomment %}
+                                                <a href="{% url 'category_app:edit_sub_categories' sub_category.id%}">
+                                                    <strong style="font-weight: bold;">{{sub_category.sub_category_name}}</strong>
+                                                </a>
+                                            </td>
                                             <td>{{sub_category.sub_slug}}</td>
                                             {% comment %} <td>{{sub_category.category_id}}</td> {% endcomment %}
                                             <td>{{ sub_category.category.category_name}}</td>      
