@@ -1,0 +1,195 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<section class="content-main">
+    <form id="productForm" action="{% url 'product_management_app:variant_list' product.id%}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Edit Product Variant - {{ product_variant.variant_name }}</h2>
+                </div>
+                {% if messages %}
+                {% for message in messages %}
+                <span class="success" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="product_title" class="form-label">Product variant name</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="product_title" name='product_variant_name' value="{{ product_variant.variant_name }}" required>
+                        </div>
+                        
+                        <div class="row gx-3">
+                           
+                            <div class="col-md-4 mb-3">
+                                <label for="product_size" class="form-label">Max Price</label>
+                                <input type="number" placeholder="Type here" class="form-control" id="product_size" name="max_price" value="{{product_variant.max_price}}" required >
+                            </div>
+                            <div class="col-md-4  mb-3">
+                                <label for="product_size" class="form-label">Sale price</label>
+                                <input type="number" placeholder="Type here" class="form-control" id="product_size" name="sale_price" value="{{product_variant.sale_price}}" required>
+                            </div>
+                            <div class="col-md-4  mb-3">
+                                <label for="product_size" class="form-label">Stock</label>
+                                <input type="number" placeholder="Type here" class="form-control" id="product_size" name="stock" value="{{product_variant.stock}}" required>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="mb-3">
+                            <label class="form-label">Colour</label>
+                            <select class="form-select" id="color" name="color">
+                                {% for attribute in attribute_value %}
+                                    {% if attribute.attribute_value|length > 2 %}
+                                        <option value="{{ attribute.id }}" {% if attribute in product_variant.attributes.all %} selected {% endif %}>
+                                            {{ attribute.attribute_value }}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            
+                            
+                        </div>
+                        
+                            {% comment %} </div>
+                        </div> <!-- card end// -->
+                            Image
+                            <div class="card mb-4"> {% endcomment %}
+                            {% comment %} <div class="card-body"> {% endcomment %}
+                        <div class="mb-3">
+                            <label class="form-label">Size</label>
+                            <select class="form-select" id="color" name="size">
+                                {% for attribute in attribute_value %}
+                                    {% if attribute.attribute_value|length < 3 %}
+                                        <option value="{{ attribute.id }}" {% if attribute in product_variant.attributes.all %} selected {% endif %}>
+                                            {{ attribute.attribute_value }}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            
+                        </div>
+
+
+                        {% comment %} <div class="row gx-3">
+                            {% for attribute_name, attribute_values in attribute_dict.items %}                                        <option>{{atribute. }}</option>
+                            <div class="col-md-4  mb-3">
+                                <label class="form-label">{{attribute_name}}</label>
+                                <select class="form-select" name="attribute">
+                                    {% for value in attribute_values %}
+                                    {% if value.atribute_value in attr %}
+                                    <option value="{{ value.id }}"  selected>{{ value.atribute_value }}</option>
+                                    {% else %}
+                                    <option value="{{ value.id }}">{{ value.atribute_value }}</option>    
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>  
+                             
+                            {% endfor %}
+                        </div> {% endcomment %}
+
+
+
+
+
+
+                        <div class="d-grid mt-30">
+                            <a href="#">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </a>
+                        </div>
+                    </div>
+
+                </div> <!-- card end// -->
+
+            </div>
+
+            <div class="col-lg-3">
+                <!-- Card for main image upload -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h6>Thumbnail Image</h6>
+                        </div>
+                        {% comment %} <div class="card-body">
+                            <img src="{{ product.images.url }}" class="img-thumbnail" alt="Main Image">
+                            <input type="file" class="form-control mt-3" id="category_image" name="thumbnail_image">
+                        </div> {% endcomment %}
+
+                        <div class="input-upload">
+                            {% if product_variant.image %}
+                                <img src="{{ product_variant.image.url }}" alt="" > {% comment %}style="max-width: 100%; height: auto;"{% endcomment %}
+                                {% comment %} <input type="file" class="form-control" id="category_image" name="image"/> {% endcomment %}
+                            {% else %}
+                                <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
+                            {% endif %}
+                            <input type="file" class="form-control" id="product_varient_image" name="product_varient_image"/>
+                        
+                        </div>
+
+                    </div> <!-- card end// -->
+
+
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h6>Additional Images</h6>
+                        </div>
+                        <div class="input-upload">
+                            {% comment %} <label for="additional_image_1" class="form-label">Additional Images</label> {% endcomment %}
+                            <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple >
+                        </div> <!-- card end// -->
+
+
+                    </div>
+                </div>
+
+                <!-- End of card for main image upload -->
+                
+                <!-- Card for additional images -->
+                 {% comment %} <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h4>Additional Images</h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Additional image fields -->
+                            {% for image in product.product_images.all %}
+                            <div class="input-upload mb-3">
+                                <img src="{{ image.image.url }}" class="img-thumbnail" alt="Additional Image">
+                                {% comment %} <input type="file" class="form-control mt-3" name="additional_image_{{ forloop.counter }}" multiple> {% endcomment %}{% comment %} 
+                                <input type="file" class="form-control mt-3" name="additional_image_1" multiple>
+
+                            </div>
+                            {% endfor %}
+                            <!-- End of additional image fields -->
+                        </div>
+                    </div> <!-- card end// -->
+                </div>  {% endcomment %}
+                <!-- End of card for additional images -->
+            </div>
+        </div>
+    </form>
+   
+</section>
+
+
+
+
+
+
+
+
+
+{% endblock %}

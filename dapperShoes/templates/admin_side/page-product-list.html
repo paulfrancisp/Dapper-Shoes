@@ -65,7 +65,7 @@
                                             <th>Active</th>
                                             {% comment %} <th>Description</th> {% endcomment %}
                                             <th>Image</th>
-                                            <th class="text-end">Action&nbsp;&nbsp;&nbsp;</th>
+                                            <th class="text-end">Product variants&nbsp;</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -87,9 +87,15 @@
                                                 <td>{{product.product_brand}}</td>
                                                 <td>
                                                     {% if product.is_active %}
-                                                        <span class="badge rounded-pill alert-success">Active</span>
+                                                        {% comment %} <span class="btn btn-sm font-sm alert-success rounded">Active</span> {% endcomment %}
+                                                        <a  href="{% url 'product_management_app:deactivate_product' product.id %}"  class="btn btn-sm font-sm alert-success rounded block-user-btn">
+                                                            Listed
+                                                        </a>
                                                     {% else %}
-                                                        <span class="badge rounded-pill alert-danger">Inactive</span>
+                                                        {% comment %} <span class="btn btn-sm font-sm alert-danger rounded ">Inactive</span> {% endcomment %}
+                                                        <a   href="{% url 'product_management_app:activate_product' product.id %}" class="btn btn-sm font-sm alert-danger rounded unblock-user-btn">
+                                                            Unlisted
+                                                        </a>
                                                     {% endif %}
                                                 </td>
                                                 {% comment %} <td>{{product.description}}</td> {% endcomment %}
@@ -111,24 +117,17 @@
                                                             <a class="dropdown-item text-danger" href="{% url 'product_management_app:delete_product' slug=product.product_slug%}">Delete</a> 
                                                         </div>
                                                     </div> <!-- dropdown //end --> {% endcomment %}
-
-
-
-                                                    
-
-
-
                                                     {% if  product.is_active %}
-                                                    <a   href="{% url 'product_management_app:deactivate_product' product.id %}"  class="btn btn-sm font-sm alert-danger rounded block-user-btn">
-                                                        Block
+                                                    <a href="{% url 'product_management_app:variant_list' product.id %}" class="btn btn-sm font-sm btn-light rounded block-user-btn" style="text-decoration: none; color: black; display: inline-block;" onmouseover="this.style.color='#0000FF';" onmouseout="this.style.color='black';">
+                                                        &nbsp;&nbsp;&nbsp;Click here&nbsp;&nbsp;&nbsp;
                                                     </a>
+                                                        
+                                                      
                                                     {% else %}
-                                                    <a   href="{% url 'product_management_app:activate_product' product.id %}" class="btn btn-sm font-sm alert-success rounded unblock-user-btn">
-                                                        Unblock
+                                                    <a   href="#" class="btn btn-sm font-sm btn-light rounded unblock-user-btn" style="background-color: #808080; color: #ffffff;" onmouseover="this.style.backgroundColor='#555555'" onmouseout="this.style.backgroundColor='#808080'">
+                                                        Product is unlisted
                                                     </a>
                                                     {% endif %} 
-
-
                                                 </td>
                                             </tr>
                                         {% endfor %}

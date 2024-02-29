@@ -43,7 +43,7 @@ class Product(models.Model):
             self.product_var.filter(varient_is_active=False).update(varient_is_active=True)
 
 
-class attribute(models.Model):
+class Attribute(models.Model):
     atrribute_name = models.CharField(max_length=50,unique=True)
     is_active = models.BooleanField(default=True)
 
@@ -51,8 +51,8 @@ class attribute(models.Model):
         return self.atrribute_name
     
 
-class attribute_values(models.Model):
-    attribute_id = models.ForeignKey(attribute,on_delete=models.CASCADE)
+class Attribute_values(models.Model):
+    attribute_id = models.ForeignKey(Attribute,on_delete=models.CASCADE,related_name='atribute_value_set')
     attribute_value = models.CharField(max_length=40,unique=True)
     attr_is_active = models.BooleanField(default=True)
     
@@ -62,7 +62,7 @@ class attribute_values(models.Model):
 
 class Product_varient(models.Model):
     product_name = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='product_var')
-    attributes = models.ManyToManyField(attribute_values,max_length=100,related_name='attributes')
+    attributes = models.ManyToManyField(Attribute_values,max_length=100,related_name='attributes')
     variant_name = models.CharField( blank=True,max_length=200)
     stock = models.IntegerField(default=0)
     max_price = models.DecimalField(max_digits=8, decimal_places=2)
@@ -81,29 +81,54 @@ class Product_varient(models.Model):
         # return f"{self.product_name} {self.product_name.product_brand}"
 
         # since attributes is a ManyToManyField, you need to loop through the attribute values to create a string representation.
+        # attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attributes.all()])
+        # return f"{self.product_name} {self.product_name.product_brand} {attribute_values_str}"
+
+        
+        # attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attributes.all()])
+        # return f"{self.product_name.product_name} {self.product_name.product_brand.Brand_name} {attribute_values_str}"
+
         attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attributes.all()])
-        return f"{self.product_name} {self.product_name.product_brand} {attribute_values_str}"
+        product_name_str = f"{self.product_name.product_name} {self.product_name.product_brand.Brand_name}"
+        return f"{product_name_str} {attribute_values_str}"
     
 
-    def save(self,*args, **kwargs):
-        slug = f"{self.product_name} {self.product_name.product_brand}" 
-        base_slug = slugify(slug)
-        # self.product_variant_slug = slugify(slug)
-        counter = Product_varient.objects.filter(product_variant_slug__startswith=base_slug).count()
-        if counter > 0:
-            self.product_variant_slug = f'{base_slug} {counter}'
-        else:
+    # def save(self,*args, **kwargs):
+    #     slug = f"{self.product_name} {self.product_name.product_brand}" 
+    #     base_slug = slugify(slug)
+    #     # self.product_variant_slug = slugify(slug)
+    #     counter = Product_varient.objects.filter(product_variant_slug__startswith=base_slug).count()
+    #     if counter > 0:
+    #         self.product_variant_slug = f'{base_slug} {counter}'
+    #     else:
+    #         self.product_variant_slug = base_slug
+
+    #     # Check if any attribute value is not active, set the variant as not active
+    #     # for attr in self.attributes.all():
+    #     #     if not attr.attr_is_active:
+    #     #         is_active = False
+    #     #         break
+    #     # self.varient_is_active = is_active
+
+    #     super(Product_varient,self).save(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        if not self.product_variant_slug:
+            # Generate the initial slug based on the product and brand names
+            slug = f"{self.product_name.product_brand.Brand_name} {self.product_name.product_name}"
+            base_slug = slugify(slug)
+
+            # Check for existing slugs with the same base
+            counter = 1
+            while Product_varient.objects.filter(product_variant_slug=base_slug).exists():
+                counter += 1
+                base_slug = f"{slugify(slug)}-{counter}"
+
             self.product_variant_slug = base_slug
+            
 
-        # Check if any attribute value is not active, set the variant as not active
-        for attr in self.attributes.all():
-            if not attr.attr_is_active:
-                is_active = False
-                break
-        self.varient_is_active = is_active
-
-        super(Product_varient,self).save(*args, **kwargs)
-       
+        super(Product_varient, self).save(*args, **kwargs)
+      
 
         if self.thumbnail_image:
             img = Image.open(self.thumbnail_image.path)
