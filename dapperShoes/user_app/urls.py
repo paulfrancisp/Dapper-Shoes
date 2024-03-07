@@ -14,12 +14,12 @@ urlpatterns = [
     path('user-login/forgot-password-verification',views.forgot_password,name='forgot_password_verification'),
 
 
-    path('user-404',views.user_404,name='user_404'),
-    path('user-account',views.user_account,name='user_account'),
-    path('user-contact',views.user_contact,name='user_contact'),
-    path('user-cart',views.user_cart,name='user_cart'),
-    path('user-checkout',views.user_checkout,name='user_checkout'),
-    path('user-wishlist',views.user_wishlist,name='user_wishlist'),
+    # path('user-404',views.user_404,name='user_404'),
+    # path('user-account',views.user_account,name='user_account'),
+    # path('user-contact',views.user_contact,name='user_contact'),
+    # path('user-cart',views.user_cart,name='user_cart'),
+    # path('user-checkout',views.user_checkout,name='user_checkout'),
+    # path('user-wishlist',views.user_wishlist,name='user_wishlist'),
     # path('user-fullwidth',views.user_fullwidth,name='user_fullwidth'),
     # path('user-product-full',views.user_product_full,name='user_product_full'),
     

@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from product_management.models import Product, Brand, Product_Image, Product_varient, Attribute, Attribute_values
+from product_management.models import Product, Brand, Product_Image, Product_variant, Attribute, Attribute_value
 from category.models import Category, SubCategory
 from django.views.decorators.cache import never_cache
 from django.shortcuts import get_object_or_404
@@ -157,7 +157,7 @@ def deactivate_product(request, id):
 ################ ------- WEEK 2 ------- ################
 
 def variant_list(request,id):
-    product_variants = Product_varient.objects.filter(product_name_id=id).order_by('id')
+    product_variants = Product_variant.objects.filter(product_id=id).order_by('id')
     # product_variants = get_object_or_404(Product_Variant,Product=id)
     product = Product.objects.get(id=id)
     context = {
@@ -246,15 +246,15 @@ def variant_list(request,id):
 #     return render(request,"admin_side/Week_2/edit-product-variant.html",context)
 
 def edit_variant(request,id):
-    product_variant = get_object_or_404(Product_varient, id=id)
-    attribute_value = Attribute_values.objects.all()
+    product_variant = get_object_or_404(Product_variant, id=id)
+    attribute_value = Attribute_value.objects.all()
 
     if request.method == "POST":
         variant_name = request.POST.get('product_variant_name')
         max_price = request.POST.get('max_price')
         sale_price = request.POST.get('sale_price')
         stock = request.POST.get('stock')
-        color = request.POST.getlist('color')  # Use getlist for multi-select  
+        # color = request.POST.getlist('color')  # Use getlist for multi-select  
         size = request.POST.getlist('size')  # Use getlist for multi-select
         # is_active = request.POST.get('is_active')
         thumbnail_image = request.FILES.get('thumbnail_image')
@@ -267,24 +267,47 @@ def edit_variant(request,id):
             product_variant.sale_price = sale_price
         if stock:
             product_variant.stock = stock
-        if color:
-            # product_variant.color = color
-            product_variant.attributes.set(color)  # Use set to update ManyToManyField
-            # Clear existing colors and add selected colors
-            # product_variant.attributes.clear()
-            # for color_id in color:
-            #     color_instance = Attribute_values.objects.get(id=color_id)
-            #     product_variant.attributes.add(color_instance)
-        # if is_active:
-        #     product_variant.is_active = True if is_active == 'on' else False
-        if size:
-            product_variant.attributes.set(size)  # Use set to update ManyToManyField
+        
+        
+        # if color:
+        #     # product_variant.color = color
+        #     product_variant.attributes.set(color)  # Use set to update ManyToManyField
+        #     # Clear existing colors and add selected colors
+        #     # product_variant.attributes.clear()
+        #     # for color_id in color:
+        #     #     color_instance = Attribute_values.objects.get(id=color_id)
+        #     #     product_variant.attributes.add(color_instance)
+        # # if is_active:
+        # #     product_variant.is_active = True if is_active == 'on' else False
+        # if size:
+        #     product_variant.attributes.set(size)  # Use set to update ManyToManyField
+            
+        # Clear existing colors and add selected colors
+        # product_variant.attributes.clear()
+        # for color_id in color:
+        #     color_instance = Attribute_value.objects.get(id=color_id)
+        #     product_variant.attributes.add(color_instance)
+
+
+
+
+
+
+        # Clear existing sizes and add selected sizes
+        product_variant.attribute.clear()
+        # for size_id in size:
+        #     size_instance = Attribute_value.objects.get(id=size_id)
+        #     product_variant.attribute.add(size_instance)
+        for size_id in size:
+            size_instance = Attribute_value.objects.get(id=size_id)
+            product_variant.attribute.add(size_instance)
+
         if thumbnail_image:
             product_variant.thumbnail_image = thumbnail_image
 
         product_variant.save()
         # return redirect('product_management_app:product-variant-list')
-        return redirect(reverse('product_management_app:variant_list', kwargs={'id': product_variant.product_name.id}))
+        return redirect(reverse('product_management_app:variant_list', kwargs={'id': product_variant.product.id}))
 
         # Redirect to a success page or back to the product variant detail page
         # Example: return redirect('product_variant_detail', id=product_variant.id)
@@ -442,8 +465,9 @@ def add_variant(request, id):
             max_price = request.POST.get('max_price')
             sale_price = request.POST.get('sale_price')
             stock = request.POST.get('stock')
-            color = request.POST.get('color')
-            size = request.POST.get('size')
+            # size = request.POST.get('size')
+            size = request.POST.getlist('size')
+
 
             # Basic validations
             if not variant_name or not max_price or not sale_price or not stock:
@@ -462,30 +486,30 @@ def add_variant(request, id):
                 messages.warning(request, "Prices and stock should be non-negative.")
                 return redirect('product_management_app:add_variant', id=id)
 
-            if not color or not size:
+            if not size:
                 messages.warning(request, "Color and size are required.")
                 return redirect('product_management_app:add_variant', id=id)
 
             # Additional validations
-            if Product_varient.objects.filter(product_name=product, variant_name=variant_name).exists():
+            if Product_variant.objects.filter(product_name=product, variant_name=variant_name).exists():
                 messages.warning(request, f"A variant with the name '{variant_name}' already exists for this product.")
                 return redirect('product_management_app:add_variant', id=id)
 
             # Ensure that the variant name is unique within the product
-            if Product_varient.objects.filter(product_name=product, variant_name__iexact=variant_name).exists():
+            if Product_variant.objects.filter(product_name=product, variant_name__iexact=variant_name).exists():
                 messages.warning(request, "Variant names should be unique within the product.")
                 return redirect('product_management_app:add_variant', id=id)
 
             try:
-                product_var = Product_varient.objects.create(
+                product_var = Product_variant.objects.create(
                     product_name=product,
                     variant_name=variant_name,
                     max_price=max_price,
                     sale_price=sale_price,
                     stock=stock,
                 )
-                product_var.attributes.add(Attribute_values.objects.get(id=color))
-                product_var.attributes.add(Attribute_values.objects.get(id=size))
+                # product_var.attributes.add(Attribute_value.objects.get(id=color))
+                product_var.attributes.add(Attribute_value.objects.get(id=size))
 
                 # Additional attribute validations and processing if needed
 
@@ -497,14 +521,14 @@ def add_variant(request, id):
                 messages.warning(request, "Invalid attribute values.")
         else:
             product = Product.objects.get(id=id)
-            attribute_values = Attribute_values.objects.all()  # You may need to filter based on your requirements
+            attribute_value = Attribute_value.objects.all()  # You may need to filter based on your requirements
 
         categories = Category.objects.filter(is_active=True)
         brands = Brand.objects.filter(is_active=True)
         context = {
             'categories': categories,
             'brands': brands,
-            'attribute_values': attribute_values,
+            'attribute_value': attribute_value,
             'product': product,
         }
 

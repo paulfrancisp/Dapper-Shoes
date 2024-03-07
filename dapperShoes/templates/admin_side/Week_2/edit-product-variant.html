@@ -5,7 +5,7 @@
 
 
 <section class="content-main">
-    <form id="productForm" action="{% url 'product_management_app:variant_list' product.id%}" method="post" enctype="multipart/form-data">
+    <form id="productForm" action="{% if product.id %}{% url 'product_management_app:edit_variant' product.id %}{% endif %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             <div class="col-9">
@@ -44,7 +44,7 @@
 
                         
 
-                        <div class="mb-3">
+                        {% comment %} <div class="mb-3">
                             <label class="form-label">Colour</label>
                             <select class="form-select" id="color" name="color">
                                 {% for attribute in attribute_value %}
@@ -57,7 +57,7 @@
                             </select>
                             
                             
-                        </div>
+                        </div> {% endcomment %}
                         
                             {% comment %} </div>
                         </div> <!-- card end// -->
@@ -141,19 +141,19 @@
 
                 </div>
 
-                <div class="card mb-3">
+                {% comment %} <div class="card mb-3">
                     <div class="card-body">
                         <div class="card-header">
                             <h6>Additional Images</h6>
                         </div>
                         <div class="input-upload">
-                            {% comment %} <label for="additional_image_1" class="form-label">Additional Images</label> {% endcomment %}
+                            {% comment %} <label for="additional_image_1" class="form-label">Additional Images</label> {% endcomment %}{% comment %} 
                             <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple >
                         </div> <!-- card end// -->
 
 
                     </div>
-                </div>
+                </div> {% endcomment %}
 
                 <!-- End of card for main image upload -->
                 

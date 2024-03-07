@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.core.mail import send_mail
 import random 
 from django.http import HttpResponse
+# from cart.models import *
+# from cart.views import _cart_id
 
 
 # Create your views here.
@@ -119,6 +121,20 @@ def user_login(request):
             user=authenticate(request,username=username,password=pass1)  
 
             if user is not None:
+                # try:
+                #     cart=Cart.objects.get(cart_id=_cart_id(request))  
+                #     is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+
+                #     if  is_cart_item_exists:
+                #         cart_item -= CartItem.objects.filter(cart=cart)
+
+                #         for item in cart_item:
+                #             item.user = user
+                #             item.save()
+                # except:
+                #     print('Entering inside except block')
+                #     pass    
+                
                 login(request,user)                                      
                 return redirect('shop_app:index')                                  
             else:      
@@ -155,23 +171,23 @@ def forgot_password_verification(request):
 ###     return render(request,'user_side/index.html')
 #######################################################################
 
-def user_404(request):
-    return render(request,'user_side/page-404.html')
+# def user_404(request):
+#     return render(request,'user_side/page-404.html')
 
-def user_account(request):
-    return render(request,'user_side/page-account.html')
+# def user_account(request):
+#     return render(request,'user_side/page-account.html')
 
-def user_contact(request):
-    return render(request,'user_side/page-contact.html')
+# def user_contact(request):
+#     return render(request,'user_side/page-contact.html')
 
-def user_cart(request):
-    return render(request,'user_side/shop-cart.html')
+# def user_cart(request):
+#     return render(request,'user_side/shop-cart.html')
 
-def user_checkout(request):
-    return render(request,'user_side/shop-checkout.html')
+# def user_checkout(request):
+#     return render(request,'user_side/shop-checkout.html')
 
-def user_wishlist(request):
-    return render(request,'user_side/shop-wishlist.html')
+# def user_wishlist(request):
+#     return render(request,'user_side/shop-wishlist.html')
 
 # def user_fullwidth(request):
 #     return render(request,'user_side/shop-fullwidth.html')

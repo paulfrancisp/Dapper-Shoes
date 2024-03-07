@@ -4,8 +4,10 @@ app_name = 'shop_app'
 
 urlpatterns = [
     path('',views.index,name='index'),
-    path('product_detail/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('product-detail/<int:product_id>', views.product_detail, name='product_detail'),
+    path('product-detail-attribute/<int:product_id>/<int:attribute_value>', views.product_detail_attribute, name='product_detail_attribute'),
     path('home',views.home,name='home'),
+    path('search', views.search, name='search'),
 
 
 
@@ -18,5 +20,4 @@ urlpatterns = [
     # path('brand/search/<int:id>',views.brand_products,name='search_brand'),
 
 
-    path('account',views.account,name='account')
 ]

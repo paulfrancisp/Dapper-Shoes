@@ -25,165 +25,185 @@
                             <div class="col-md-6 col-sm-12 col-xs-12">
                                 <div class="detail-gallery">
                                     <span class="zoom-icon"><i class="fi-rs-search"></i></span>
-                                    <!-- MAIN SLIDES -->
-                                    {% for product_img in product_images %}
-                                    <div class="product-image-slider">
-                                        
-                                        <figure class="border-radius-10">
-                                            <img src="{{product_img.image.url}}" alt="product image">
-                                        </figure>
-                                        
-
-                 
-                                    </div>
-                                    {% endfor %}
-
                                     
-                                    <!-- THUMBNAILS -->
-                                    <div class="slider-nav-thumbnails pl-15 pr-15">
-                                        {% comment %} {% for product_img in product_images %}
-                                        <div><img src="{{product_img}}" alt="product image"></div>
-                                        {% endfor %}  {% endcomment %}
-
-
-
-
-                                        {% comment %} <div><img src="assets/imgs/shop/thumbnail-4.jpg" alt="product image"></div>
-                                        <div><img src="assets/imgs/shop/thumbnail-5.jpg" alt="product image"></div>
-                                        <div><img src="assets/imgs/shop/thumbnail-6.jpg" alt="product image"></div>
-                                        <div><img src="assets/imgs/shop/thumbnail-7.jpg" alt="product image"></div>
-                                        <div><img src="assets/imgs/shop/thumbnail-8.jpg" alt="product image"></div>
-                                        <div><img src="assets/imgs/shop/thumbnail-9.jpg" alt="product image"></div> {% endcomment %}
+                                    <!-- MAIN SLIDES -->
+                                    <div id="product-carousel" class="carousel slide" data-ride="carousel">
+                                        <div class="carousel-inner ">
+                                            {% for image in images %}
+                                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                                    <img src="{{ image.image.url }}" alt="product image">
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        
+                                        <!-- THUMBNAILS -->
+                                        <div class="slider-nav-thumbnails pl-15 pr-15" style="display: flex; justify-content: center; margin-top: 10px;">
+                                            {% for image in images %}
+                                                <label for="slide{{ forloop.counter }}" style="cursor: pointer; margin-right: 5px;">
+                                                    <img src="{{ image.image.url }}" alt="product image" style="width: 50px; border-radius: 5px;" data-target="#product-carousel" data-slide-to="{{ forloop.counter }}">
+                                                </label>
+                                            {% endfor %}
+                                        </div>
+                                        
+                                        <!-- Controls -->
+                                        <a class="carousel-control-prev" href="#product-carousel" role="button" data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            {% comment %} <span class="sr-only">Previous</span> {% endcomment %}
+                                        </a>
+                                        <a class="carousel-control-next" href="#product-carousel" role="button" data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            {% comment %} <span class="sr-only">Next</span> {% endcomment %}
+                                        </a>
                                     </div>
                                 </div>
+                                
                                 <!-- End Gallery -->
                             </div>
+
+                            
                             <div class="col-md-6 col-sm-12 col-xs-12">
-                                <div class="detail-info">
-                                    <h2 class="title-detail">{{products.product_name}}</h2>
-                                    <div class="product-detail-rating">
-                                        <div class="pro-details-brand">
-                                            <span> Brands: <a href="shop-grid-right.html">{{products.product_brand_id}}</a></span>
-                                        </div>
-                                        <div class="product-rate-cover text-end">
-                                            {% comment %} <div class="product-rate d-inline-block">
-                                                <div class="product-rating" style="width:90%">
-                                                </div>
-                                            </div> {% endcomment %}
-                                            {% comment %} <span class="font-small ml-5 text-muted"> (25 reviews)</span> {% endcomment %}
-                                        </div>
-                                    </div>
-                                    <div class="clearfix product-price-cover">
-                                        <div class="product-price primary-color float-left ">
-                                            <ins><span class="text-brand">{{products.product_price}}</span></ins><span> INR</span>
-                                            {% comment %} <ins><span class="old-price font-md ml-15">$200.00</span></ins>
-                                            <span class="save-price  font-md color3 ml-15">25% Off</span> {% endcomment %}
-                                            <span class="product-rate-cover text-end ">
-                                                <span style="margin-left:350px"></span>
+                                {% comment %}<form action="{% url 'cart_app:add_cart' products.id %}" method="post">                    {% endcomment %}
+                                    <div class="detail-info">
+                                        <h2 class="title-detail">{{variants.variant_name}}</h2>
+                                        <div class="product-detail-rating">
+                                            <div class="pro-details-brand">
+                                                <span> Brands: <a href="shop-grid-right.html">{{products.product_brand.brand_name}}</a></span>
+                                            </div>
+                                            <div class="product-rate-cover text-end">
                                                 <div class="product-rate d-inline-block">
                                                     <div class="product-rating" style="width:90%">
                                                     </div>
                                                 </div>
-                                                <span class="font-small ml-5 text-muted"> (25 reviews)</span>
-                                            </span>
+                                                <span class="font-small ml-5 text-muted me-3"> (25 reviews)</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="bt-1 border-color-1 mt-15 mb-15"></div>
-                                    <div class="short-desc mb-30">
-                                        <p>{{products.description}}</p>    
+                                        {% comment %} <div class="clearfix product-price-cover">
+                                            <div class="product-price primary-color float-left ">
+                                                <ins><span class="text-brand">{{products.product_price}}</span></ins><span> INR</span>
+                                                {% comment %} <ins><span class="old-price font-md ml-15">$200.00</span></ins>
+                                                <span class="save-price  font-md color3 ml-15">25% Off</span> {% endcomment %}{% comment %} 
+                                                <span class="product-rate-cover text-end ">
+                                                    <span style="margin-left:350px"></span>
+                                                    <div class="product-rate d-inline-block">
+                                                        <div class="product-rating" style="width:90%">
+                                                        </div>
+                                                    </div>
+                                                    <span class="font-small ml-5 text-muted"> (25 reviews)</span>
+                                                </span>
+                                            </div>
+                                        </div> {% endcomment %}
+                                        <div class="clearfix product-price-cover">  
+                                            <div class="product-price primary-color float-left">
+                                                <ins><span class="text-brand">{{variants.sale_price}} INR</span></ins>
+                                                <ins><span class="old-price font-md ml-15">{{variants.max_price}} INR</span></ins>
+                                                {% comment %} <span class="save-price  font-md color3 ml-15">25% Off</span> {% endcomment %}
+                                            </div>
+                                        </div>
 
-                                        {% comment %} <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam rem officia, corrupti reiciendis minima nisi modi, quasi, odio minus dolore impedit fuga eum eligendi? Officia doloremque facere quia. Voluptatum, accusantium!</p> {% endcomment %}
-                                    </div>
-                                    <div class="product_sort_info font-xs mb-30">
-                                        <ul>
-                                            <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year AL Jazeera Brand Warranty</li>
-                                            <li class="mb-10"><i class="fi-rs-refresh mr-5"></i> 30 Day Return Policy</li>
-                                            <li><i class="fi-rs-credit-card mr-5"></i> Cash on Delivery available</li>
-                                        </ul>
-                                    </div>
-                                    <div class="attr-detail attr-color mb-15">
-                                        <strong class="mr-10">Color</strong>
-                                        <ul class="list-filter color-filter">
-                                            <li><a href="#" data-color="Red"><span class="product-color-red"></span></a></li>
-                                            <li><a href="#" data-color="Yellow"><span class="product-color-yellow"></span></a></li>
-                                            {% comment %} <li class="active"><a href="#" data-color="Black"><span class="product-color-Black"></span></a></li> {% endcomment %}
-                                            <li><a href="#" data-color="Orange"><span class="product-color-orange"></span></a></li>
-                                            <li><a href="#" data-color="Cyan"><span class="product-color-cyan"></span></a></li>
-                                            {% comment %} <li><a href="#" data-color="Green"><span class="product-color-green"></span></a></li>
-                                            <li><a href="#" data-color="Purple"><span class="product-color-purple"></span></a></li> {% endcomment %}
-                                        </ul>
-                                    </div>
-                                    <div class="attr-detail attr-size">
-                                        <strong class="mr-10">Size</strong>
-                                        <ul class="list-filter size-filter font-small">
-                                            <li><a href="#">7</a></li>
-                                            <li class="active"><a href="#">8</a></li>
-                                            <li><a href="#">9</a></li>
-                                            <li><a href="#">10</a></li>
-                                            <li><a href="#">11</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                                    <div class="detail-extralink">
-                                        <div class="detail-qty border radius">
-                                            <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                            <span class="qty-val">1</span>
-                                            <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+
+                                        <div class="bt-1 border-color-1 mt-15 mb-15"></div>
+                                        <div class="short-desc mb-30">
+                                            <p>{{products.description}}</p>
+
+                                            {% comment %} <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam rem officia, corrupti reiciendis minima nisi modi, quasi, odio minus dolore impedit fuga eum eligendi? Officia doloremque facere quia. Voluptatum, accusantium!</p> {% endcomment %}
                                         </div>
-                                        <div class="product-extra-link2">
-                                            <button type="submit" class="button button-add-to-cart">Add to cart</button>
-                                            <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                            <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                        <div class="product_sort_info font-xs mb-30">
+                                            <ul>
+                                                {% comment %} <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year AL Jazeera Brand Warranty</li> {% endcomment %}
+                                                <li><i class="fi-rs-credit-card mr-5"></i> Cash on Delivery available</li>
+                                                <li class="mb-10"><i class="fi-rs-refresh mr-5"></i> 30 Day Return Policy</li>
+                                            </ul>
                                         </div>
+                                        {% comment %} <div class="attr-detail attr-color mb-15">    #### For adding colour ####
+                                            <strong class="mr-10">Color</strong> 
+                                            <ul class="list-filter color-filter">
+                                                {% for var in variant %}
+                                                    <li>
+                                                        {% if var.thumbnail_image %}
+                                                            <a href="#" data-color="{{ var.id }}" style="background-image: url('{{ var.thumbnail_image.url }}'); display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin: 5px; opacity: {% if var.id == selected_variant_id %}1{% else %}0.5{% endif %}; transition: opacity 0.3s ease-in-out;" onclick="highlightColor(this, {{ var.id }})"></a>
+                                                        {% else %}
+                                                            <!-- Handle the case where thumbnail_image is missing -->
+                                                            <a href="#" data-color="{{ var.id }}" style="background-color: gray; display: inline-block; width: 30px; height: 30px; border-radius: 50%; margin: 5px; opacity: {% if var.id == selected_variant_id %}1{% else %}0.5{% endif %}; transition: opacity 0.3s ease-in-out;" onclick="highlightColor(this, {{ var.id }})"></a>
+                                                        {% endif %}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div> {% endcomment %}
+                                        <div class="attr-detail attr-size">
+                                            <strong class="mr-10">Size</strong>
+                                            {% comment %} <ul class="list-filter size-filter font-small">
+                                                <li><a href="#">7</a></li>
+                                                <li class="active"><a href="#">8</a></li>
+                                                <li><a href="#">9</a></li>
+                                                <li><a href="#">10</a></li>
+                                                <li><a href="#">11</a></li>
+                                            </ul> {% endcomment %}
+                                            <ul class="list-filter size-filter font-small">
+                                                {% for attribute in attributes %}
+                                                    <li class="">
+                                                        <a href="{% url 'shop_app:product_detail_attribute' product_id=products.id attribute_value=attribute.attribute_value %}" data-size="{{ attribute }}">{{ attribute }}</a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% comment %} <strong class="mr-10 ms-5">Stock: 
+                                                {% if variants.stock > 0 %} 
+                                                    <span style="color:red">{{ variants.stock }}</span>
+                                                {% else %}
+                                                    <span style="color:red">Out of Stock</span>
+                                                {% endif %}
+                                            </strong> {% endcomment %}
+                                        </div>
+                                        <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                        <div class="detail-extralink">
+                                            {% comment %} <div class="detail-qty border radius">
+                                                <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
+                                                <span class="qty-val">1</span>
+                                                <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+                                            </div> {% endcomment %}
+
+                                            {% comment %} <div class="detail-qty border radius">
+                                                <a href="#" class="qty-down" onclick="changeQuantity('down')"><i class="fi-rs-angle-small-down"></i></a>
+                                                <span class="qty-val" id="quantity">1</span>
+                                                <a href="#" class="qty-up" onclick="changeQuantity('up')"><i class="fi-rs-angle-small-up"></i></a>
+                                            </div> {% endcomment %}
+                                            
+                                            <div class="product-extra-link2">
+                                                {% if variants.stock <= 0 %}
+                                                    <h5 class="text-danger"> Out of Stock</h5>
+                                                {% else %}
+                                                    {% if in_cart %}
+                                                        <a href="{% url 'cart_app:cart_list' %}">
+                                                        {% comment %} <button type="submit" class="button button-add-to-cart " style="white-space: nowrap; text-decoration: none;  padding: 0px 40px;">Added to cart&nbsp;&nbsp;&nbsp;<i class="fas fa-check"></button> {% endcomment %}
+                                                            <button type="submit" class="button button-add-to-cart" style="white-space: nowrap; text-decoration: none; padding: 0px 20px;">Go to cart &nbsp;&nbsp;<i class="fas fa-shopping-cart"></i></button>
+
+                                                        </a>
+                                                        <div class="product_sort_info font-small mt-1 ms-1">Product is already added in cart.</div>
+
+                                                    {% else %}
+                                                        <a href="{% url 'cart_app:add_cart' variant_id=variants.id %}">
+                                                        <button type="submit" class="button button-add-to-cart " style="white-space: nowrap; text-decoration: none;  padding: 0px 40px;">Add to cart &nbsp;&nbsp;<i class="fi-rs-shopping-bag-add"></i></button>
+                                                        </a>
+                                                        <a aria-label="Add To Wishlist" class="action-btn hover-up " href="shop-wishlist.html" style="display: inline-block; text-decoration: none; margin-left: 150px;"><i class="fi-rs-heart"></i></a>
+                                                                                                        
+                                                        {% comment %} <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> {% endcomment %}
+                                                    {% endif %} 
+                                                {% endif %}        
+                                            </div>
+                                        </div>
+                                        {% comment %} <ul class="product-meta font-xs color-grey mt-50">
+                                            <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
+                                            <li class="mb-5">Tags: <a href="#" rel="tag">Cloth</a>, <a href="#" rel="tag">Women</a>, <a href="#" rel="tag">Dress</a> </li>
+                                            <li>Availability:<span class="in-stock text-success ml-5">8 Items In Stock</span></li>
+                                        </ul> {% endcomment %}
                                     </div>
-                                    {% comment %} <ul class="product-meta font-xs color-grey mt-50">
-                                        <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
-                                        <li class="mb-5">Tags: <a href="#" rel="tag">Cloth</a>, <a href="#" rel="tag">Women</a>, <a href="#" rel="tag">Dress</a> </li>
-                                        <li>Availability:<span class="in-stock text-success ml-5">8 Items In Stock</span></li>
-                                    </ul> {% endcomment %}
-                                </div>
-                                <!-- Detail Info -->
+                                    <!-- Detail Info -->
+                                {% comment %} </form> {% endcomment %}
                             </div>
+                            
                         </div>
 
 
-                        {% comment %} <div class="row">
-                            <div class="col-lg-10 m-auto entry-main-content">
-                                <h2 class="section-title style-1 mb-30">Description</h2>
-                                <div class="description mb-50">
-                                    {% comment %} <p>{{product.description}}</p> {% endcomment %}
-
-
-                                    {% comment %} <p>Uninhibited carnally hired played in whimpered dear gorilla koala depending and much yikes off far quetzal goodness and from for grimaced goodness unaccountably and meadowlark near unblushingly crucial scallop
-                                        tightly neurotic hungrily some and dear furiously this apart.</p>
-                                    <p>Spluttered narrowly yikes left moth in yikes bowed this that grizzly much hello on spoon-fed that alas rethought much decently richly and wow against the frequent fluidly at formidable acceptably flapped
-                                        besides and much circa far over the bucolically hey precarious goldfinch mastodon goodness gnashed a jellyfish and one however because.
-                                    </p>
-                                    <ul class="product-more-infor mt-30">
-                                        <li><span>Type Of Packing</span> Bottle</li>
-                                        <li><span>Color</span> Green, Pink, Powder Blue, Purple</li>
-                                        <li><span>Quantity Per Case</span> 100ml</li>
-                                        <li><span>Ethyl Alcohol</span> 70%</li>
-                                        <li><span>Piece In One</span> Carton</li>
-                                    </ul>
-                                    <hr class="wp-block-separator is-style-dots">
-                                    <p>Laconic overheard dear woodchuck wow this outrageously taut beaver hey hello far meadowlark imitatively egregiously hugged that yikes minimally unanimous pouted flirtatiously as beaver beheld above forward
-                                        energetic across this jeepers beneficently cockily less a the raucously that magic upheld far so the this where crud then below after jeez enchanting drunkenly more much wow callously irrespective limpet.</p>
-                                    <h4 class="mt-30">Packaging & Delivery</h4>
-                                    <hr class="wp-block-separator is-style-wide">
-                                    <p>Less lion goodness that euphemistically robin expeditiously bluebird smugly scratched far while thus cackled sheepishly rigid after due one assenting regarding censorious while occasional or this more crane
-                                        went more as this less much amid overhung anathematic because much held one exuberantly sheep goodness so where rat wry well concomitantly.
-                                    </p>
-                                    <p>Scallop or far crud plain remarkably far by thus far iguana lewd precociously and and less rattlesnake contrary caustic wow this near alas and next and pled the yikes articulate about as less cackled dalmatian
-                                        in much less well jeering for the thanks blindly sentimental whimpered less across objectively fanciful grimaced wildly some wow and rose jeepers outgrew lugubrious luridly irrationally attractively
-                                        dachshund.
-                                    </p> 
-                                </div>
-                                
-                                
-                               
-                            </div>
-                        </div> {% endcomment %}
+                        
                         
                         <div class="banner-img banner-big wow fadeIn f-none animated mt-50">
                             <img class="border-radius-10" src="/static/assets_user/imgs/banner/banner-4.png" alt="">
@@ -199,5 +219,37 @@
         </div>
     </section>
 </main>
+
+
+<!-- Add these links to your head section -->
+{% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script> {% endcomment %}
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+{% comment %}   ...  For stock value ...
+<script> 
+    function changeQuantity(action) {
+        var quantityElement = document.getElementById('quantity');
+        var currentQuantity = parseInt(quantityElement.innerHTML);
+
+        // Adjust quantity based on the action
+        if (action === 'up' && currentQuantity < 3) {
+            currentQuantity += 1;
+        } else if (action === 'down' && currentQuantity > 1) {
+            currentQuantity -= 1;
+        }
+
+        // Update the quantity in the HTML
+        quantityElement.innerHTML = currentQuantity;
+    }
+</script>{% endcomment %}
+
+
+
+
+
+
 
 {% endblock %} 

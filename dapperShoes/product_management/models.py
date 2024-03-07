@@ -5,12 +5,12 @@ from PIL import Image
 
 # Create your models here.
 class Brand(models.Model):
-    Brand_name = models.CharField(max_length=29,unique=True)
+    brand_name = models.CharField(max_length=29,unique=True)
     brand_image = models.ImageField(upload_to='brand/',default="")
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.Brand_name
+        return self.brand_name
 
 
 class Product(models.Model):
@@ -33,14 +33,20 @@ class Product(models.Model):
 
 
     def save(self,*args, **kwargs):
-        slug = f"{self.product_brand.Brand_name} {self.category.category_name} {self.product_name} {self.pk}"
+        slug = f"{self.product_brand.brand_name} {self.category.category_name} {self.product_name} {self.pk}"
         self.product_slug = slugify(slug)
         super(Product,self).save(*args, **kwargs)
 
         if not self.is_active:
-            self.product_var.filter(varient_is_active=True).update(varient_is_active=False)
+            Product_variant.objects.filter(product=self, variant_is_active=True).update(variant_is_active=False)
         else:
-            self.product_var.filter(varient_is_active=False).update(varient_is_active=True)
+            Product_variant.objects.filter(product=self, variant_is_active=False).update(variant_is_active=True)
+
+        if self.images:
+            img = Image.open(self.images.path)
+            size = (679,679)
+            img=img.resize(size, Image.BOX)
+            img.save(self.images.path)
 
 
 class Attribute(models.Model):
@@ -51,7 +57,7 @@ class Attribute(models.Model):
         return self.atrribute_name
     
 
-class Attribute_values(models.Model):
+class Attribute_value(models.Model):
     attribute_id = models.ForeignKey(Attribute,on_delete=models.CASCADE,related_name='atribute_value_set')
     attribute_value = models.CharField(max_length=40,unique=True)
     attr_is_active = models.BooleanField(default=True)
@@ -60,37 +66,65 @@ class Attribute_values(models.Model):
         return self.attribute_value
 
 
-class Product_varient(models.Model):
-    product_name = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='product_var')
-    attributes = models.ManyToManyField(Attribute_values,max_length=100,related_name='attributes')
+class Product_variant(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='product_var')
+    attribute = models.ManyToManyField(Attribute_value,max_length=100,related_name='attribute')
     variant_name = models.CharField( blank=True,max_length=200)
     stock = models.IntegerField(default=0)
     max_price = models.DecimalField(max_digits=8, decimal_places=2)
     sale_price = models.DecimalField(max_digits=8, decimal_places=2)
     thumbnail_image = models.ImageField(upload_to='product/product_thumbnail',blank=True)
-    product_variant_slug  = models.SlugField(unique=True,max_length=300,blank=True)
-    varient_is_active = models.BooleanField(default=True)
+    variant_slug  = models.SlugField(unique=True,max_length=300,blank=True)
+    variant_is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     # sku_id = models.CharField(max_length=30,unique=True,default='')
     # description = models.CharField(max_length=200)
     # discount_percentage = models.IntegerField(null=True,blank=True)
-
+    
     def __str__(self):
-        # return f"{self.product_name} {self.product_name.product_brand}"
+        attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attribute.all()])
+        return f"{self.product} {self.product.product_brand} {attribute_values_str}"
+    
+
+    def save(self, *args, **kwargs):
+        if not self.variant_slug:
+            # Generate the initial slug based on the product and brand names
+            slug = f"{self.product.product_brand.brand_name} {self.product.product_name}"
+            base_slug = slugify(slug)
+
+            # Check for existing slugs with the same base
+            counter = 1
+            while Product_variant.objects.filter(variant_slug=base_slug).exists():
+                counter += 1
+                base_slug = f"{slugify(slug)}-{counter}"
+
+            self.variant_slug = base_slug
+        
+        super(Product_variant, self).save(*args, **kwargs)
+      
+
+        if self.thumbnail_image:
+            img = Image.open(self.thumbnail_image.path)
+            size = (679,679)
+            img=img.resize(size, Image.BOX)
+            img.save(self.thumbnail_image.path)
+    
+
+    # def __str__(self):
+    #     return f"{self.product} {self.product.product_brand} {self.attribute.attribute_value}"
 
         # since attributes is a ManyToManyField, you need to loop through the attribute values to create a string representation.
         # attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attributes.all()])
         # return f"{self.product_name} {self.product_name.product_brand} {attribute_values_str}"
 
-        
         # attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attributes.all()])
         # return f"{self.product_name.product_name} {self.product_name.product_brand.Brand_name} {attribute_values_str}"
 
-        attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attributes.all()])
-        product_name_str = f"{self.product_name.product_name} {self.product_name.product_brand.Brand_name}"
-        return f"{product_name_str} {attribute_values_str}"
+        # attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attributes.all()])
+        # product_name_str = f"{self.product_name.product_name} {self.product_name.product_brand.Brand_name}"
+        # return f"{product_name_str} {attribute_values_str}"
     
 
     # def save(self,*args, **kwargs):
@@ -112,34 +146,12 @@ class Product_varient(models.Model):
 
     #     super(Product_varient,self).save(*args, **kwargs)
 
-    def save(self, *args, **kwargs):
-        if not self.product_variant_slug:
-            # Generate the initial slug based on the product and brand names
-            slug = f"{self.product_name.product_brand.Brand_name} {self.product_name.product_name}"
-            base_slug = slugify(slug)
 
-            # Check for existing slugs with the same base
-            counter = 1
-            while Product_varient.objects.filter(product_variant_slug=base_slug).exists():
-                counter += 1
-                base_slug = f"{slugify(slug)}-{counter}"
-
-            self.product_variant_slug = base_slug
-            
-
-        super(Product_varient, self).save(*args, **kwargs)
-      
-
-        if self.thumbnail_image:
-            img = Image.open(self.thumbnail_image.path)
-            size = (679,679)
-            img=img.resize(size, Image.BOX)
-            img.save(self.thumbnail_image.path)
 
 
 class Product_Image(models.Model):
-    product_id = models.ForeignKey(Product_varient, on_delete=models.CASCADE, related_name='product_varient_image')
-    image = models.ImageField(upload_to='product_varient_image/')
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_image')
+    image = models.ImageField(upload_to='product_image/')
 
     def __str__(self):
         return self.image.url

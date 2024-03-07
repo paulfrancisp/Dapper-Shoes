@@ -5,6 +5,6 @@ from .models import *
 admin.site.register(Product)
 admin.site.register(Product_Image)
 admin.site.register(Brand)
-admin.site.register(Product_varient)
+admin.site.register(Product_variant)
 admin.site.register(Attribute)
-admin.site.register(Attribute_values)  
+admin.site.register(Attribute_value)  

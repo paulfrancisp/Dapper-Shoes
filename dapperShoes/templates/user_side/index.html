@@ -180,8 +180,8 @@
                                         <div class="product-cart-wrap mb-30">
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
-                                                    <a href="{% url 'shop_app:product_detail' product_id=product.id %}">
-                                                        <img class="default-img" src="{% if product.images %}{{ product.images.url }}{% endif %}" alt="">
+                                                    <a href="{% url 'shop_app:product_detail' product_id=product.id%}">
+                                                        <img class="default-img" src="{% if product.images %}{{ product.images.url }}{% endif %}" alt="" style="width: 280.4px; height: 182px; ">
                                                         {% comment %} <img class="hover-img" src="{% static 'assets_user/imgs/shop/product-1-2.jpg' %}" alt=""> {% endcomment %}
                                                     </a>
                                                 </div>
@@ -197,20 +197,20 @@
                                             </div>
                                             <div class="product-content-wrap">
                                                 <div class="product-category">
-                                                    <a href="#">{{product.sub_category_id__sub_category_name}}</a>
+                                                    <a href="#">{{product.sub_category}}</a>
                                                 </div>
                                                 <h2><a href="#">{{product.product_name}}</a></h2>
-                                                {% comment %} <div class="rating-result" title="90%">
+                                                <div class="rating-result" title="90%">
                                                     <span>
                                                         <span>90%</span>
                                                     </span>
-                                                </div> {% endcomment %}
+                                                </div> 
                                                 <div class="product-price">
-                                                    <span>{{product.product_price}} </span>
-                                                    {% comment %} <span>{{ product.product_price|add:15 }}</span> {% endcomment %}
+                                                    <span>{{ product.product_var.first.sale_price }} INR</span>
+                                                    <span style="text-decoration: line-through; color: grey; font-size: 90%; margin-left:3px">{{ product.product_var.first.max_price }} INR</span>
                                                 </div>
                                                 <div class="product-action-1 show">
-                                                    <a aria-label="Add To Cart" class="action-btn hover-up" href="#"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                    <a aria-label="View Product" class="action-btn hover-up" href="{% url 'shop_app:product_detail' product_id=product.id%}"><i class="fas fa-search-plus"></i></a>
                                                 </div>
                                             </div>
                                         </div>

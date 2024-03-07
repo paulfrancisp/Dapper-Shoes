@@ -18,6 +18,8 @@
     <link rel="shortcut icon" type="image/x-icon" href="assets_user/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link rel="stylesheet" href="{% static 'assets_user/css/main.css' %}">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
 <body>
@@ -70,7 +72,8 @@
             <div class="container">
                 <div class="header-wrap header-space-between position-relative">
                     <div class="logo logo-width-1">
-                        <a href="index.html"><img src="{% static 'assets_user/imgs/theme/logo.svg' %}" alt="logo"></a>
+                        {% comment %} <a href="index.html"><img src="{% static 'assets_user/imgs/theme/logo.svg' %}" alt="logo"></a> ###Evara logo{% endcomment %}
+                        <h4 class="border border-dark p-2">Dapper Shoes</h4>
                     </div>
                     <div class="main-menu main-menu-grow main-menu-padding-1 main-menu-lh-1 main-menu-mrg-1 hm3-menu-padding d-none d-lg-block hover-boder">
                         <nav>
@@ -169,11 +172,11 @@
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
-                                <a class="mini-cart-icon" href="shop-cart.html">
+                                <a class="mini-cart-icon" href="{% url 'cart_app:cart_list' %}">
                                     <img alt="Evara" src="{% static 'assets_user/imgs/theme/icons/icon-cart.svg' %}">
-                                    <span class="pro-count blue">2</span>
+                                    <span class="pro-count blue">{{cart_count}}</span>
                                 </a>
-                                <div class="cart-dropdown-wrap cart-dropdown-hm2">
+                                {% comment %} <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                     <ul>
                                         <li>
                                             <div class="shopping-cart-img">
@@ -209,7 +212,7 @@
                                             <a href="shop-checkout.html">Checkout</a>
                                         </div>
                                     </div>
-                                </div>
+                                </div> {% endcomment %}
                             </div>
                             <div class="header-action-icon d-block d-lg-none">
                                 <div class="burger-icon">
@@ -228,7 +231,8 @@
         <div class="mobile-header-wrapper-inner">
             <div class="mobile-header-top">
                 <div class="mobile-header-logo">
-                    <a href="index.html"><img src="{% static 'assets_user/imgs/theme/logo.svg' %}" alt="logo"></a>
+                    {% comment %} <a href="index.html"><img src="{% static 'assets_user/imgs/theme/logo.svg' %}" alt="logo"></a> {% endcomment %}
+                    <h4 class="border border-dark p-2">Dapper Shoes</h4>
                 </div>
                 <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
                     <button class="close-style search-close">
@@ -408,7 +412,8 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="widget-about font-md mb-md-5 mb-lg-0">
                         <div class="logo logo-width-1 wow fadeIn animated">
-                            <a href="index.html"><img src="{% static 'assets_user/imgs/theme/logo.svg' %}" alt="logo"></a>
+                            {% comment %} <a href="index.html"><img src="{% static 'assets_user/imgs/theme/logo.svg' %}" alt="logo"></a> {% endcomment %}
+                            <h4 class=" p-2" style="margin-left:-10px;">Dapper Shoes</h4>
                         </div>
                         <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
                         <p class="wow fadeIn animated">
@@ -488,7 +493,7 @@
     </div>
 </footer>
 <!-- Preloader Start -->
-<div id="preloader-active">
+{% comment %} <div id="preloader-active">
     <div class="preloader d-flex align-items-center justify-content-center">
         <div class="preloader-inner position-relative">
             <div class="text-center">
@@ -501,7 +506,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> {% endcomment %}
 <!-- Vendor JS-->
 <script src="{% static 'assets_user/js/vendor/modernizr-3.6.0.min.js' %}"></script>
 <script src="{% static 'assets_user/js/vendor/jquery-3.6.0.min.js' %}"></script>
@@ -524,6 +529,7 @@
 <script src="{% static 'assets_user/js/plugins/jquery.theia.sticky.js' %}"></script>
 <!-- Template  JS -->
 <script src="{% static 'assets_user/js/main.js' %}"></script>
+
 </body>
 
 
