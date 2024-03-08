@@ -71,7 +71,7 @@ def cart_list(request, total=0, quantity=0, cart_items=None):
     context={
         'total': total,
         'quantity' : quantity,
-        # 'cart_items' : cart_items
+        'cart_items' : cart_items
     }
     return render(request, 'user_side/shop-cart.html', context)
 
