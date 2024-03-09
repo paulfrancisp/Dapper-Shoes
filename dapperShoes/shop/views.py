@@ -47,7 +47,8 @@ def product_detail(request,product_id):
     variants = Product_variant.objects.filter(product_id=products.id).first()
     attributes = Attribute_value.objects.all()
     # print(variants)
-    in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request),variant=variants) #Give a True or False value, if True won't show add to cart else it will show.
+    # in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request),variant=variants) #Give a True or False value, if True won't show add to cart else it will show.
+    in_cart = CartItem.objects.filter(cart=_cart_id(request),variant=variants) #Give a True or False value, if True won't show add to cart else it will show.
             
     context = {
         # 'categories' : category,
@@ -68,7 +69,7 @@ def product_detail_attribute(request,product_id,attribute_value):
     products = Product.objects.get(id=product_id)
     images = Product_Image.objects.filter(product_id_id=product_id)
     attributes = Attribute_value.objects.all()
-    in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request),variant=variants).exists()  #Give a True or False value, if True won't show add to cart else it will show.
+    in_cart = CartItem.objects.filter(cart=_cart_id(request),variant=variants).exists()  #Give a True or False value, if True won't show add to cart else it will show.
 
     # print(variants)
     # print(product_id)

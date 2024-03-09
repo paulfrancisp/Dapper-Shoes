@@ -124,9 +124,11 @@ def user_login(request):
                 # try:
                 #     cart=Cart.objects.get(cart_id=_cart_id(request))  
                 #     is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                #     print(is_cart_item_exists)
 
                 #     if  is_cart_item_exists:
-                #         cart_item -= CartItem.objects.filter(cart=cart)
+                #         cart_item = CartItem.objects.filter(cart=cart)
+                #         print(cart_item)
 
                 #         for item in cart_item:
                 #             item.user = user

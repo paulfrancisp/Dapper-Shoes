@@ -8,12 +8,24 @@ from django.contrib.auth.models import User
 
 
 # Create your views here.
+# def _cart_id(request):
+#     cart = request.session.session_key
+#     print("already exit cart id: ",cart)
+#     if not cart:
+#         cart = request.session.create()
+#         print("created cart Id: ",cart)
+#     return cart
+
 def _cart_id(request):
-    cart = request.session.session_key
-    print("already exit cart id: ",cart)
-    if not cart:
-        cart = request.session.create()
-        print("created cart Id: ",cart)
+    current_user = request.user
+
+    # Check if the user is authenticated
+    try:
+        cart= Cart.objects.get(user=current_user)
+    except Cart.DoesNotExist:
+        # For anonymous users, use some other logic to identify the cart (if needed)
+        cart= Cart.objects.create(user=current_user)
+
     return cart
 
 @login_required(login_url='user_app:user_login')
@@ -21,15 +33,18 @@ def add_cart(request, variant_id):
     current_user = request.user
     variant = Product_variant.objects.get(id=variant_id)
     try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart= Cart.objects.get(user=current_user)
     except Cart.DoesNotExist:
-        cart = Cart.objects.create(
-            cart_id=_cart_id(request),
-        )
-    cart.save()
+        # For anonymous users, use some other logic to identify the cart (if needed)
+        cart= Cart.objects.create(user=current_user)
+    # try:
+    #     cart = Cart.objects.get(id=_cart_id(request))
+    # except Cart.DoesNotExist:
+    #    pass
+    # cart.save()
 
     try:
-        cart_item = CartItem.objects.get(variant=variant , cart=cart,user = current_user)
+        cart_item = CartItem.objects.get(variant=variant , cart=cart) #,user = current_user
         cart_item.quantity +=1
         cart_item.save()
     except CartItem.DoesNotExist:
@@ -37,7 +52,7 @@ def add_cart(request, variant_id):
             variant=variant,
             cart=cart,
             quantity = 1,
-            user = current_user
+            # user = current_user
         )
         cart_item.save()
     # return HttpResponse(cart_item.quantity)
@@ -48,24 +63,23 @@ def add_cart(request, variant_id):
 
 
 def cart_list(request, total=0, quantity=0, cart_items=None):
+
     current_user = request.user
     try:
-        # if request.user.is_authenticated:
-            # cart_items = CartItem.objects.filter(user=request.user, is_active=True)
-        # else:
-        print("cart_listssssssssssssssssssssssssssssssssss1")
+        cart= Cart.objects.get(user=current_user)
+    except Cart.DoesNotExist:
+        # For anonymous users, use some other logic to identify the cart (if needed)
+        cart= Cart.objects.create(user=current_user)
 
-        cart=Cart.objects.get(cart_id=_cart_id(request))
-        print("cart_listssssssssssssssssssssssssssssssssss2")
-
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True,user = current_user)
+    # current_user = request.user
+    try:
+       
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
         for cart_item in cart_items:
             total += (cart_item.variant.sale_price * cart_item.quantity)
             quantity += cart_item.quantity
 
-        print("cart_listssssssssssssssssssssssssssssssssss")
     except :
-        print("eXceptionnnnnnnnnnnnnnnnnnnnnn")
         pass
 
     context={
@@ -76,7 +90,13 @@ def cart_list(request, total=0, quantity=0, cart_items=None):
     return render(request, 'user_side/shop-cart.html', context)
 
 def remove_cart(request, variant_id):
-    cart = Cart.objects.get(cart_id=_cart_id(request))
+
+    current_user = request.user
+    try:
+        cart= Cart.objects.get(user=current_user)
+    except Cart.DoesNotExist:
+        # For anonymous users, use some other logic to identify the cart (if needed)
+        cart= Cart.objects.create(user=current_user)
     variant = get_object_or_404(Product_variant, id=variant_id)
     cart_item = CartItem.objects.get(variant=variant, cart=cart)
     if cart_item.quantity>1:
@@ -87,7 +107,13 @@ def remove_cart(request, variant_id):
     return redirect('cart_app:cart_list')
 
 def remove_cart_item(request, variant_id):
-    cart = Cart.objects.get(cart_id=_cart_id(request))
+    current_user = request.user
+    try:
+        cart= Cart.objects.get(user=current_user)
+    except Cart.DoesNotExist:
+        # For anonymous users, use some other logic to identify the cart (if needed)
+        cart= Cart.objects.create(user=current_user)
+
     variant = get_object_or_404(Product_variant, id=variant_id)
     cart_item = CartItem.objects.get(variant=variant, cart=cart)
     cart_item.delete()
@@ -96,8 +122,13 @@ def remove_cart_item(request, variant_id):
 
 
 def checkout(request, total=0, quantity=0, cart_items=None):
+    current_user = request.user
     try:
-        cart=Cart.objects.get(cart_id=_cart_id(request))
+        cart= Cart.objects.get(user=current_user)
+    except Cart.DoesNotExist:
+        # For anonymous users, use some other logic to identify the cart (if needed)
+        cart= Cart.objects.create(user=current_user)
+    try:
         cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
             total += (cart_item.variant.sale_price * cart_item.quantity)
