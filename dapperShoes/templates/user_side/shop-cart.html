@@ -7,12 +7,19 @@
     <main class="main">
         <section class="mt-50 mb-50">
             <div class="container">
-                {% if not cart_items %}
-                    <h2 class="text-center">Your Cart is Empty!</h2>
-                    <br>
-                    <div class="text-center">
-                        <a href="{% url 'shop_app:index'  %}" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                {% if not request.user.is_authenticated %}
+                        <h2 class="text-center">Please Login to visit the cart</h2>
+                        <br>
+                        <div class="text-center">
+                            <a href="{% url 'shop_app:index'  %}" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
                 {% else %}
+                    {% if cart_items|length < 1 %}
+                        <h2 class="text-center">Your Cart is Empty!</h2>
+                        <br>
+                        <div class="text-center">
+                            <a href="{% url 'shop_app:index'  %}" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                    {% else %}
+                
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="table-responsive">
@@ -116,6 +123,7 @@
 
                         </div>
                     </div>
+                {% endif %}
                 {% endif %}
             </div>
         </section>

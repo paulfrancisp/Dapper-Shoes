@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib import messages
 
 
 # Create your views here.
@@ -25,8 +26,7 @@ def _cart_id(request):
     except Cart.DoesNotExist:
         # For anonymous users, use some other logic to identify the cart (if needed)
         cart= Cart.objects.create(user=current_user)
-
-    return cart
+    return cart 
 
 @login_required(login_url='user_app:user_login')
 def add_cart(request, variant_id):
@@ -65,32 +65,32 @@ def add_cart(request, variant_id):
 def cart_list(request, total=0, quantity=0, cart_items=None):
 
     current_user = request.user
-    try:
-        cart= Cart.objects.get(user=current_user)
-    except Cart.DoesNotExist:
-        # For anonymous users, use some other logic to identify the cart (if needed)
-        cart= Cart.objects.create(user=current_user)
+    if current_user.is_authenticated:
+        try:
+            cart= Cart.objects.get(user=current_user)
+        except Cart.DoesNotExist:
+            # For anonymous users, use some other logic to identify the cart (if needed)
+            cart= Cart.objects.create(user=current_user)
 
-    # current_user = request.user
-    try:
-       
+
+        
         cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
         for cart_item in cart_items:
             total += (cart_item.variant.sale_price * cart_item.quantity)
             quantity += cart_item.quantity
 
-    except :
-        pass
-
-    context={
-        'total': total,
-        'quantity' : quantity,
-        'cart_items' : cart_items
-    }
+        context={
+            'total': total,
+            'quantity' : quantity,
+            'cart_items' : cart_items
+        }
+    else:
+        context = {}
+    
     return render(request, 'user_side/shop-cart.html', context)
 
-def remove_cart(request, variant_id):
 
+def remove_cart(request, variant_id):
     current_user = request.user
     try:
         cart= Cart.objects.get(user=current_user)
@@ -105,6 +105,7 @@ def remove_cart(request, variant_id):
     else:
         cart_item.delete()
     return redirect('cart_app:cart_list')
+
 
 def remove_cart_item(request, variant_id):
     current_user = request.user

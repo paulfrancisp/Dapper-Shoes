@@ -22,7 +22,7 @@
                     {% comment %} {% for product in products %} {% endcomment %}
                     <div class="product-detail accordion-detail">
                         <div class="row mb-50">
-                            <div class="col-md-6 col-sm-12 col-xs-12">
+                            <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
                                 <div class="detail-gallery">
                                     <span class="zoom-icon"><i class="fi-rs-search"></i></span>
                                     
@@ -31,7 +31,7 @@
                                         <div class="carousel-inner ">
                                             {% for image in images %}
                                                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                                    <img src="{{ image.image.url }}" alt="product image">
+                                                    <img style="width:400px" src="{{ image.image.url }}" alt="product image">
                                                 </div>
                                             {% endfor %}
                                         </div>

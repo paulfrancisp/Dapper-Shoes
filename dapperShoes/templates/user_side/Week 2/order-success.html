@@ -1,0 +1,94 @@
+{% extends "user_side/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="card" style="border: none;">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success fa-3x mr-3"></i>
+                            <h3 class="card-title" style="display: flex; align-items: center; height: 100px; margin: 0;">&nbsp;&nbsp;&nbsp;Order Placed Successfully!</h3>
+                        </div>
+                        <p class="mb-4">Your order has been successfully placed. Thank you for shopping with us!</p>
+                        <h5>Order Details:</h5>
+                        <div class="list-group mb-4">
+                            {% for item in order_product %}
+                                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ item.product_variant }}</h5>
+                                        <span class="badge badge-primary badge-pill">Quantity: {{ item.quantity }}</span>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="mr-3">
+                                            <img src="{{ item.images.url }}" alt="{{ item.product_variant }}" style="max-height: 80px;">
+                                        </div>
+                                        <div>
+                                            <p class="mb-1">Qty: {{ item.quantity }}</p>
+                                            <p class="mb-1">Grand Total: ₹{{ item.grand_totol }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <p><strong>Total Price:</strong> ₹{{ total_with_orginal_price }}</p>
+                        <p><strong>Discount:</strong> ₹{{ discount }}</p>
+                        <p class="text-success"><strong>Order Total: ₹{{ grand_total }}</strong></p>
+                    </div>
+                </div>
+            </div>
+            <aside class="col-lg-3 mt-20">
+                <div class="">
+                    <div class="card-body order_review  rounded ">
+                        {% comment %} <h5 class="card-title text-primary mb-4">Order Summary</h5> {% endcomment %}
+                        <div class="mb-20">
+                            <h4>Order Summary</h4>
+                        </div>
+                        {% comment %} <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span>Total price:</span>
+                            <span class="text-dark font-weight-bold">₹{{ total_with_orginal_price }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span>Discount:</span>
+                            <span class="text-danger font-weight-bold">- ₹{{ discount }}</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="font-weight-bold">Total:</h5>
+                            <h5 class="text-dark font-weight-bold">₹{{ grand_total }}</h5>
+                        </div> {% endcomment %}
+
+
+                        <div class="table-responsive ">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td class="cart_total_label">Total price</td>
+                                        <td class="cart_total_amount"><span class="font-lg fw-900 text-brand">{{total}} INR</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="cart_total_label">Shipping</td>
+                                        <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="cart_total_label">Total</td>
+                                        <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-brand">{{total}} INR</span></strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        {% comment %} <hr> {% endcomment %}
+                    </div>
+                </div>
+            </aside>
+            
+        </div>
+    </div>
+</section>
+
+{% endblock %}

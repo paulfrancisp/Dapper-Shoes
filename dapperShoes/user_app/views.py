@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.core.mail import send_mail
 import random 
 from django.http import HttpResponse
+from django.db.models import Q
+from django.contrib.auth.hashers import make_password
 # from cart.models import *
 # from cart.views import _cart_id
 
@@ -96,16 +98,27 @@ def user_otp_verification(request):
         otp_entered = request.POST.get('otp_entered')
         otp_session =request.session.get('otp_session')
 
-        if str(otp_entered) == str(otp_session):
+        # Check if the username already exists
+        existing_user = User.objects.filter(username=uname).first()
+        if existing_user:
+            # User exists, update the password
+            existing_user.password = make_password(passw)
+            existing_user.save()
+            return redirect('user_app:user_login')
+
+        elif str(otp_entered) == str(otp_session):
             customer = User.objects.create_user(username = uname, email = email_session, password = passw )
             customer.save()
             customer = authenticate(request, username = uname, password=passw)     #authenticate(email = email_session, password=passw)
             if customer is not None:
                 login(request,customer)
                 return redirect('shop_app:index')
+            
         else:
             messages.error(request,'Invalid OTP. Please enter again.')
             return redirect('user_app:user_otp_verification') 
+        
+        
     return render(request,'user_side/otp.html',{'email': email_session})
     
 
@@ -147,10 +160,19 @@ def user_login(request):
 
 @never_cache
 def forgot_password(request):
-    # if request.method=='POST':
-    #     email = request.POST.get("email")
-    #     request.session['email'] = email
-    #     return redirect('user_app:user_send_otp')        
+    if request.method=='POST':
+        email = request.POST.get("email")
+        uname = request.POST.get("username")
+        passw = request.POST.get("new_password")
+        
+        request.session['username'] = uname
+        request.session['password'] = passw
+        request.session['email_session'] = email
+
+        if User.objects.filter(Q(email=email) | Q(username=uname)).exists() :
+            return redirect('user_app:user_send_otp')
+        else:
+            messages.warning(request,"Email not found!!")       
     return render(request,'user_side/forgot_password.html')
 
 
