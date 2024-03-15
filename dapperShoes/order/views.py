@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from .models import *
 from cart.models import *
+from product_management.models import *
 from django.contrib import messages
+from .forms import OrderForm
 
 # Create your views here.
-def place_order_cod(request):
+def place_order_cod(request, total=0, quantity=0):
     
     # user_id = request.user.id
 
@@ -107,4 +109,110 @@ def place_order_cod(request):
     #             'discount':discount,
     #             }
 
-    return render(request,'user_side/Week 2/order-success.html') #,context
+
+    current_user = request.user
+
+    #If cart count <= 0 then redirect to home page.
+    # cart = Cart.objects.filter(user=current_user)
+    # cart_count = cart.count()
+    # if  cart_count <= 0:
+    #     redirect(request,'shop_app:home')
+
+    cart = Cart.objects.filter(user=current_user).first()
+    if not cart:
+        return redirect('shop_app:home')
+    
+    cart_items = cart.cartitem_set.all()
+    for cart_item in cart_items:
+        total += cart_item.variant.sale_price * cart_item.quantity
+        quantity += cart_item.quantity
+
+    # cart_items = CartItem.objects.filter(cart=cart)  #if any issue comes here use get() instead of filter here or in above orm query or add this query above cart= Cart.objects.get(user=current_user)
+    # for cart_item in cart_items:
+    #     total += (cart_item.variant.sale_price * cart_item.quantity)
+    #     quantity += cart_item.quantity
+    
+    print('Outside if method POST')
+    print('Request Method:', request.method)
+
+    if request.method == 'POST':
+        print('Inside if method POST')
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            print('FORM is valid')
+            #Store all billing info inside order table
+            data = Order()
+            data.user = current_user
+            data.first_name = form.cleaned_data['first_name']
+            data.last_name = form.cleaned_data['last_name']
+            data.phone_number = form.cleaned_data['phone_number']
+            data.email = form.cleaned_data['email']
+            data.town_city = form.cleaned_data['town_city']
+            data.address = form.cleaned_data['address']
+            data.state = form.cleaned_data['state']
+            # data.country_region = form.cleaned_data['country_region']
+            data.zip_code = form.cleaned_data['zip_code']
+            data.order_total = total
+            data.ip = request.META.get('REMOTE_ADDR')
+            order_number = data.generate_order_number()
+            data.order_number = order_number
+            data.save()
+
+            order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+
+            # Get necessary instances
+            payment_methods_instance = PaymentMethod.objects.get(method_name="CASH ON DELIVERY")
+            print(payment_methods_instance)
+            # Create Payment instance
+            payment = Payment.objects.create(user=current_user,amount_paid=0,payment_status='PENDING',payment_method=payment_methods_instance)
+            # print(payment)
+
+            # Saving the payment and is_ordered values in Order table.
+            order.payment = payment   #### ISSUE here
+            order.is_ordered = True
+            order.save()
+
+
+            #Moving cart item to OrderProduct table.
+            cart_items = cart.cartitem_set.all()
+            for cart_item in cart_items:
+                orderproduct = OrderProduct()
+                orderproduct.order_id = order.id
+                # orderproduct.payment = payment
+                orderproduct.user_id = request.user.id
+                orderproduct.variant_id = cart_item.variant.id
+                orderproduct.product_variant = cart_item.variant.variant_name
+                orderproduct.images = cart_item.variant.thumbnail_image
+                orderproduct.quantity = cart_item.quantity
+                orderproduct.product_price = cart_item.variant.sale_price
+                orderproduct.ordered = True
+                orderproduct.save()
+
+
+                #Reduce quantity of sold products
+                variant = Product_variant.objects.get(id=cart_item.variant.id)
+                variantt = Product_variant.objects.filter(id=cart_item.variant.id)
+                print(variant)
+                print(variantt)
+                variant.stock -= cart_item.quantity
+                variant.save()
+
+            #Clearing the cart
+            cart.cartitem_set.all().delete()    
+
+            context = {
+                'order':order,
+                'cart_items':cart_items,
+                'total':total,
+                'payment' : payment,
+            }
+
+            return render(request,'user_side/Week 2/order-success.html',context)
+        else:
+            # If form is not valid, you may want to render the form again with errors
+            print('FORM is Invalid')
+            print(form.errors)
+            return render(request, 'user_side/shop-checkout.html')  #, {'form': form}
+    else:
+        # If request method is not POST, redirect to the checkout page
+        return redirect('cart_app:checkout')

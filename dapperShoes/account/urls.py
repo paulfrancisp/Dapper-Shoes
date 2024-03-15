@@ -4,8 +4,10 @@ from . import views
 app_name = 'account_app'
 urlpatterns = [
     path('account',views.account,name='account'),
-    
-    
+
+    path('account-my-orders',views.account_my_orders,name='account_my_orders'),
+    path('account-edit-profile',views.account_edit_profile,name='account_edit_profile'),
+    path('account-change-password',views.account_change_password,name='account_change_password'),
     
 #     path('',views.account,name='account'),
 #     path('address/<int:id>',views.address,name='address'),

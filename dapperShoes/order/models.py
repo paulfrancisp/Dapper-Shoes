@@ -19,14 +19,14 @@ class Payment(models.Model):
         )
     
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
-    payment_method  = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, blank=True)
     payment_id = models.CharField(max_length=100,null=True,blank=True)
-    payment_order_id = models.CharField(max_length=100,null=True,blank=True)
+    payment_method  = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, blank=True)
+    # payment_order_id = models.CharField(max_length=100,null=True,blank=True)
     amount_paid = models.CharField(max_length=30)
     payment_status =    models.CharField(choices = PAYMENT_STATUS_CHOICES,max_length=20)
     is_paid = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    payment_signature   = models.CharField(max_length=100, null=True, blank=True)
+    # payment_signature   = models.CharField(max_length=100, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         # Check if payment status is 'SUCCESS'
@@ -36,8 +36,9 @@ class Payment(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return str(self.payment_id)
-    
+        # return str(self.payment_id)
+        # f"{str(self.user)}  {self.payment_method}"
+        return str(self.user)
 
 
 class Order(models.Model):
@@ -52,14 +53,23 @@ class Order(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     payment = models.OneToOneField(Payment,on_delete=models.SET_NULL,null=True,blank=True,related_name='order')
     order_number = models.CharField(max_length=100,null=True)
-    shipping_address = models.TextField()
+    # shipping_address = models.TextField()
+    first_name      = models.CharField(max_length=50,default='')
+    last_name       = models.CharField(max_length=50,default='')
+    phone_number    = models.CharField(max_length=50,default='')
+    email           = models.EmailField(max_length=50,default='')
+    town_city       = models.CharField(max_length=100,default='')
+    address         = models.CharField(max_length=255,default='')
+    state           = models.CharField(max_length=50,default='')
+    # country_region  = models.CharField(max_length=50,default='')
+    zip_code        = models.CharField(max_length=20,default='')
     # coupon_code = models.ForeignKey(Coupon,on_delete=models.SET_NULL,null=True,blank=True)
     # additional_discount = models.IntegerField(default=0,null=True)
     # wallet_discount = models.IntegerField(default=0,null=True)
     # order_note = models.CharField(max_length=100,blank=True,null=True)
     order_total = models.DecimalField(max_digits=12, decimal_places=2)
     order_status= models.CharField(choices = ORDER_STATUS_CHOICES,max_length=20,default='New')
-    # ip = models.CharField(max_length=50,blank=True)
+    ip = models.CharField(max_length=50,blank=True)
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -106,10 +116,10 @@ class OrderProduct(models.Model):
     order           = models.ForeignKey(Order,on_delete=models.CASCADE, related_name='order_product')
     user            = models.ForeignKey(User,on_delete=models.SET_NULL,null=True, related_name='user')
     product_variant = models.CharField(max_length=255, null=True)
-    product_id      = models.CharField(max_length=25, null=True)
+    variant_id      = models.CharField(max_length=25, null=True)
     quantity        = models.IntegerField()
     product_price   = models.DecimalField(max_digits=12, decimal_places=2)
-    grand_totol     = models.DecimalField(max_digits=12, decimal_places=2,null=True)
+    total           = models.DecimalField(max_digits=12, decimal_places=2,null=True)
     images          = models.ImageField(upload_to='media/order/images')
     ordered         = models.BooleanField(default=False)
     created_at      = models.DateTimeField(auto_now_add=True)
@@ -118,7 +128,7 @@ class OrderProduct(models.Model):
 
     
     def save(self, *args, **kwargs):
-        self.grand_totol=self.product_price*self.quantity
+        self.total=self.product_price*self.quantity
    
         super().save(*args, **kwargs)
 

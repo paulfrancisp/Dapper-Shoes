@@ -74,17 +74,17 @@
                         <div class="mb-25">
                             <h4>Billing Details</h4>
                         </div>
-                        <form action="" method="post">
+                        <form action="{% url 'order_app:place_order_cod' %}" method="POST">           {% comment %} {% url 'order_app:place_order_cod' %} {% endcomment %}
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <input type="text" required="" name="fname" placeholder="First name *">
+                                        <input type="text" required="" name="first_name" placeholder="First name *">
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <input type="text" required="" name="lname" placeholder="Last name *">
+                                        <input type="text" required="" name="last_name" placeholder="Last name *">
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
                                 <input required="" type="text" name="cname" placeholder="Company Name">
                             </div> {% endcomment %}
                             <div class="form-group">
-                                <input type="text" name="billing_address" required="" placeholder="Address *">
+                                <input type="text" name="address" required="" placeholder="Address *">
                             </div>
                             {% comment %} <div class="form-group">
                                 <input type="text" name="billing_address2" required="" placeholder="Address line2">
@@ -102,12 +102,12 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <input required="" type="text" name="city" placeholder="City / Town *">
+                                        <input required="" type="text" name="town_city" placeholder="City / Town *">
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <input required="" type="text" name="state" placeholder="State / County *">
+                                        <input required="" type="text" name="state" placeholder="State *">
                                     </div>
                                 </div>
                             </div>
@@ -115,12 +115,12 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <input required="" type="text" name="zipcode" placeholder="Postcode / ZIP *">
+                                        <input required="" type="text" name="zip_code" placeholder="Postcode / ZIP *">
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <input required="" type="text" name="phone" placeholder="Phone *">
+                                        <input required="" type="text" name="phone_number" placeholder="Phone *">
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +139,12 @@
                             <div id="collapsePassword" class="form-group create-account collapse in">
                                 <input required="" type="password" placeholder="Password" name="password">
                             </div> {% endcomment %}
-                            <div class="ship_detail">
+
+
+
+
+
+                            {% comment %}<div class="ship_detail">
                                 <div class="form-group">
                                     <div class="chek-form">
                                         <div class="custome-checkbox">
@@ -152,12 +157,12 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
-                                                <input type="text" required="" name="fname" placeholder="First name *">
+                                                <input type="text" required="" name="first_name" placeholder="First name *">
                                             </div>
                                         </div>
                                         <div class="col">
                                             <div class="form-group">
-                                                <input type="text" required="" name="lname" placeholder="Last name *">
+                                                <input type="text" required="" name="last_name" placeholder="Last name *">
                                             </div>
                                         </div>
                                     </div>
@@ -165,17 +170,17 @@
                                     
                                     {% comment %} <div class="form-group">
                                         <input required="" type="text" name="cname" placeholder="Company Name">
-                                    </div> {% endcomment %}
+                                    </div> {% endcomment %}{% comment %}
                                     <div class="form-group">
-                                        <input type="text" name="billing_address" required="" placeholder="Address *">
+                                        <input type="text" name="address" required="" placeholder="Address *">
                                     </div>
                                     {% comment %} <div class="form-group">
                                         <input type="text" name="billing_address2" required="" placeholder="Address line2">
-                                    </div> {% endcomment %}
+                                    </div> {% endcomment %}{% comment %}
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
-                                                <input required="" type="text" name="city" placeholder="City / Town *">
+                                                <input required="" type="text" name="town_city" placeholder="City / Town *">
                                             </div>
                                         </div>
                                         <div class="col">
@@ -188,12 +193,12 @@
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">
-                                                <input required="" type="text" name="zipcode" placeholder="Postcode / ZIP *">
+                                                <input required="" type="text" name="zip_code" placeholder="Postcode / ZIP *">
                                             </div>
                                         </div>
                                         <div class="col">
                                             <div class="form-group">
-                                                <input required="" type="text" name="phone" placeholder="Phone *">
+                                                <input required="" type="text" name="phone_number" placeholder="Phone *">
                                             </div>
                                         </div>
                                     </div>
@@ -203,13 +208,56 @@
                                     </div>
                                 </div>
                             </div>
+
+
+
+
+
+                            
                             {% comment %} <div class="mb-20">
                                 <h5>Additional information</h5>
                             </div>
                             <div class="form-group mb-30">
                                 <textarea rows="5" placeholder="Order notes"></textarea>
                             </div> {% endcomment %}
-                        {% comment %} </form>  ###### Closing this FORM at the bottom ###### {% endcomment %}
+                            <hr>
+                            <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                            <div class="payment_method">
+                                <div class="mb-25">
+                                    <h4>Payment</h4>
+                                </div>
+                                <div class="payment_option">
+                                    {% comment %} <div class="custome-radio">
+                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios3" checked="">
+                                        <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer" aria-controls="bankTranfer">Direct Bank Transfer</label>
+                                        <div class="form-group collapse in" id="bankTranfer">
+                                            <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration. </p>
+                                        </div>
+                                    </div> 
+                                    <div class="custome-radio">
+                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios4" checked="">
+                                        <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#razorpay" aria-controls="checkPayment">Razorpay</label>
+                                        <div class="form-group collapse in" id="checkPayment">
+                                            <p class="text-muted mt-5">Please send your cheque to Store Name, Store Street, Store Town, Store State / County, Store Postcode. </p>
+                                        </div> 
+                                    </div>{% endcomment %}
+                                    <div class="custome-radio">
+                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5" checked="">
+                                        <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#cash_on_delivery" aria-controls="cash_on_delivery">Cash on delivery</label>
+                                        {% comment %} <div class="form-group collapse in" id="paypal">
+                                            <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
+                                        </div> {% endcomment %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% comment %} <a href="#" class="btn btn-fill-out btn-block mt-30">Place Order</a> {% endcomment %}
+                            {% comment %} <a href="{% url 'order_app:place_order_cod' %}"> {% endcomment %}
+                            
+                            {% comment %} {{ form.as_p }} {% endcomment %}
+                            <button type="submit" name="submit" class="btn btn-fill-out btn-block mt-30">Place Order</button>
+                            {% comment %} </a> {% endcomment %}
+
+                        </form>  {% comment %} ###### Closing this FORM at the bottom ###### {% endcomment %}
                     </div>
                     <div class="col-md-6">
                         <div class="order_review" style="margin-top:-25px">
@@ -220,7 +268,8 @@
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th colspan="2">Product</th>
+                                            <th>Product Image</th>
+                                            <th>Product</th>
                                             <th>Total</th>
                                         </tr>
                                     </thead>
@@ -255,39 +304,10 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                            <div class="payment_method">
-                                <div class="mb-25">
-                                    <h5>Payment</h5>
-                                </div>
-                                <div class="payment_option">
-                                    <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios3" checked="">
-                                        <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer" aria-controls="bankTranfer">Direct Bank Transfer</label>
-                                        <div class="form-group collapse in" id="bankTranfer">
-                                            <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration. </p>
-                                        </div>
-                                    </div>
-                                    <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios4" checked="">
-                                        <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#checkPayment" aria-controls="checkPayment">Check Payment</label>
-                                        <div class="form-group collapse in" id="checkPayment">
-                                            <p class="text-muted mt-5">Please send your cheque to Store Name, Store Street, Store Town, Store State / County, Store Postcode. </p>
-                                        </div>
-                                    </div>
-                                    <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5" checked="">
-                                        <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#paypal" aria-controls="paypal">Paypal</label>
-                                        <div class="form-group collapse in" id="paypal">
-                                            <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% comment %} <a href="#" class="btn btn-fill-out btn-block mt-30">Place Order</a> {% endcomment %}
-                            <buton type="submit" name="submit" class="btn btn-fill-out btn-block mt-30">Place Order</buton>
+                            
+                            
                         </div>
-                    </form>
+                     {% comment %} </form> {% endcomment %}
 
 
                     

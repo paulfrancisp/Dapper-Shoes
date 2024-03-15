@@ -7,16 +7,39 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-9">
-                <div class="card" style="border: none;">
+                <div class="card mb-20" style="border: none;">
                     <div class="card-body">
-                        <div class="d-flex align-items-center">
+                        {% comment %} <div class="d-flex align-items-center">
                             <i class="fas fa-check-circle text-success fa-3x mr-3"></i>
                             <h3 class="card-title" style="display: flex; align-items: center; height: 100px; margin: 0;">&nbsp;&nbsp;&nbsp;Order Placed Successfully!</h3>
                         </div>
-                        <p class="mb-4">Your order has been successfully placed. Thank you for shopping with us!</p>
-                        <h5>Order Details:</h5>
-                        <div class="list-group mb-4">
-                            {% for item in order_product %}
+                        <p class="mb-4">Your order has been successfully placed. Thank you for shopping with us!</p> {% endcomment %}
+
+                        <div class="alert alert-success d-flex align-items-center " role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle text-success fa-3x mr-3"></i>
+                                {% comment %} <h3 class="card-title mb-0">Order Placed Successfully!</h3> {% endcomment %}
+                            </div>
+                            <div>
+                                <h3 class="card-title mt-15" style="display: flex; align-items: center; height: 60px; margin: 0;">&nbsp&nbspOrder Placed Successfully!</h3>
+                                <p class="mt -0 mb-0 " style="margin-top:-10px; ">&nbsp&nbsp&nbsp&nbsp&nbspYour order has been successfully placed. Thank you for shopping with us!</p>
+                            </div>
+                        </div>
+                        
+
+                        <h4 class="mt-40">Billing Address:</h4>
+                        <div class="card-body list-group mb-4">
+                            <p class="card-text mb-0">{{order.first_name}} {{order.last_name}}</p>
+                            <p class="card-text mb-0">{{order.address}}</p>    
+                            <p class="card-text mb-0">{{order.town_city}}, {{order.state}}</p>  
+                            <p class="card-text mb-0">{{order.email}}</p> 
+                            <p class="card-text mb-0">{{order.phone_number}}</p> 
+                            
+                        </div>
+
+                        <h4 class="mb-15">Order Details:</h4>
+                        {% comment %} <div class="list-group mb-4">
+                            {% for item in order %}
                                 <div class="list-group-item list-group-item-action flex-column align-items-start">
                                     <div class="d-flex w-100 justify-content-between">
                                         <h5 class="mb-1">{{ item.product_variant }}</h5>
@@ -33,10 +56,35 @@
                                     </div>
                                 </div>
                             {% endfor %}
+                        </div> {% endcomment %}
+                        <div class="table-responsive order_table text-center">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product Image</th>
+                                        <th>Product</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for cart_item in cart_items %}
+                                        <tr>
+                                            <td class="image product-thumbnail "><img src="{{ cart_item.variant.thumbnail_image.url }}" alt="#"></td>
+                                            <td>
+                                                <h5><a href="shop-product-full.html">{{ cart_item.variant.variant_name }}</a></h5> <span class="product-qty">Qty: {{ cart_item.quantity }}</span>
+                                            </td>
+                                            <td>{{ cart_item.variant.sale_price }} INR </td>
+                                        </tr>
+
+
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
                         </div>
-                        <p><strong>Total Price:</strong> ₹{{ total_with_orginal_price }}</p>
-                        <p><strong>Discount:</strong> ₹{{ discount }}</p>
-                        <p class="text-success"><strong>Order Total: ₹{{ grand_total }}</strong></p>
+                        <p><strong>Total Price:</strong> {{total}} INR</p>
+                        <p><strong>Discount:</strong> -</p>
+                        <p ><strong>Order Total: <span class="text-brand fw-900">{{total}} INR</span></strong></p>
                     </div>
                 </div>
             </div>
@@ -45,7 +93,7 @@
                     <div class="card-body order_review  rounded ">
                         {% comment %} <h5 class="card-title text-primary mb-4">Order Summary</h5> {% endcomment %}
                         <div class="mb-20">
-                            <h4>Order Summary</h4>
+                            <h4 >Order Summary</h4>
                         </div>
                         {% comment %} <div class="d-flex justify-content-between align-items-center mb-4">
                             <span>Total price:</span>
