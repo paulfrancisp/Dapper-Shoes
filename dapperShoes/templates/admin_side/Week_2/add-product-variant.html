@@ -4,7 +4,7 @@
 {% block content %}
 
 <section class="content-main">
-<form id="productForm" action="{% url 'product_management_app:variant_list' product.id%}" method="post" enctype="multipart/form-data">
+<form id="productForm" action="{% url 'product_management_app:add_variant' product.id%}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             <div class="col-9">

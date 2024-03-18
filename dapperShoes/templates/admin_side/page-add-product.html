@@ -27,7 +27,7 @@
                                 <label class="form-label">Brand</label>
                                 <select class="form-select" id="brandSelect" name="brand" required>
                                     {% for brand in brands %} 
-                                    <option value="{{brand.id}}" {% if product.product_brand_id == brand.id %} selected {% endif %}>{{brand.Brand_name}}</option>
+                                    <option value="{{brand.id}}" {% if product.product_brand == brand.id %} selected {% endif %}>{{brand.brand_name}}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -51,10 +51,10 @@
                                 </select>
                             </div>
     
-                            <div class="mb-3">
+                            {% comment %} <div class="mb-3">
                                 <label class="form-label">Price</label>
                                 <input type="text" placeholder="Type here" class="form-control" id="price" name="price" value="{{ product.product_price }}" required>
-                            </div>
+                            </div> {% endcomment %}
                             
                                 {% comment %} </div>
                             </div> <!-- card end// -->
@@ -92,7 +92,7 @@
                             <div class="card-body">
                                 <!-- Additional image fields -->
                                 <div class="input-upload mb-3">
-                                    {% comment %} <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt=""> {% endcomment %}
+                                    
                                     <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple required>
                                 </div>
                                 

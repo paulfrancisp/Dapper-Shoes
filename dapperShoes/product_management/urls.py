@@ -15,7 +15,7 @@ urlpatterns = [
     path('variant-list/<int:id>',views.variant_list,name='variant_list'),
     path('add-variant/<int:id>',views.add_variant,name='add_variant'),
     path('edit-variant/<int:id>',views.edit_variant,name='edit_variant'),
-    ### path('delete-variant/<int:id>',views.delete_variant,name='delete_variant'),
+    path('delete-variant/<int:id>',views.delete_variant,name='delete_variant'),
     
     # path('variant/status/<slug:slug>/<slug:p_slug>',views.variant_status,name='variant_status'),
     # path('variant/delete/image/<int:id>/<slug:slug>/<slug:p_slug>',views.image_variant,name='image_variant'),

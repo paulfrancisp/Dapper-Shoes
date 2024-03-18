@@ -1,8 +1,7 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from product_management.models import Product, Brand, Product_Image, Product_variant, Attribute, Attribute_value
 from category.models import Category, SubCategory
 from django.views.decorators.cache import never_cache
-from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.db import IntegrityError
 from django.urls import reverse
@@ -27,28 +26,32 @@ def product_list(request):
 @never_cache
 def edit_product(request,id):
     if request.user.is_authenticated and request.user.is_superuser:
-        product = Product.objects.get(id=id)
+        product = get_object_or_404(Product, id=id)
 
         if request.method == 'POST':
             title = request.POST.get('product_title')
             brand_id = request.POST.get('brand')
             brand = get_object_or_404(Brand, pk=brand_id)
             description = request.POST.get('description')
-            price = request.POST.get('price')
+            # price = request.POST.get('price')
             category_id = request.POST.get('category_id')
-            category = get_object_or_404(Category, pk=category_id)
+            category = get_object_or_404(Category, id=category_id)
+            subcategory_id = request.POST.get('subcategory_id')
+            subcategory = get_object_or_404(SubCategory, id=subcategory_id)
             image = request.FILES.get('image')
             
             if title:
                 product.product_name = title
             if brand_id:
-                product.brand = brand
+                product.product_brand = brand
             if description:
                 product.description = description
-            if price:
-                product.price = price
+            # if price:
+            #     product.price = price
             if category_id:
                 product.category = category
+            if subcategory_id:
+                product.sub_category = subcategory
             if image:
                 product.images = image
 
@@ -108,9 +111,9 @@ def add_product(request):
             sub_category = SubCategory.objects.get(id = sub_category_id)
             brand = Brand.objects.get(id = brand_id)
             print(brand)
-            product = Product.objects.create(product_name=title, product_brand=brand , description=description, product_price=price ,category=category, sub_category=sub_category, images =image)
+            product = Product.objects.create(product_name=title, product_brand=brand , description=description, category=category, sub_category=sub_category, images =image)
             product.save()
-
+            return redirect('product_management_app:product_list')
             
             for img in additional_images:
                 Product_Image.objects.create(product_id=product,image=img)
@@ -320,143 +323,6 @@ def edit_variant(request,id):
     return render(request, 'admin_side/Week_2/edit-product-variant.html',context)
 
 
-# def add_variant(request,id):
-#     if request.user.is_authenticated and request.user.is_superuser:
-#         print("before entering post method")
-#         if request.method == 'POST':
-#             variant_name = request.POST.get('product_variant_name')
-#             stock_qty = request.POST.get('stock')
-#             # brand_id = request.POST.get('Brand')
-#             description = request.POST.get('description')
-#             # price = request.POST.get('price')
-#             category_id = request.POST.get('category_id')
-#             base_price = request.POST.get('base_price')
-#             print("entering post method")
-#             image = request.FILES.get('image')
-#             # additional_images = request.FILES.getlist('additional_image_1')
-
-
-#             # try:
-#             #     # image = request.FILES.get('image')
-#             # except :
-#             #     messages.warning(request,"add product image")
-#             #     return redirect('product_management_app:add_product') 
-
-#             try:
-#                 if title == '':
-#                     messages.warning(request,"Add product title")
-#                     return redirect('product_management_app:add_product')
-#                 if Product.objects.get(product_name=title):
-#                     messages.warning(request,"product name is already exists")
-#                     return redirect('product_management_app:add_product')   
-#             except:
-#                pass
-#             # if brand_id or price or category_id or stock_qty:
-#             #     messages.warning(request,"All fields are required")
-#             #     return redirect('product_management_app:add_product')
-#             category = Category.objects.get(id = category_id)
-#             brand = Brand.objects.get(id = brand_id)
-#             product = Product(
-#                 product_name = title,
-#                 # stock = stock_qty,
-#                 brand = brand,
-#                 category = category,
-#                 description = description,
-#                 # price = price,
-#                 # images = image,
-#                 base_price = base_price
-#             )
-#             product.save()
-            
-#             # for img in additional_images:
-#             #     Additional_Product_Image.objects.create(product=product,image=img)    
-#             return redirect('product_management_app:admin_products_list')
-
-#         categories = Category.objects.filter(is_active = True)
-#         brands = Brand.objects.filter(is_active = True)
-#         context = {
-#             'categories':categories,
-#             'brands':brands
-#         }
-            
-#         return render(request,'admin_side/Week_2/add-product-variant.html',context)
-#     return redirect('admin_app:admin_login')
-
-# from django.shortcuts import render, redirect
-# from .models import Product, Product_varient, Attribute, Attribute_values
-# from django.contrib import messages
-# from django.http import HttpResponse
-
-# def add_variant(request, product_id):
-#     if request.user.is_authenticated and request.user.is_superuser:
-#         if request.method == 'POST':
-#             product_variant_name = request.POST.get('product_variant_name')
-#             max_price = request.POST.get('max_price')
-#             sale_price = request.POST.get('sale_price')
-#             stock_qty = request.POST.get('stock')
-#             color_id = request.POST.get('color')
-#             size_id = request.POST.get('size')
-#             product_id = request.POST.get('product_id')
-#             thumbnail_image = request.FILES.get('product_varient_image')
-#             additional_images = request.FILES.getlist('additional_image_1')
-
-#             # Validate input data
-#             if not product_variant_name or not max_price or not sale_price or not stock_qty or not color_id or not size_id:
-#                 messages.warning(request, "All fields are required")
-#                 return redirect('product_management_app:add_variant', product_id=product_id)
-
-#             try:
-#                 product = Product.objects.get(id=product_id)
-#             except Product.DoesNotExist:
-#                 messages.warning(request, "Invalid product ID")
-#                 return redirect('product_management_app:admin_products_list')
-
-#             try:
-#                 color_attribute = Attribute_values.objects.get(id=color_id, attribute_id__atrribute_name='Color')
-#                 size_attribute = Attribute_values.objects.get(id=size_id, attribute_id__atrribute_name='Size')
-#             except Attribute_values.DoesNotExist:
-#                 messages.warning(request, "Invalid color or size attribute")
-#                 return redirect('product_management_app:add_variant', product_id=product_id)
-
-#             # Create product variant
-#             product_variant = Product_varient(
-#                 product_name=product,
-#                 variant_name=product_variant_name,
-#                 max_price=max_price,
-#                 sale_price=sale_price,
-#                 stock=stock_qty,
-#                 thumbnail_image=thumbnail_image
-#             )
-#             product_variant.save()
-
-#             # Add attributes to the product variant
-#             product_variant.attributes.add(color_attribute, size_attribute)
-
-#             # Save additional images
-#             for img in additional_images:
-#                 Product_Image.objects.create(product_id=product_variant, image=img)
-
-#             return redirect('product_management_app:admin_products_list')
-
-#         product = Product.objects.get(id=product_id)
-#         categories = Category.objects.filter(is_active=True)
-#         brands = Brand.objects.filter(is_active=True)
-#         attribute_values = Attribute_values.objects.filter(attr_is_active=True)
-#         context = {
-#             'product': product,
-#             'categories': categories,
-#             'brands': brands,
-#             'attribute_values': attribute_values
-#         }
-
-#         return render(request, 'admin_side/Week_2/add-product-variant.html', context)
-    
-#     return redirect('admin_app:admin_login')
-
-
-
-
-
 def add_variant(request, id):
     if request.user.is_authenticated and request.user.is_superuser:
         if request.method == 'POST':
@@ -466,8 +332,8 @@ def add_variant(request, id):
             sale_price = request.POST.get('sale_price')
             stock = request.POST.get('stock')
             # size = request.POST.get('size')
-            size = request.POST.getlist('size')
-
+            size = request.POST.getlist('size')  # Modified to get a list of sizes
+            thumbnail_image = request.FILES.get('product_variant_image')
 
             # Basic validations
             if not variant_name or not max_price or not sale_price or not stock:
@@ -487,35 +353,36 @@ def add_variant(request, id):
                 return redirect('product_management_app:add_variant', id=id)
 
             if not size:
-                messages.warning(request, "Color and size are required.")
+                messages.warning(request, "Color and size are required.")  # Modified error message
                 return redirect('product_management_app:add_variant', id=id)
 
             # Additional validations
-            if Product_variant.objects.filter(product_name=product, variant_name=variant_name).exists():
+            if Product_variant.objects.filter(product=product, variant_name=variant_name).exists():
                 messages.warning(request, f"A variant with the name '{variant_name}' already exists for this product.")
                 return redirect('product_management_app:add_variant', id=id)
 
             # Ensure that the variant name is unique within the product
-            if Product_variant.objects.filter(product_name=product, variant_name__iexact=variant_name).exists():
+            if Product_variant.objects.filter(product=product, variant_name__iexact=variant_name).exists():
                 messages.warning(request, "Variant names should be unique within the product.")
                 return redirect('product_management_app:add_variant', id=id)
 
             try:
                 product_var = Product_variant.objects.create(
-                    product_name=product,
+                    product=product,
                     variant_name=variant_name,
                     max_price=max_price,
                     sale_price=sale_price,
                     stock=stock,
+                    thumbnail_image=thumbnail_image,
                 )
                 # product_var.attributes.add(Attribute_value.objects.get(id=color))
-                product_var.attributes.add(Attribute_value.objects.get(id=size))
+                product_var.attribute.add(*size)  # Modified to add all sizes to attributes
 
                 # Additional attribute validations and processing if needed
 
                 product_var.save()
-                messages.success(request, "Product variant added successfully.")
-                return redirect('product_management_app:admin_products_list')
+                # messages.success(request, "Product variant added successfully.")
+                return redirect(reverse('product_management_app:variant_list', kwargs={'id': id}))
 
             except ObjectDoesNotExist:
                 messages.warning(request, "Invalid attribute values.")
@@ -535,5 +402,17 @@ def add_variant(request, id):
         return render(request, 'admin_side/Week_2/add-product-variant.html', context)
 
     return redirect('admin_app:admin_login')
+
+
+
+
+
+def delete_variant(request,id):
+    if request.user.is_authenticated and request.user.is_superuser:
+        product_variant = get_object_or_404(Product_variant, id=id)
+        product_id = product_variant.product.id
+        product_variant.delete()
+
+    return redirect(reverse('product_management_app:variant_list', kwargs={'id': product_id}))
 
     

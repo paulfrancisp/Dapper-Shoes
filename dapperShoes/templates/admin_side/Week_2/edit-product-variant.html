@@ -5,6 +5,8 @@
 
 
 <section class="content-main">
+    <!-- Display existing image -->
+    
     <form id="productForm" action="{% if product.id %}{% url 'product_management_app:edit_variant' product.id %}{% endif %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
@@ -126,12 +128,18 @@
                         </div> {% endcomment %}
 
                         <div class="input-upload">
-                            {% if product_variant.image %}
+
+                            {% if product_variant.thumbnail_image %}
+                                <div>
+                                    <img src="{{ product_variant.thumbnail_image.url }}" alt="Thumbnail Image">
+                                </div>
+                            {% endif %}
+                            {% comment %} {% if product_variant.image %}
                                 <img src="{{ product_variant.image.url }}" alt="" > {% comment %}style="max-width: 100%; height: auto;"{% endcomment %}
                                 {% comment %} <input type="file" class="form-control" id="category_image" name="image"/> {% endcomment %}
-                            {% else %}
+                            {% comment %} {% else %}
                                 <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                             <input type="file" class="form-control" id="product_varient_image" name="product_varient_image"/>
                         
                         </div>

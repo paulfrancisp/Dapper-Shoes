@@ -41,6 +41,7 @@
                                 
                                 <p class="card-text category-text" style="margin-top: -5px;">Sub-category : {{ variant.product.sub_category.sub_category_name }}</p>
 
+                                <div class="d-flex">
                                 {% if variant.attribute.all %}
                                     <span style="margin-right: 8px;">Shoe Size: 
                                         {% for attribute in variant.attribute.all %}
@@ -50,7 +51,8 @@
                                     </span>
                                 {% endif %}
 
-                                
+                                <p class="card-text category-text ms-3" style="margin-top: -3px;">Quantity : {{ variant.stock }}</p>
+                                </div>
                                 {% comment %} {% if variant.product_var.category %}
                                     <p class="card-text category-text" style="margin-top: -5px;">Category : {{ variant.product_var.category }}</p>
                                 {% else %}
@@ -69,7 +71,7 @@
                                 {% comment %} <a href="{% url 'product_management_app:edit-product-variant' variant.id %}" class="btn btn-sm btn-primary me-2">Edit</a>
                                 <a href="{% url 'product_management_app:delete-product-variant' variant.id %}" class="btn btn-sm btn-danger">Delete</a> {% endcomment %}
                                 <a href="{% url 'product_management_app:edit_variant' variant.id %}" class="btn btn-sm btn-primary me-2">Edit</a>
-                                <a href="" class="btn btn-sm btn-danger me-2" style="padding: 10px 32px">Delete</a>
+                                <a href="{% url 'product_management_app:delete_variant' variant.id%}" class="btn btn-sm btn-danger me-2" style="padding: 10px 32px">Delete</a>
                                 </div>
                             </div>
                         </div>

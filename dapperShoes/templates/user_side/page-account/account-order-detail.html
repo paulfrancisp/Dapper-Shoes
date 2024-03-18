@@ -1,0 +1,136 @@
+{% extends 'user_side/base.html' %}
+{% load static %}
+
+{% block content%}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-40 p-3" style="border: ;">
+                    <div class="card-body">
+                        
+
+                        <h3 class="mt-15">Order Details:</h3>
+                        <hr>
+                        <div class="card-body list-group mb-4">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                <p class="card-text mb-0">Order Number: {{ order_detail.order_number }}</p>
+                                <p class="card-text mb-3">Order Date: {{ order_detail.created_at }}</p>    
+                                </div>
+                                
+                                <p class="card-text mt-3 text-right">Payment Method: {{ order_detail.payment.payment_method.method_name }}</p>
+                                    
+                            </div>
+                            <div class="d-flex">  
+                                <p class="card-text mb-0">Shipping Address: 
+                                    <div class="card-body list-group  p-0 ms-1">
+                                        <p class="card-text mb-0">{{ order_detail.first_name }} {{ order_detail.last_name }}</p>
+                                        <p class="card-text mb-0">{{ order_detail.address }}</p>    
+                                        <p class="card-text mb-0">{{ order_detail.town_city }}, {{ order_detail.state }}</p>  
+                                        <p class="card-text mb-0">{{ order_detail.email }}</p> 
+                                        <p class="card-text mb-0">{{ order_detail.phone_number }}</p> 
+                                    </div>                                
+                                </p> 
+                            </div>
+                        </div>
+
+                        <h5 class="mt-30 mb-15">Ordered Products</h5>
+                        <div class="table-responsive order_table text-center">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product Image</th>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Order Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in order_products %}
+                                        <tr>
+                                            <td class="image product-thumbnail "><img src="{{ item.images.url }}" alt="{{ item.product_variant }}" alt="#"></td>
+                                            <td>
+                                                <h5><a href="shop-product-full.html">{{ item.product_variant }}</a></h5> 
+                                                {% comment %} <span class="product-qty">Qty: {{ item.quantity }}</span> {% endcomment %}
+                                            </td>
+                                            <td>{{ item.quantity }} </td>
+                                            <td>₹{{ item.product_price }} </td>
+                                            <td class="product-details">{{ item.order_status }}</td>
+                                            <td>
+                                                {% if item.order_status == "New" or item.order_status == "Accepted" %}
+                                                    <a href="{% url 'account_app:cancel_product' item.id %}" class="btn btn-danger cancel-product">Cancel</a>
+                                                {% elif item.order_status == "Delivered"%}
+                                                    <a href="{% url 'account_app:return_product' item.id %}" class="btn btn-danger return-product">Return</a>
+                                                {% else %}
+                                                    <button class="btn btn-danger cancel-product" disabled>Cancel</button>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+
+
+                                    {% endfor %}
+
+                                </tbody>
+                                
+                            </table>
+                        </div>
+                        <p><strong>Grand Total :</strong> ₹{{ order_detail.order_total }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cancelButtons = document.querySelectorAll('.cancel-product');
+        cancelButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const url = this.getAttribute('href');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You want to cancel this product?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, cancel it!',
+                    cancelButtonText: 'No, keep it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const cancelButtons = document.querySelectorAll('.return-product');
+        cancelButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const url = this.getAttribute('href');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You want to return this product?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, cancel it!',
+                    cancelButtonText: 'No, keep it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+{% endblock %}

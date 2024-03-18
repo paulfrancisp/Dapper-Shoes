@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div> {% endcomment %}
-        <section class="pt-150 pb-150">
+        <section class="pt-120 pb-120">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-10 m-auto">
@@ -26,15 +26,20 @@
                                         <li class="nav-item">
                                             <a href="{% url 'account_app:account_my_orders' %}" class="nav-link active" id="orders-tab"  role="tab" aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a href="{% url 'account_app:account_edit_profile' %}" class="nav-link" id="track-orders-tab"  role="tab" aria-controls="track-orders" aria-selected="false"><i class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{% url 'account_app:account_change_password' %}" class="nav-link" id="address-tab"  role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
-                                        </li>
                                         {% comment %} <li class="nav-item">
-                                            <a href="{% url 'account_app:account_dashboard' %}" class="nav-link" id="account-detail-tab"  role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
+                                            <a href="{% url 'account_app:account_my_address' %}" class="nav-link" id="address-tab"  role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
                                         </li> {% endcomment %}
+                                        
+                                        
+                                        {% comment %} <li class="nav-item">
+                                            <a href="{% url 'account_app:account_create_address' %}" class="nav-link" id="account-detail-tab"  role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Add Address</a>
+                                        </li> {% endcomment %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'account_app:account_edit_address' %}" class="nav-link" id="account-detail-tab"  role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Edit Profile</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'account_app:account_change_password' %}" class="nav-link" id="track-orders-tab"  role="tab" aria-controls="track-orders" aria-selected="false"><i class="fi-rs-lock  mr-10"></i>Change Password</a>
+                                        </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="page-login-register.html"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
                                         </li>
@@ -62,15 +67,20 @@
                                                         </thead>
                                                         <tbody>
                                                             {% for order in orders %}
-                                                                {% for order_product in order.order_product.all %}
+                                                                
                                                                     <tr>
                                                                         <td>{{ order.order_number }}</td>
                                                                         <td>{{ order.created_at }}</td>
                                                                         <td>{{ order.order_status }}</td>
-                                                                        <td>₹{{ order_product.total }} for {{ order_product.quantity }} item</td>
-                                                                        <td><a href="#" class="btn-small d-block">View</a></td>
+                                                                        
+                                                                        <td>
+                                                                            {% for order_product in order.order_product.all %}
+                                                                            ₹{{ order_product.total }} for {{ order_product.quantity }} item<br>
+                                                                            {% endfor %}
+                                                                        </td>
+                                                                        <td><a href="{% url 'account_app:account_order_detail' order.id %}" class="btn-small d-block">View</a></td>
                                                                     </tr>
-                                                                {% endfor %}
+                                                                
                                                             {% endfor %}
                                                         </tbody>
                                                         

@@ -38,7 +38,7 @@ class Payment(models.Model):
     def __str__(self):
         # return str(self.payment_id)
         # f"{str(self.user)}  {self.payment_method}"
-        return str(self.user)
+        return str(self.payment_method.method_name)
 
 
 class Order(models.Model):

@@ -8,6 +8,7 @@ import random
 from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
+from account.models import *
 # from cart.models import *
 # from cart.views import _cart_id
 
@@ -109,6 +110,8 @@ def user_otp_verification(request):
         elif str(otp_entered) == str(otp_session):
             customer = User.objects.create_user(username = uname, email = email_session, password = passw )
             customer.save()
+            # address = Address.objects.create(user=customer,)
+            # address.save()
             customer = authenticate(request, username = uname, password=passw)     #authenticate(email = email_session, password=passw)
             if customer is not None:
                 login(request,customer)
@@ -177,11 +180,11 @@ def forgot_password(request):
 
 
 
-@never_cache
-def forgot_password_verification(request):
-    # if request.method=='POST':
-    #     email_session=request.session['email']
-    return render(request,'user_side/forgot_password_otp_verification.html')
+# @never_cache
+# def forgot_password_verification(request):
+#     # if request.method=='POST':
+#     #     email_session=request.session['email']
+#     return render(request,'user_side/forgot_password_otp_verification.html')
 
 
 

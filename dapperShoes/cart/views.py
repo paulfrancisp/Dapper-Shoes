@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
+from account.models import *
 
 
 # Create your views here.
@@ -137,9 +138,16 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     except :
         pass
 
+    try:
+        address = Address.objects.get(user=current_user)
+    except Address.DoesNotExist:
+        # Handle the case where the user doesn't have an address yet
+        address = None
+
     context={
         'total': total,
         'quantity' : quantity,
-        'cart_items' : cart_items
+        'cart_items' : cart_items,
+        'address':address
     }
     return render(request,'user_side/shop-checkout.html',context)

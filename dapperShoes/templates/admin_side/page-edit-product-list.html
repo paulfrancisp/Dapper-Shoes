@@ -33,8 +33,9 @@
                             <label class="form-label">Brand</label>
                             <select class="form-select" id="brandSelect" name="brand" required>
                                 {% for brand in brands %} 
-                                <option value="{{brand.id}}" {% if product.product_brand_id == brand.id %} selected {% endif %}>{{brand.Brand_name}}</option>
+                                <option value="{{brand.id}}" {% if product.product_brand == brand.id %} selected {% endif %}>{{brand.brand_name}}</option>
                                 {% endfor %}
+                                
                             </select>
                         </div>
                         {% comment %} </div>
@@ -50,17 +51,17 @@
 
                         <div class="mb-3">
                             <label class="form-label">Sub-category</label>
-                            <select class="form-select" id="categorySelect" name="category_id" required>
+                            <select class="form-select" id="categorySelect" name="subcategory_id" required>
                                 {% for subcat in subcategory %}    
                                 <option value="{{subcat.id}}" {% if product.sub_category_id == subcat.id %} selected {% endif %}>{{subcat.sub_category_name}}</option>
                                 {% endfor %}
                             </select>
                         </div>
 
-                        <div class="mb-3">
+                        {% comment %} <div class="mb-3">
                             <label class="form-label">Price</label>
                             <input type="text" placeholder="Type here" class="form-control" id="price" name="price" value="{{ product.product_price }}" required>
-                        </div>
+                        </div> {% endcomment %}
                         
                             {% comment %} </div>
                         </div> <!-- card end// -->

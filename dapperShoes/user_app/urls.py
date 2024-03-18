@@ -11,7 +11,7 @@ urlpatterns = [
     
 
     path('user-login/forgot-password',views.forgot_password,name='forgot_password'),
-    path('user-login/forgot-password-verification',views.forgot_password,name='forgot_password_verification'),
+    # path('user-login/forgot-password-verification',views.forgot_password,name='forgot_password_verification'),
 
 
     # path('user-404',views.user_404,name='user_404'),
