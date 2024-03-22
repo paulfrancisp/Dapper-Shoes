@@ -45,11 +45,11 @@
                             <p class="mb-1">
                                 Name: {{user.username}}  <br>
                                 {% comment %} <template class="__cf_email__" data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template> <br>  {% endcomment %}
-                                {% if email %}
+                                {% comment %} {% if email %}
                                     Email: {{user.email}}
                                 {% else%}
                                 Email : Not provided
-                                {% endif %}
+                                {% endif %} {% endcomment %}
                             </p>
                             {% comment %} <a href="#">View profile</a> {% endcomment %}
                         </div>

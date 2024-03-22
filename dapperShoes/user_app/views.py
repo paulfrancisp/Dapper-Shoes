@@ -108,7 +108,7 @@ def user_otp_verification(request):
             return redirect('user_app:user_login')
 
         elif str(otp_entered) == str(otp_session):
-            customer = User.objects.create_user(username = uname, email = email_session, password = passw )
+            customer = User.objects.create_user(username = uname, email = email_session, password = passw ) #if create() is used then password won't be hashed it needs to be hashed seperately.
             customer.save()
             # address = Address.objects.create(user=customer,)
             # address.save()

@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 
 
 # Create your views here.
+# Note: These functions are being used in admin side.
 @never_cache
 def user_management(request):
     if request.user.is_authenticated and request.user.is_superuser:

@@ -7,7 +7,7 @@ from django.urls import reverse
 from cart.models import *
 from cart.views import _cart_id
 from django.http import HttpResponse
-
+from django.utils import timezone
 
 # Create your views here.
 
@@ -18,12 +18,22 @@ def index(request):
     products = Product.objects.filter(is_active=True).order_by('product_name')
     variants = Product_variant.objects.filter(product__in=products)
 
+    three_days_ago = timezone.now() - timezone.timedelta(days=3)
+    is_new = {}
+    for product in products:
+        if product.updated_at > three_days_ago:
+            is_new[product.id] = True
+
+    print(is_new)
+
+    
     
     context = {
         'categories' : category,
         'subcategories' : sub_category,
         'products' : products,
         'variants' : variants,
+        'is_new':is_new,
     }
     
     return render(request,'user_side/index.html',context)
@@ -70,6 +80,10 @@ def product_detail_attribute(request,product_id,attribute_value):
     products = Product.objects.get(id=product_id)
     images = Product_Image.objects.filter(product_id_id=product_id)
     attributes = Attribute_value.objects.all()
+
+    # Initialize in_cart with a default value
+    in_cart = False
+
     if request.user.is_authenticated:
         in_cart = CartItem.objects.filter(cart=_cart_id(request),variant=variants).exists()  #Give a True or False value, if True won't show add to cart else it will show.
 
@@ -93,4 +107,5 @@ def search(request):
 
 def home(request):
     return render(request,'user_side/index.html')
+
 

@@ -6,6 +6,9 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import never_cache
 
 # Create your views here.
+# Note: These functions are being used in admin side.
+
+
 # def categories(request):
 #     if request.user.is_authenticated and request.user.is_superuser:
 #         categories = Category.objects.all()
@@ -113,12 +116,13 @@ def delete_categories(request,id):
 @never_cache
 def activate_category(request, id):
     current_category = get_object_or_404(Category, id=id)
-    current_subcategories = SubCategory.objects.filter(category_id=id) #cannot use get_object_or_404() because it only returns sing object
+    current_subcategories = SubCategory.objects.filter(category_id=id) #cannot use get_object_or_404() because it only returns sign object
 
     current_category.is_active = True
     current_category.save()
 
-    # Update is_active for all related subcategories
+    # Update is_active for all related subcategories.
+    # Updating is_active field for all related subcategories directly with a single database query is more efficient and faster than individually retrieving each subcategory.
     current_subcategories.update(is_active=True)
 
     return redirect('category_app:admin_categories')

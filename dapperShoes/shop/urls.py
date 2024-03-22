@@ -10,6 +10,9 @@ urlpatterns = [
     path('search', views.search, name='search'),
 
 
+    # path('low_to_high/',views.low_to_high, name='low_to_high'),
+    # path('high_to_low/',views.high_to_low, name='high_to_low'),
+    # path('pricebar/',views.pricebar, name='pricebar'),
 
     # path('product-detail',views.product_detail,name='product_detail'),
     # path('<slug:slug>',views.product_details,name='product_details'),
