@@ -46,7 +46,7 @@ def admin_categories(request):
                     messages.warning(request,"Add category name")
                     return redirect('category_app:admin_categories')
                 if Category.objects.get(category_name=category):
-                    messages.warning(request,"Category is taken")
+                    messages.warning(request,"Category name is already taken")
                     return redirect('category_app:admin_categories')
             except:
                 pass
@@ -78,6 +78,14 @@ def edit_categories(request,id):
             # except :
             #     messages.warning(request,"Add category image")
             #     return redirect('category_app:edit_categories')
+
+            # if category == '':
+            #     messages.warning(request,"Add category name")
+            #     return redirect('category_app:edit_categories')
+            # if Category.objects.get(category_name=category):
+            #     messages.warning(request,"Category name is already taken")
+            #     return redirect('category_app:edit_categories')
+            
         
             if category_name:
                 category.category_name = category_name

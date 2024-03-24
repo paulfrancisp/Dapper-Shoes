@@ -4,6 +4,7 @@ from cart.models import *
 from product_management.models import *
 from django.contrib import messages
 from .forms import OrderForm
+from account.models import *
 
 # Create your views here.
 def place_order_cod(request, total=0, quantity=0):
@@ -124,8 +125,12 @@ def place_order_cod(request, total=0, quantity=0):
     
     cart_items = cart.cartitem_set.all()
     for cart_item in cart_items:
-        total += cart_item.variant.sale_price * cart_item.quantity
-        quantity += cart_item.quantity
+        if cart_item.quantity <= cart_item.variant.stock:
+            total += cart_item.variant.sale_price * cart_item.quantity
+            quantity += cart_item.quantity
+        else:
+            messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
+            return redirect('cart_app:cart_list')
 
     # cart_items = CartItem.objects.filter(cart=cart)  #if any issue comes here use get() instead of filter here or in above orm query or add this query above cart= Cart.objects.get(user=current_user)
     # for cart_item in cart_items:
@@ -141,22 +146,39 @@ def place_order_cod(request, total=0, quantity=0):
         if form.is_valid():
             print('FORM is valid')
             #Store all billing info inside order table
-            data = Order()
-            data.user = current_user
-            data.first_name = form.cleaned_data['first_name']
-            data.last_name = form.cleaned_data['last_name']
-            data.phone_number = form.cleaned_data['phone_number']
-            data.email = form.cleaned_data['email']
-            data.town_city = form.cleaned_data['town_city']
-            data.address = form.cleaned_data['address']
-            data.state = form.cleaned_data['state']
-            # data.country_region = form.cleaned_data['country_region']
-            data.zip_code = form.cleaned_data['zip_code']
-            data.order_total = total
-            data.ip = request.META.get('REMOTE_ADDR')
-            order_number = data.generate_order_number()
-            data.order_number = order_number
-            data.save()
+            if 'differentaddress' in request.POST:
+                home_address = Address.objects.filter(user=current_user, is_default=True).first()
+                form.instance.user = current_user
+                form.instance.first_name = home_address.first_name
+                form.instance.last_name = home_address.last_name
+                form.instance.phone_number = home_address.phone_number
+                # form.instance.email = home_address.email
+                form.instance.town_city = home_address.town_city
+                form.instance.address = home_address.address
+                form.instance.state = home_address.state
+                form.instance.zip_code = home_address.zip_code
+                form.instance.order_total = total
+                form.instance.ip = request.META.get('REMOTE_ADDR')
+                order_number = data.generate_order_number()
+                form.instance.order_number = order_number
+                order = form.save()
+            else:
+                data = Order()
+                data.user = current_user
+                data.first_name = form.cleaned_data['first_name']
+                data.last_name = form.cleaned_data['last_name']
+                data.phone_number = form.cleaned_data['phone_number']
+                # data.email = form.cleaned_data['email']
+                data.town_city = form.cleaned_data['town_city']
+                data.address = form.cleaned_data['address']
+                data.state = form.cleaned_data['state']
+                # data.country_region = form.cleaned_data['country_region']
+                data.zip_code = form.cleaned_data['zip_code']
+                data.order_total = total
+                data.ip = request.META.get('REMOTE_ADDR')
+                order_number = data.generate_order_number()
+                data.order_number = order_number
+                data.save()
 
             order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
 

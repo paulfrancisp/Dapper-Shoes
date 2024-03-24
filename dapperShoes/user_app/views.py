@@ -60,31 +60,58 @@ def user_signup(request):
         request.session['username'] = uname
         request.session['password'] = passw
         request.session['email_session'] = email
+        print('Email in signup111',email)
+        print('Email in signup222',request.session['email_session'])
 
         return redirect('user_app:user_send_otp')
     return render(request,'user_side/page-signup.html')
 
 
 
+# @never_cache
+# def user_send_otp(request):            
+
+#     otp_value = random.randint(100000, 999999)
+#     request.session['otp_session'] = otp_value
+#     request.session.set_expiry(300)
+#     email = request.session['email_session']
+#     # request.session.modified = True 
+#     print('Email in session in user_send_otp()',email)
+
+#     #send_mail( 'Subject', 'Message body', 'Senders email', ['Recipients email'], Fail silently)
+#     send_mail(
+#         'OTP verification from Dapper Shoes',
+#         f" Dear User,\n\n Your One-Time Password (OTP) for verification is:{request.session['otp_session']}. \n\nPlease use above OPT to complete your signup to Dapper Shoes website.",
+#         'dappershoes.official@gmail.com',
+#         [request.session['email_session']],
+#         fail_silently=False
+#     )
+#     request.session['email_session'] = email
+
+#     return render(request,'user_side/otp.html',{'email':email})
 @never_cache
 def user_send_otp(request):            
-
     otp_value = random.randint(100000, 999999)
     request.session['otp_session'] = otp_value
     request.session.set_expiry(300)
+    
+    # Assign email session before sending the email
     email = request.session['email_session']
-    # request.session.modified = True 
-
-    #send_mail( 'Subject', 'Message body', 'Senders email', ['Recipients email'], Fail silently)
+    
+    print('Email in session in user_send_otp()', email)
+    
     send_mail(
         'OTP verification from Dapper Shoes',
-        f" Dear User,\n\n Your One-Time Password (OTP) for verification is:{request.session['otp_session']}. \n\nPlease use above OPT to complete your signup to Dapper Shoes website.",
+        f"Dear User,\n\nYour One-Time Password (OTP) for verification is: {request.session['otp_session']}. \n\nPlease use the above OTP to complete your signup to Dapper Shoes website.",
         'dappershoes.official@gmail.com',
         [request.session['email_session']],
         fail_silently=False
     )
+    
+    request.session['email_session'] = email
+    print('Email in session in user_send_otp()11111111111111111', request.session['email_session'])
+    return render(request, 'user_side/otp.html', {'email': email})
 
-    return render(request,'user_side/otp.html',{'email':email})
 
 
 # @cache_control(no_cache=True, must_revalidate=True, no_store=True) 
@@ -92,7 +119,7 @@ def user_send_otp(request):
 def user_otp_verification(request):
 
     uname = request.session.get('username')
-    email_session = request.session.get('email')
+    email_session = request.session.get('email_session')
     passw = request.session.get('password')
 
     if request.method == "POST":
@@ -108,6 +135,7 @@ def user_otp_verification(request):
             return redirect('user_app:user_login')
 
         elif str(otp_entered) == str(otp_session):
+            print('Email in session in user_otp_verification()',email_session)
             customer = User.objects.create_user(username = uname, email = email_session, password = passw ) #if create() is used then password won't be hashed it needs to be hashed seperately.
             customer.save()
             # address = Address.objects.create(user=customer,)
@@ -156,7 +184,7 @@ def user_login(request):
                 login(request,user)                                      
                 return redirect('shop_app:index')                                  
             else:      
-                messages.info(request,"Invalid credentials!!")                                                  
+                messages.error(request,"Invalid credentials!!")                                                  
                 return redirect('user_app:user_login')  
         return render(request,'user_side/page-login.html')
 

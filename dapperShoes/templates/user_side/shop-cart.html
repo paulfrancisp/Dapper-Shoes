@@ -23,6 +23,7 @@
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="table-responsive">
+                                
                                 <table class="table shopping-summery text-center clean">
                                     <thead>
                                         <tr class="main-heading">
@@ -42,6 +43,15 @@
                                                 <h5 class="product-name"><a href="{% url 'shop_app:product_detail_attribute' product_id=cart_item.variant.product_id attribute_value=cart_item.variant.attribute.attribute_value|default:'9' %}">{{ cart_item.variant.variant_name }}</a></h5>
                                                 <p class="font-xs">Brand:{{ cart_item.variant.product.product_brand.brand_name }}&nbsp;&nbsp;&nbsp;&nbsp;Subcategory:{{ cart_item.variant.product.sub_category }}
                                                 </p>
+                                                <div class="">
+                                                    {% if cart_item.quantity >= cart_item.variant.stock %}
+                                                        {% if messages %}
+                                                        {% for message in messages %}
+                                                        <span class="warning" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                                                        {% endfor %}
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div>
                                             </td>
                                             <td class="price" data-title="Price"><span>{{ cart_item.variant.sale_price }} INR </span></td>
                                             <td class="text-center" data-title="Stock">

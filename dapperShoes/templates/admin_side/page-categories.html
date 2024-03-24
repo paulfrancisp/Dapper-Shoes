@@ -18,6 +18,13 @@
                         <div class="col-md-3">
                             <form method='post' action="{% url 'category_app:admin_categories'%}" enctype="multipart/form-data">
                                 {% csrf_token %}
+                                <div class="form-group">
+                                    {% if messages %}
+                                    {% for message in messages %}
+                                    <span class="error" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                                    {% endfor %}
+                                    {% endif %}
+                                </div>
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Name</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="category" name="category" />

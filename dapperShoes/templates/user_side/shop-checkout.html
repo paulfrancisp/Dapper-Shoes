@@ -79,7 +79,8 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <input type="text" required="" name="first_name" placeholder="First name *">
+                                        <input type="text" required="" name="first_name" placeholder="First name *" {% if add_value %}value="{{ address.first_name }}"{% endif %}>
+
                                     </div>
                                 </div>
                                 <div class="col">
@@ -125,9 +126,9 @@
                                 </div>
                             </div>
                             
-                            <div class="form-group">
+                            {% comment %} <div class="form-group">
                                 <input required="" type="text" name="email" placeholder="Email address *">
-                            </div>
+                            </div> {% endcomment %}
                             {% comment %} <div class="form-group">
                                 <div class="checkbox">
                                     <div class="custome-checkbox">
@@ -144,29 +145,33 @@
 
 
 
-                            {% comment %} <div class="ship_detail">
+                            <div class="ship_detail">
                                 <div class="form-group">
-                                    <div class="chek-form">
+                                    <div class="check-form">
                                         <div class="custome-checkbox">
                                             <input class="form-check-input" type="checkbox" name="checkbox" id="differentaddress">
-                                            <label class="form-check-label label_info" data-bs-toggle="collapse" data-target="#collapseAddress" href="#collapseAddress" aria-controls="collapseAddress" for="differentaddress"><span>Ship to a different address?</span></label>
+                                            <label class="form-check-label label_info" for="differentaddress"><span>Ship to home address?</span></label>
                                         </div>
                                     </div>
                                 </div>
-                                <div id="collapseAddress" class="different_address collapse in">
-                                    
+                                <div id="home_address_dropdown" class="different_address" style="display: none;">
                                     <div class="card mb-3 mb-lg-0">
                                         <div class="card-header">
                                             <h5 class="mb-0">Home Address</h5>
                                         </div>
                                         <div class="card-body">
-                                            <address>{{address.first_name}} {{address.last_name}}<br> {{address.address}}<br> {{address.town_city}}, {{address.state}}-{{address.zip_code}} <br> Ph:{{address.phone_number}}</address>
+                                            <address id="home_address">
+                                                {{ address.first_name }} {{ address.last_name }}<br>
+                                                {{ address.address }}<br>
+                                                {{ address.town_city }}, {{ address.state }}-{{ address.zip_code }}<br>
+                                                Ph: {{ address.phone_number }}
+                                            </address>
                                             <a href="{% url 'account_app:account_edit_address' %}" class="btn-small">Edit</a>
                                         </div>
-                                    </div>        
-
+                                    </div>
                                 </div>
-                            </div> {% endcomment %}
+                            </div>
+                            
 
 
 
@@ -276,4 +281,68 @@
         </section>
     </main>
     
+    
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const checkbox = document.getElementById('differentaddress');
+            const homeAddress = document.getElementById('home_address');
+    
+            // Get shipping address fields
+            const shippingFirstName = document.querySelector('[name="first_name"]');
+            const shippingLastName = document.querySelector('[name="last_name"]');
+            const shippingPhoneNumber = document.querySelector('[name="phone_number"]');
+            const shippingAddress = document.querySelector('[name="address"]');
+            const shippingTownCity = document.querySelector('[name="town_city"]');
+            const shippingState = document.querySelector('[name="state"]');
+            const shippingZipCode = document.querySelector('[name="zip_code"]');
+    
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // If checkbox is checked, populate shipping fields with home address details
+                    const lines = homeAddress.textContent.trim().split('\n').map(line => line.trim());
+                    const nameParts = lines[0].split(' ');
+                    shippingFirstName.value = nameParts[0];
+                    shippingLastName.value = nameParts.slice(1).join(' '); // Join remaining parts of the name
+                    shippingPhoneNumber.value = lines[3].split(':')[1].trim();
+    
+                    shippingAddress.value = lines[1];
+                    const cityStateParts = lines[2].split(',');
+                    shippingTownCity.value = cityStateParts[0];
+                    shippingState.value = cityStateParts[1].split('-')[0].trim();
+                    shippingZipCode.value = cityStateParts[1].split('-')[1].trim();
+                } else {
+                    // If checkbox is unchecked, clear shipping fields
+                    shippingFirstName.value = '';
+                    shippingLastName.value = '';
+                    shippingPhoneNumber.value = '';
+    
+                    shippingAddress.value = '';
+                    shippingTownCity.value = '';
+                    shippingState.value = '';
+                    shippingZipCode.value = '';
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let add_value = false; // Variable to track whether to add value to shipping fields
+            const checkbox = document.getElementById('differentaddress');
+            const homeAddressDropdown = document.getElementById('home_address_dropdown');
+    
+            checkbox.addEventListener('change', function() {
+                console.log("Checkbox checked:", this.checked); // Debugging statement
+                homeAddressDropdown.style.display = this.checked ? 'block' : 'none';
+                console.log("Dropdown display:", homeAddressDropdown.style.display); // Debugging statement
+                add_value = this.checked; // Set add_value to true if checkbox is checked
+                console.log("add_value:", add_value); // Debugging statement
+            });
+    
+            // Handle dropdown visibility initially based on checkbox state
+            homeAddressDropdown.style.display = checkbox.checked ? 'block' : 'none';
+        });
+    </script> 
+    
+
     {% endblock %} 

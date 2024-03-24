@@ -66,6 +66,14 @@ def account_change_password(request):
         user = User.objects.get(username__exact=request.user.username)
         print(user)
 
+        if ' ' in new_password:
+            messages.warning(request,'Password cannot have whitespaces')
+            return redirect('account_app:account_change_password')
+        
+        if len(new_password) < 8:
+            messages.info(request,'Password should be of 8 character')
+            return redirect('account_app:account_change_password')
+
         if new_password == confirm_password:
             success = user.check_password(current_password)
             if success:
@@ -136,21 +144,26 @@ def account_edit_address(request):
         phone_number = request.POST.get('phone_number')
 
         if address:  # Update existing address
-            if first_name:
-                address.first_name = first_name
-            if last_name:
-                address.last_name = last_name
-            if address_line:
-                address.address = address_line
-            if town_city:
-                address.town_city = town_city
-            if state:
-                address.state = state
-            if zip_code:
-                address.zip_code = zip_code
-            if phone_number:
-                address.phone_number = phone_number
-            address.save()
+            if any(field.strip() == '' for field in [first_name, last_name, address_line, town_city, state, zip_code, phone_number]):
+                messages.warning(request, 'Avoid whitespaces. Please enter proper details!!')
+
+                
+            else:
+                if first_name:
+                    address.first_name = first_name
+                if last_name:
+                    address.last_name = last_name
+                if address_line:
+                    address.address = address_line
+                if town_city:
+                    address.town_city = town_city
+                if state:
+                    address.state = state
+                if zip_code:
+                    address.zip_code = zip_code
+                if phone_number:
+                    address.phone_number = phone_number
+                address.save()
         else:  # Create a new address if one doesn't exist
             address = Address.objects.create(
                 user=current_user,

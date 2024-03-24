@@ -46,8 +46,11 @@ def add_cart(request, variant_id):
 
     try:
         cart_item = CartItem.objects.get(variant=variant , cart=cart) #,user = current_user
-        cart_item.quantity +=1
-        cart_item.save()
+        if cart_item.quantity < variant.stock:
+            cart_item.quantity +=1
+            cart_item.save()
+        else:
+            messages.error(request,"No more stock available for this product")
     except CartItem.DoesNotExist:
         cart_item = CartItem.objects.create(
             variant=variant,
@@ -97,7 +100,9 @@ def remove_cart(request, variant_id):
         cart= Cart.objects.get(user=current_user)
     except Cart.DoesNotExist:
         # For anonymous users, use some other logic to identify the cart (if needed)
-        cart= Cart.objects.create(user=current_user)
+        # cart= Cart.objects.create(user=current_user)
+        pass
+
     variant = get_object_or_404(Product_variant, id=variant_id)
     cart_item = CartItem.objects.get(variant=variant, cart=cart)
     if cart_item.quantity>1:
@@ -114,7 +119,8 @@ def remove_cart_item(request, variant_id):
         cart= Cart.objects.get(user=current_user)
     except Cart.DoesNotExist:
         # For anonymous users, use some other logic to identify the cart (if needed)
-        cart= Cart.objects.create(user=current_user)
+        # cart= Cart.objects.create(user=current_user)
+        pass
 
     variant = get_object_or_404(Product_variant, id=variant_id)
     cart_item = CartItem.objects.get(variant=variant, cart=cart)
@@ -125,29 +131,36 @@ def remove_cart_item(request, variant_id):
 
 def checkout(request, total=0, quantity=0, cart_items=None):
     current_user = request.user
+    
     try:
         cart= Cart.objects.get(user=current_user)
     except Cart.DoesNotExist:
         # For anonymous users, use some other logic to identify the cart (if needed)
-        cart= Cart.objects.create(user=current_user)
-    try:
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
-        for cart_item in cart_items:
+        # cart= Cart.objects.create(user=current_user)
+        pass
+    
+
+    cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+    for cart_item in cart_items:
+        if cart_item.quantity <= cart_item.variant.stock:
             total += (cart_item.variant.sale_price * cart_item.quantity)
             quantity += cart_item.quantity
-    except :
-        pass
+            
+            try:
+                address = Address.objects.get(user=current_user)
+            except Address.DoesNotExist:
+                # Handle the case where the user doesn't have an address yet
+                address = None
 
-    try:
-        address = Address.objects.get(user=current_user)
-    except Address.DoesNotExist:
-        # Handle the case where the user doesn't have an address yet
-        address = None
+            context={
+                'total': total,
+                'quantity' : quantity,
+                'cart_items' : cart_items,
+                'address':address
+            }
+            return render(request,'user_side/shop-checkout.html',context)
 
-    context={
-        'total': total,
-        'quantity' : quantity,
-        'cart_items' : cart_items,
-        'address':address
-    }
-    return render(request,'user_side/shop-checkout.html',context)
+        else:
+            
+            messages.error(request,f"Insufficient quantity. Reduce quantity to {cart_item.variant.stock} to proceed!!")
+            return redirect('cart_app:cart_list')
