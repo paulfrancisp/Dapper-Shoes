@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from account.models import *
+import razorpay
 
 
 # Create your views here.
@@ -18,16 +19,16 @@ from account.models import *
 #         print("created cart Id: ",cart)
 #     return cart
 
-def _cart_id(request):
-    current_user = request.user
+# def _cart_id(request):
+#     current_user = request.user
 
-    # Check if the user is authenticated
-    try:
-        cart= Cart.objects.get(user=current_user)
-    except Cart.DoesNotExist:
-        # For anonymous users, use some other logic to identify the cart (if needed)
-        cart= Cart.objects.create(user=current_user)
-    return cart 
+#     # Check if the user is authenticated
+#     try:
+#         cart= Cart.objects.get(user=current_user)
+#     except Cart.DoesNotExist:
+#         # For anonymous users, use some other logic to identify the cart (if needed)
+#         cart= Cart.objects.create(user=current_user)
+#     return cart 
 
 @login_required(login_url='user_app:user_login')
 def add_cart(request, variant_id):
@@ -152,11 +153,21 @@ def checkout(request, total=0, quantity=0, cart_items=None):
                 # Handle the case where the user doesn't have an address yet
                 address = None
 
+            # #Razorpay creating order
+            # total_amount = int(total * 100)
+            # client = razorpay.Client(auth=("rzp_test_qoXpACMLfXbWKp", "ydDrIJw9JIb3RhaMLHSsGvyi"))
+
+            # data = { "amount": total_amount, "currency": "INR", "receipt": "order_rcptid_11" }
+            # payment = client.order.create(data=data)
+
+            # print('11111111111',payment)
+
             context={
                 'total': total,
                 'quantity' : quantity,
                 'cart_items' : cart_items,
-                'address':address
+                'address':address,
+                # 'payment': payment,
             }
             return render(request,'user_side/shop-checkout.html',context)
 

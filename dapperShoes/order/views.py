@@ -1,3 +1,5 @@
+import json
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .models import *
 from cart.models import *
@@ -5,111 +7,12 @@ from product_management.models import *
 from django.contrib import messages
 from .forms import OrderForm
 from account.models import *
+import razorpay
+from django.views.decorators.csrf import csrf_exempt
+
 
 # Create your views here.
 def place_order_cod(request, total=0, quantity=0):
-    
-    # user_id = request.user.id
-
-    # # Get necessary instances
-    # payment_methods_instance = PaymentMethod.objects.get(method_name="CASH ON DELIVERY")
-    # user_instance = User.objects.get(id=user_id)
-
-    # # address = Address.objects.get(is_default=True, account=user_instance)
-    # cart_items = CartItem.objects.filter(user=user_instance, is_active=True)
-    # for i in cart_items:
-    #     if i.product.stock < 1:
-    #         messages.error(request,"Product Variant is Out Of Stock")
-    #         return redirect('checkout_app:checkout_payment')
-
-    # total = 0
-    # quantity = 0
-    # total_with_orginal_price = 0
-
-    # for cart_item in cart_items:
-    #     total += cart_item.subtotal()
-    #     total_with_orginal_price += (cart_item.product.max_price * cart_item.quantity)
-    #     quantity += cart_item.quantity
-
-    # discount = total_with_orginal_price - total
-
-    # # Create ShippingAddress instance
-    # address1 =[address.get_address_name(),address.street_address, address.town_city, address.state, address.state, address.country_region,address.zip_code,address.phone_number]
-    
-
-    # # Create Payment instance
-    # payment = Payment.objects.create(user=user_instance,payment_method=payment_methods_instance,amount_paid=0,payment_status='PENDING')
-    
-    
-    # draft_order= Order.objects.create(
-    #         user=user_instance,
-    #         shipping_address=address1,
-    #         order_total=total,
-    #         is_ordered  = True,
-    #         payment = payment,
-    #     )
-    # for cart_item in cart_items:
-    #     product= cart_item.product
-    #     product.stock -= cart_item.quantity
-    #     product.save()
-        
-    # for cart_item in cart_items:
-    #         OrderProduct.objects.create(
-    #             order           = draft_order,
-    #             user            = user_instance,
-    #             product_variant = cart_item.product.get_product_name(),
-    #             product_id      = cart_item.product.id,
-    #             quantity        = cart_item.quantity,
-    #             product_price   = float(cart_item.product.sale_price),
-    #             images          = cart_item.product.thumbnail_image,
-    #             ordered         = True,
-    #         )
-    #         print(cart_item.product.get_product_name())
-
-    # cart_items.delete()    
-    
-    # order_dtails=OrderProduct.objects.filter(user=user_instance,order=draft_order)
-    # for i in order_dtails:
-    #     address=i.order.shipping_address
-    
-    # print("address: ",address)
-
-    # cleaned_string = address.replace('[', '').replace(']', '')
-
-    # # Split the string by comma and remove empty strings and 'None' values
-    # split_data = [item.strip() for item in cleaned_string.split(',') if item.strip() != '' and item.strip() != 'None']
-
-    # # Remove single quotes from each item
-    # cleaned_data = [item.replace("'", "") for item in split_data]
-    # print(cleaned_data)
-    # str1 = str()
-    # k = 1
-    # for i in cleaned_data:
-    #     if k == 1:
-    #         str1+=i
-    #     else:
-    #         str1+=" "+i
-    #     k = 2
-
-    # str1 = str1.replace(","," ")
-    # print(str1)
-         
-
-    # draft_order.shipping_address = str1
-    # draft_order.save()
-    # print('order_dtails: ',draft_order)
-    # print("address: ",str1)
-    # print('order_product:  ',order_dtails)
-    
-    # context = {
-    #             'order_dtails' : draft_order,
-    #             'address' : str1,
-    #             'order_product' : order_dtails,
-    #             'grand_total':total,
-    #             'total_with_orginal_price':total_with_orginal_price,
-    #             'discount':discount,
-    #             }
-
 
     current_user = request.user
 
@@ -142,49 +45,78 @@ def place_order_cod(request, total=0, quantity=0):
 
     if request.method == 'POST':
         print('Inside if method POST')
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            print('FORM is valid')
+        # form = OrderForm(request.POST)
+        data_inst = json.loads(request.body)
+        print(data_inst)
+        # if form.is_valid():
+        #     print('FORM is valid')
             #Store all billing info inside order table
-            if 'differentaddress' in request.POST:
-                home_address = Address.objects.filter(user=current_user, is_default=True).first()
-                form.instance.user = current_user
-                form.instance.first_name = home_address.first_name
-                form.instance.last_name = home_address.last_name
-                form.instance.phone_number = home_address.phone_number
+            # if 'differentaddress' in request.POST:
+            #     home_address = Address.objects.filter(user=current_user, is_default=True).first()
+            #     form.instance.user = current_user
+            #     form.instance.first_name = home_address.first_name
+            #     form.instance.last_name = home_address.last_name
+            #     form.instance.phone_number = home_address.phone_number
                 # form.instance.email = home_address.email
-                form.instance.town_city = home_address.town_city
-                form.instance.address = home_address.address
-                form.instance.state = home_address.state
-                form.instance.zip_code = home_address.zip_code
-                form.instance.order_total = total
-                form.instance.ip = request.META.get('REMOTE_ADDR')
-                order_number = data.generate_order_number()
-                form.instance.order_number = order_number
-                order = form.save()
-            else:
-                data = Order()
-                data.user = current_user
-                data.first_name = form.cleaned_data['first_name']
-                data.last_name = form.cleaned_data['last_name']
-                data.phone_number = form.cleaned_data['phone_number']
-                # data.email = form.cleaned_data['email']
-                data.town_city = form.cleaned_data['town_city']
-                data.address = form.cleaned_data['address']
-                data.state = form.cleaned_data['state']
-                # data.country_region = form.cleaned_data['country_region']
-                data.zip_code = form.cleaned_data['zip_code']
-                data.order_total = total
-                data.ip = request.META.get('REMOTE_ADDR')
-                order_number = data.generate_order_number()
-                data.order_number = order_number
-                data.save()
+            #     form.instance.town_city = home_address.town_city
+            #     form.instance.address = home_address.address
+            #     form.instance.state = home_address.state
+            #     form.instance.zip_code = home_address.zip_code
+            #     form.instance.order_total = total
+            #     form.instance.ip = request.META.get('REMOTE_ADDR')
+            #     order_number = data.generate_order_number()
+            #     form.instance.order_number = order_number
+            #     order = form.save()
+            # else:
+        data = Order()
+        data.user = current_user
+        print('cccccccccccc',current_user)
+        # data.first_name = data_inst['first_name']
+        data.first_name = data_inst.get('formData').get('first_name')
+        data.last_name = data_inst.get('formData').get('last_name')
+        data.phone_number = data_inst.get('formData').get('phone_number')
+        data.address = data_inst.get('formData').get('address')
+        data.town_city = data_inst.get('formData').get('town_city')
+        data.state = data_inst.get('formData').get('state')
+        data.zip_code = data_inst.get('formData').get('zip_code')
+        selected_payment_method = data_inst.get('formData').get('selected_payment_method')
+        print(selected_payment_method,'ppppppppppppppppppppppppppppppppppppp')
 
-            order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+        data.order_total = total
+        data.ip = request.META.get('REMOTE_ADDR')
+        order_number = data.generate_order_number()
+        data.order_number = order_number
+        data.save()
 
-            # Get necessary instances
+        order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+
+        # Get necessary instances
+        if selected_payment_method == 'razorpay':
+            client = razorpay.Client(auth=("rzp_test_qoXpACMLfXbWKp", "ydDrIJw9JIb3RhaMLHSsGvyi"))
+            amount = int(total * 100)  # Amount in paisa
+            order_data = {
+                'amount': amount,
+                'currency': 'INR',
+                'receipt': 'order_rcptid_11',
+            }
+            razorpay_order = client.order.create(data=order_data)
+            order_id = razorpay_order['id']
+            context = {
+                    'order_id': razorpay_order['id'],
+                    'amount': razorpay_order['amount'],
+                    # 'currency': order['currency'],
+                    # 'key_id': settings.RAZOR_PAY_KEY_ID
+                }
+            
+            # order_id = razorpay_order.get('id')
+            # return JsonResponse({'order_id': order_id}, status=200)
+            return JsonResponse({'context': context}, status=200)
+
+        
+        elif selected_payment_method == 'cod':
             payment_methods_instance = PaymentMethod.objects.get(method_name="CASH ON DELIVERY")
-            print(payment_methods_instance)
+            print(payment_methods_instance,'iiiiiiiiiiiiiiiiCASH ON DELIVERY')
+
             # Create Payment instance
             payment = Payment.objects.create(user=current_user,amount_paid=0,payment_status='PENDING',payment_method=payment_methods_instance)
             # print(payment)
@@ -223,18 +155,22 @@ def place_order_cod(request, total=0, quantity=0):
             cart.cartitem_set.all().delete()    
 
             context = {
-                'order':order,
-                'cart_items':cart_items,
-                'total':total,
-                'payment' : payment,
+                "success":True,
             }
+            return JsonResponse({'message': 'Order placed successfully', 'context': context}, status=200)
 
-            return render(request,'user_side/Week 2/order-success.html',context)
-        else:
-            # If form is not valid, you may want to render the form again with errors
-            print('FORM is Invalid')
-            print(form.errors)
-            return render(request, 'user_side/shop-checkout.html')  #, {'form': form}
+            # return render(request,'user_side/Week 2/order-success.html',context)
+            # else:
+            #     print('FORM is Invalid')
+            #     print(form.errors)
+            #     return render(request, 'user_side/shop-checkout.html')  #, {'form': form}
     else:
         # If request method is not POST, redirect to the checkout page
-        return redirect('cart_app:checkout')
+        # return redirect('cart_app:checkout')
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+def success_page(request):
+    return render(request,"user_side/Week 2/order-success.html")
+
+# def place_order_razpay(request, total=0, quantity=0):

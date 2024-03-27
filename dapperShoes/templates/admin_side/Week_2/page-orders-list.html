@@ -52,7 +52,7 @@
                     {% for order_list in order_lists %}
                         <tbody>
                             <tr>
-                                <td><b><a href="{% url 'admin_app:admin_orders_detail' order_list.user.id %}">{{ order_list.order_number }}</a></td>
+                                <td><b><a href="{% url 'admin_app:admin_orders_detail' user_id=order_list.user.id order_number=order_list.order_number %}">{{ order_list.order_number }}</a></td>
                                 <td>{{ order_list.user.username }}</td>
                                 <td>{{ order_list.user.email }}</td>
                                 <td>

@@ -69,25 +69,29 @@ def admin_orders(request):
 
 
 
-def admin_orders_detail(request,user_id):
+def admin_orders_detail(request,user_id,order_number):
 
     user = User.objects.get(id=user_id)
     orders = Order.objects.filter(user_id=user.id)
-    print("Orders:", orders)  # Print the orders queryset
+    ord=Order.objects.get(order_number=order_number)
+
+    # print("Orders:", orders)  # Print the orders queryset
+    print("Orders:", ord)
+
     if orders.exists():
         order = orders.first()
-        print("First Order:", order)  # Print the first order instance
-        print("Address:", order.first_name, order.last_name, order.address, order.town_city, order.state, order.zip_code)  # Print address details
+        # print("First Order:", order)  # Print the first order instance
+        # print("Address:", order.first_name, order.last_name, order.address, order.town_city, order.state, order.zip_code)  # Print address details
     else:
         order = None
 
     # user = User.objects.get(id = user_id)
     # order = Order.objects.filter(user_id = user.id)
 
-    orderproduct = OrderProduct.objects.filter(user__id = user.id).order_by("-created_at")
+    orderproduct = OrderProduct.objects.filter(order = ord).order_by("-created_at")
     
-    total_user_orders = Order.objects.filter(user=user_id)
-    print("total_user_orders",total_user_orders)
+    # total_user_orders = Order.objects.filter(user=user_id)
+    # print("total_user_orders",total_user_orders)
     
     # try:
     #     user_address = Address.objects.get(is_default = True, account = user)

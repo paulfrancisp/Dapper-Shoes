@@ -62,9 +62,9 @@
                                             <td class="product-details">{{ item.order_status }}</td>
                                             <td>
                                                 {% if item.order_status == "New" or item.order_status == "Accepted" %}
-                                                    <a href="{% url 'account_app:cancel_product' item.id %}" class="btn btn-danger cancel-product">Cancel</a>
+                                                    <a href="{% url 'account_app:cancel_product' item.id %}" class="btn cancel-product">Cancel</a>
                                                 {% elif item.order_status == "Delivered"%}
-                                                    <a href="{% url 'account_app:return_product' item.id %}" class="btn btn-danger return-product">Return</a>
+                                                    <a href="{% url 'account_app:return_product' item.id %}" class="btn return-product">Return</a>
                                                 {% else %}
                                                     <button class="btn btn-danger cancel-product" disabled>Cancel</button>
                                                 {% endif %}
@@ -121,7 +121,7 @@
                     text: 'You want to return this product?',
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Yes, cancel it!',
+                    confirmButtonText: 'Yes, return it!',
                     cancelButtonText: 'No, keep it'
                 }).then((result) => {
                     if (result.isConfirmed) {
