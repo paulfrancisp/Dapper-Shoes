@@ -21,12 +21,12 @@ class Payment(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     payment_id = models.CharField(max_length=100,null=True,blank=True)
     payment_method  = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True, blank=True)
-    # payment_order_id = models.CharField(max_length=100,null=True,blank=True)
+    payment_order_id = models.CharField(max_length=100,null=True,blank=True)
     amount_paid = models.CharField(max_length=30)
     payment_status =    models.CharField(choices = PAYMENT_STATUS_CHOICES,max_length=20)
     is_paid = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    # payment_signature   = models.CharField(max_length=100, null=True, blank=True)
+    payment_signature   = models.CharField(max_length=100, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         # Check if payment status is 'SUCCESS'
@@ -57,7 +57,7 @@ class Order(models.Model):
     first_name      = models.CharField(max_length=50,default='')
     last_name       = models.CharField(max_length=50,default='')
     phone_number    = models.CharField(max_length=50,default='')
-    email           = models.EmailField(max_length=50,default='')
+    # email           = models.EmailField(max_length=50,default='')
     town_city       = models.CharField(max_length=100,default='')
     address         = models.CharField(max_length=255,default='')
     state           = models.CharField(max_length=50,default='')

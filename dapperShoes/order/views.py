@@ -9,7 +9,8 @@ from .forms import OrderForm
 from account.models import *
 import razorpay
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 
 # Create your views here.
 def place_order_cod(request, total=0, quantity=0):
@@ -100,7 +101,11 @@ def place_order_cod(request, total=0, quantity=0):
                 'receipt': 'order_rcptid_11',
             }
             razorpay_order = client.order.create(data=order_data)
-            order_id = razorpay_order['id']
+            # order_id = razorpay_order['id']
+
+            payment_methods_instance = PaymentMethod.objects.get(method_name="Razorpay")
+            payment = Payment.objects.create(user=current_user,amount_paid=0,payment_id=razorpay_order['id'],payment_order_id=order.order_number,payment_status='PENDING',payment_method=payment_methods_instance)
+
             context = {
                     'order_id': razorpay_order['id'],
                     'amount': razorpay_order['amount'],
@@ -173,4 +178,166 @@ def place_order_cod(request, total=0, quantity=0):
 def success_page(request):
     return render(request,"user_side/Week 2/order-success.html")
 
-# def place_order_razpay(request, total=0, quantity=0):
+
+
+@csrf_exempt
+def place_order_razpay(request):
+    print('Outside place_order_razpay POST')
+    if request.method == "POST":
+        print('Inside place_order_razpay POST')
+        try:
+            payment_id        = request.POST.get('razorpay_payment_id', '')
+            razorpay_order_id = request.POST.get('razorpay_order_id', '')
+            signature         = request.POST.get('razorpay_signature', '')
+
+            print('2255',payment_id,'2255',razorpay_order_id,'2255',signature)
+
+            params_dict = {
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            }
+            client = razorpay.Client(auth=("rzp_test_qoXpACMLfXbWKp", "ydDrIJw9JIb3RhaMLHSsGvyi"))  
+            result = client.utility.verify_payment_signature(params_dict)
+            
+            if not result :
+                print('Inside if in place_order_razpay POST')
+                return redirect('order_app:paymentfailed',razorpay_order_id,payment_id,signature)
+            else:
+                print('Inside else in place_order_razpay POST')
+                return redirect('order_app:order_success',razorpay_order_id,payment_id,signature)  #####Need to write view fn
+
+        except Exception as e:
+            # pass
+            print('Exception:', str(e))
+            return redirect('order_app:paymentfailed',razorpay_order_id,payment_id,signature)
+    else:
+        messages.error(request,"Payment is Faied, Try Again")
+        return redirect('checkout_app:checkout')
+
+
+
+
+
+# @login_required
+def order_success(request, razorpay_order_id,payment_id,signature):
+
+    payment = Payment.objects.get(payment_id=razorpay_order_id)         
+    payment.payment_status = 'SUCCESS'
+    # payment.payment_id = payment_id
+    payment.payment_signature = signature
+    payment.is_paid = True
+    current_user = payment.user
+    total = 0
+    quantity = 0
+    payment.save()
+
+    print('order no test',razorpay_order_id)
+
+
+    cart = Cart.objects.filter(user=current_user).first()
+    if not cart:
+        return redirect('shop_app:home')
+    
+    cart_items = cart.cartitem_set.all()
+    for cart_item in cart_items:
+        if cart_item.quantity <= cart_item.variant.stock:
+            total += cart_item.variant.sale_price * cart_item.quantity
+            quantity += cart_item.quantity
+        else:
+            messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
+            return redirect('cart_app:cart_list')
+    
+    order = Order.objects.get(user=current_user, is_ordered=False, order_number=payment.payment_order_id)
+
+
+    # Saving the payment and is_ordered values in Order table.
+    order.payment = payment   #### ISSUE here
+    order.is_ordered = True
+    order.save()
+
+
+    #Moving cart item to OrderProduct table.
+    cart_items = cart.cartitem_set.all()
+    for cart_item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        # orderproduct.payment = payment
+        orderproduct.user_id = request.user.id
+        orderproduct.variant_id = cart_item.variant.id
+        orderproduct.product_variant = cart_item.variant.variant_name
+        orderproduct.images = cart_item.variant.thumbnail_image
+        orderproduct.quantity = cart_item.quantity
+        orderproduct.product_price = cart_item.variant.sale_price
+        orderproduct.ordered = True
+        orderproduct.save()
+
+
+        #Reduce quantity of sold products
+        variant = Product_variant.objects.get(id=cart_item.variant.id)
+        # variantt = Product_variant.objects.filter(id=cart_item.variant.id)
+
+        variant.stock -= cart_item.quantity
+        variant.save()
+
+    #Clearing the cart
+    cart.cartitem_set.all().delete()    
+
+    context = {
+        "success":True,
+    }
+    # return JsonResponse({'message': 'Order placed successfully', 'context': context}, status=200)
+    return redirect('order_app:success_page')
+
+
+
+
+def paymentfailed(request, razorpay_order_id,payment_id,signature):
+    payment = Payment.objects.get(payment_id=razorpay_order_id)         
+    payment.payment_status = 'FAILED'
+    # payment.payment_id = payment_id
+    payment.payment_signature = signature
+    payment.is_paid = False
+    current_user = payment.user
+    payment.save()
+
+    print('order no test',razorpay_order_id)
+
+
+    cart = Cart.objects.filter(user=current_user).first()
+    if not cart:
+        return redirect('shop_app:home')
+    
+    cart_items = cart.cartitem_set.all()
+    # for cart_item in cart_items:
+    #     if cart_item.quantity <= cart_item.variant.stock:
+    #         total += cart_item.variant.sale_price * cart_item.quantity
+    #         quantity += cart_item.quantity
+    #     else:
+    #         messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
+    #         return redirect('cart_app:cart_list')
+    
+    order = Order.objects.get(user=current_user, is_ordered=False, order_number=payment.payment_order_id)
+
+
+    # Saving the payment and is_ordered values in Order table.
+    order.payment = payment  
+    order.is_ordered = False
+    order.save()
+
+
+    #Moving cart item to OrderProduct table.
+    cart_items = cart.cartitem_set.all()
+    for cart_item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        # orderproduct.payment = payment
+        orderproduct.user_id = request.user.id
+        orderproduct.variant_id = cart_item.variant.id
+        orderproduct.product_variant = cart_item.variant.variant_name
+        orderproduct.images = cart_item.variant.thumbnail_image
+        orderproduct.quantity = cart_item.quantity
+        orderproduct.product_price = cart_item.variant.sale_price
+        orderproduct.ordered = True
+        orderproduct.save()
+    return render(request, 'user_side/Week 3/payment-failed.html')

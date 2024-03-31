@@ -340,7 +340,7 @@
     </script>
 
 
- <script>
+<script>
 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
@@ -395,7 +395,7 @@
             }
         })
         .then(data => {
-            console.log('Response:', data);
+            console.log('Response333:', data);
             // Log the context if the response is successful
             window.location.href= "{% url 'order_app:success_page' %}";
             console.log('Context:', data.context);
@@ -443,7 +443,7 @@
                         "description": "Test Transaction",
                         "image": "https://example.com/your_logo",
                         "order_id": order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                        "callback_url": "http://127.0.0.1:8000/success-page",
+                        "callback_url": "http://127.0.0.1:8000/place_order_razpay/",
                         "prefill": {
                             "name": "Gaurav Kumar",
                             "email": "gaurav.kumar@example.com",
@@ -458,8 +458,22 @@
                     };
                     var rzp1 = new Razorpay(options);
                     
-                        rzp1.open();
-                        e.preventDefault();
+                    rzp1.on("payment.success", function (response) {
+                        // console.log('Payment success:', response);
+                        window.location.reload(); // Reload the page after successful payment
+                        // Handle payment success, e.g., redirect to a success page
+                        //window.location.href= "{% url 'order_app:success_page' %}";
+                    });
+
+                    rzp1.on("payment.failed", function (response) {
+                        //alert(response.error.code);
+                        window.location.reload();
+                        
+                    });
+
+
+                    rzp1.open();
+                    e.preventDefault();
                     
                     console.log('Context:', data.context);
                     // You can handle the context data here
@@ -486,7 +500,7 @@
         document.getElementById('myForm').submit();
     }
     
- </script>
+</script>
 
     
     
