@@ -88,7 +88,7 @@
                                         <li><a href="index-4.html">Home 4</a></li>
                                     </ul> {% endcomment %}
                                 </li>
-                                <li><a href="{% url 'shop_app:index' %}">Shop </a>             {% comment %} {% url '' %} {% endcomment %}
+                                <li><a href="{% url 'shop_app:shop' %}">Shop </a>             {% comment %} {% url '' %} {% endcomment %}
                                     {% comment %} <ul class="sub-menu">
                                         <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
                                         <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
@@ -176,9 +176,9 @@
                         
                         <div class="header-action-2">
                             <div class="header-action-icon-2">
-                                <a href="shop-wishlist.html">
-                                    <img class="svgInject" alt="Evara" src="{% static 'assets_user/imgs/theme/icons/icon-heart.svg' %}">
-                                    <span class="pro-count blue">4</span>
+                                <a href="{% url 'shop_app:wishlist' %}">
+                                    <img class="svgInject ms-2" alt="Evara" src="{% static 'assets_user/imgs/theme/icons/icon-heart.svg' %}">
+                                    {% comment %} <span class="pro-count blue">4</span> {% endcomment %}
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
@@ -290,7 +290,7 @@
                                     <li><a href="index-4.html">Home 4</a></li>
                                 </ul> {% endcomment %}
                             </li>
-                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="shop-grid-right.html">shop</a>
+                            <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'shop_app:shop' %}">shop</a>
                                 {% comment %} <ul class="dropdown">
                                     <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
                                     <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>

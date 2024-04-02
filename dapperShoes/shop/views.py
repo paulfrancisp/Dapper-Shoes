@@ -9,6 +9,8 @@ from cart.models import *
 from django.http import HttpResponse
 from django.utils import timezone
 from django.db.models import Min
+from .models import *
+from django.contrib import messages
 
 # Create your views here.
 # def navbar(request):
@@ -126,16 +128,35 @@ def search(request):
 def home(request):
     return render(request,'user_side/index.html')
 
+def shop(request):
+    category = Category.objects.filter(is_active=True)
+    sub_category = SubCategory.objects.filter(is_active=True)
+    products = Product.objects.filter(is_active=True).order_by('product_name')
+    variants = Product_variant.objects.filter(product__in=products)
+
+    context = {
+        'categories' : category,
+        'subcategories' : sub_category,
+        'products' : products,
+        'variants' : variants,
+    }
+    return render(request,'user_side/shop-fullwidth.html',context)
+
 
 def filter_category(request,category_filter):
     category = Category.objects.filter(is_active=True)
     sub_category = SubCategory.objects.filter(is_active=True)
     filtered_category = Category.objects.filter(category_name=category_filter)
+    products = Product.objects.filter(sub_category__category__category_name=category_filter, is_active=True).order_by('product_name')
+    variants = Product_variant.objects.filter(product__in=products)
+    
 
     context = {
         'categories' : category,
         'subcategories' : sub_category,
         'filtered_category': filtered_category,
+        'products' : products,
+        'variants' : variants,
     }
     return render(request,'user_side/shop-fullwidth.html',context)
 
@@ -143,19 +164,28 @@ def filter_subcategory(request,subcategory_filter):
     category = Category.objects.filter(is_active=True)
     sub_category = SubCategory.objects.filter(is_active=True)
     filtered_subcategory = SubCategory.objects.filter(sub_category_name=subcategory_filter)
+    products = Product.objects.filter(sub_category__sub_category_name=subcategory_filter, is_active=True).order_by('product_name')
+    variants = Product_variant.objects.filter(product__in=products)
 
     context = {
         'categories' : category,
         'subcategories' : sub_category,
         'filtered_subcategory' : filtered_subcategory,
-        # 'category_subcategories': category_subcategories,
+        'products' : products,
+        'variants' : variants,
     }
     return render(request,'user_side/shop-fullwidth.html',context)
 
-def low_to_high(request):
+def low_to_high(request, page):
 
     category = Category.objects.filter(is_active=True)
     sub_category = SubCategory.objects.filter(is_active=True)
+
+    if page == 'index':
+        template_name = 'user_side/index.html'
+    elif page == 'shop':
+        template_name = 'user_side/shop-fullwidth.html'
+
     products = Product.objects.filter(is_active=True).annotate(min_sale_price=Min('product_var__sale_price')).order_by('min_sale_price')
     variants = Product_variant.objects.filter(product__in=products)
 
@@ -177,14 +207,20 @@ def low_to_high(request):
         'is_new':is_new,
     }
     
-    return render(request,'user_side/index.html',context)
+    return render(request,template_name,context)
 
 
 
-def high_to_low(request):
+def high_to_low(request, page):
 
     category = Category.objects.filter(is_active=True)
     sub_category = SubCategory.objects.filter(is_active=True)
+
+    if page == 'index':
+        template_name = 'user_side/index.html'
+    elif page == 'shop':
+        template_name = 'user_side/shop-fullwidth.html'
+
     products = Product.objects.filter(is_active=True).annotate(min_sale_price=Min('product_var__sale_price')).order_by('-min_sale_price')
     variants = Product_variant.objects.filter(product__in=products)
 
@@ -206,7 +242,7 @@ def high_to_low(request):
         'is_new':is_new,
     }
     
-    return render(request,'user_side/index.html',context)
+    return render(request,template_name,context)
 
 
 
@@ -247,5 +283,37 @@ def price_range(request,lower_price=0,upper_price=100000):
 
 
 
+def wishlist(request):
+    user_id = request.user.id
+    user = User.objects.get(id = user_id)
+    try:
+        user_wishlist = Wishlist.objects.get(user=user)
+    except:
+        user_wishlist = Wishlist.objects.create(user=user)
 
+    wishlist_items = WishlistItem.objects.filter(wishlist=user_wishlist)
+
+    context = {
+       'wishlist_items':wishlist_items ,
+    }
+    return render(request,'user_side/Week 3/wishlist.html',context) #
+
+def add_wishlist(request,id):
+    user_id = request.user.id
+
+    user = User.objects.get(id = user_id)
+    product_variant = Product_variant.objects.get(id=id)
+    try:
+        user_wishlist = Wishlist.objects.get(user=user)
+    except:
+        user_wishlist = Wishlist.objects.create(user=user)
+
+    wishlist_items = WishlistItem.objects.filter(wishlist=user_wishlist,product = product_variant)
+    if not wishlist_items:
+       WishlistItem.objects.create(wishlist=user_wishlist,product = product_variant)
+    else:
+        messages.error(request,'item is already in your wishlist')
+        id = product_variant.id
+        return redirect('shop_app:product_detail',id)
+    return redirect('shop_app:wishlist')
 

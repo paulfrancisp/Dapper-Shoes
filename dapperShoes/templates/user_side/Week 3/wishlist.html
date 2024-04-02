@@ -1,0 +1,68 @@
+{% extends "user_side/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<main class="main" style="background:#fff">
+    {% comment %} <div class="page-header breadcrumb-wrap">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html" rel="nofollow">Wishlist</a>
+              
+            </div>
+        </div>
+    </div> {% endcomment %}
+   
+    <section class="mt-50 mb-50 mr-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table shopping-summery text-center">
+                            <thead>
+                                <tr class="main-heading">
+                                    <th scope="col">Product Image</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Stock Status</th>
+                                    <th scope="col">Remove</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for wishlist_item in wishlist_items %}
+                                <tr>
+                                    <td class="image product-thumbnail" colspan="1"><img src="{{wishlist_item.product.thumbnail_image.url}}" alt="#" style="width:40%"></td>
+                                    <td class="product-des product-name" colspan="1">
+                                        <h5 class="product-name" style="color:black"><a href="{% url 'store_app:product_details' wishlist_item.product.id %}">{{wishlist_item.product.variant_name}}</a></h5>
+                                        
+                                    </td>
+                                    <td class="price" colspan="1" data-title="Price"><span>{{wishlist_item.product.sale_price}}</span></td>
+                                    {% if wishlist_item.product.stock%}
+                                    <td class="text-center" colspan="1" data-title="Stock">
+                                        <span class="color3 font-weight-bold">{{wishlist_item.product.stock}}</span>
+                                    </td>
+                                    {% else %}
+
+                                    <td class="text-center" colspan="1" data-title="Stock">
+                                        <span class="color3 font-weight-bold" style="color:red">Out Of Stock</span>
+                                    </td>
+                                    {%endif%}
+
+                                    
+                                    <td class="text-right"> 
+                                        <a href="{% url 'store_app:wishlist_remove' wishlist_item.product.id %}" class="btn btn-danger"> Remove</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+</main>
+</div>
+{% endblock %}

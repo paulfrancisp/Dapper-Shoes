@@ -132,3 +132,52 @@ def change_order_status(request, order_id, status, user_id):
     
     # Redirect to some page after changing status
     return redirect(reverse('admin_app:admin_orders_detail', kwargs={'user_id': user_id, 'order_number': order.order.order_number}))
+
+
+
+
+
+def sales_report(request):
+    if not request.user.is_superuser:
+        return redirect('admin_app:admin_login')
+    start_date_value = ""
+    end_date_value = ""
+    try:
+        ("New", "New"),
+        ("Accepted", "Accepted"),
+        ("Delivered", "Delivered"),
+        orders=Order.objects.filter(is_ordered = True).order_by('-created_at')
+        order_products = OrderProduct.objects.filter(order__payment__payment_status__in=["SUCCESS"], order_status__in=["Delivered", "Accepted", "New"])
+
+        total_amount = 0
+        for i in order_products:
+            total_amount += i.total
+
+    except Exception as e:
+        print("its exception",str(e))
+        
+    if request.method == 'POST':
+       
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        start_date_value = start_date
+        end_date_value = end_date
+        if start_date and end_date:
+          
+            start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+            end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+
+           
+            order_products = order_products.filter(created_at__range=(start_date, end_date))
+            total_amount = 0
+            for i in order_products:
+                total_amount += i.total
+   
+    context={
+        'orders':order_products,
+        'start_date_value':start_date_value,
+        'end_date_value':end_date_value,
+        'total_amount':total_amount
+    }
+
+    return render(request,'admin_side/Week 3/sales_report.html',context)

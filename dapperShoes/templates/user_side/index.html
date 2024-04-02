@@ -132,8 +132,8 @@
                             <ul class="categories">
                                 {% comment %} <li><a href="shop-grid-right.html">Popularity</a></li>
                                 <li><a href="shop-grid-right.html">Average rating</a></li> {% endcomment %}
-                                <li><a href="{% url 'shop_app:low_to_high' %}">Price: Low to High</a></li>
-                                <li><a href="{% url 'shop_app:high_to_low' %}">Price: High to Low</a></li>
+                                <li><a href="{% url 'shop_app:low_to_high' 'index' %}">Price: Low to High</a></li>
+                                <li><a href="{% url 'shop_app:high_to_low' 'index' %}">Price: High to Low</a></li>
                             </ul>
                         </div>
                         <div class="widget-category mb-30">

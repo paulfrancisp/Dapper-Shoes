@@ -10,22 +10,11 @@ urlpatterns = [
     path('admin-orders',views.admin_orders,name='admin_orders'),
     path('admin-orders-detail/<int:user_id>/<str:order_number>',views.admin_orders_detail,name='admin_orders_detail'),
     path('change_status/<int:order_id>/<str:status>/<int:user_id>/', views.change_order_status, name='change_status'),
+    path('sales_report/',views.sales_report,name='sales_report'),
+
 
     # path('admin-users-list',views.admin_users_list,name='admin_users_list'),
     # path('admin-products-list',views.admin_products_list,name='admin_products_list'),
-    
-    # path('admin-catagories',views.admin_catagories,name='admin_catagories'),
-    # path('admin-add-products',views.admin_add_products,name='admin_add_products'),
-    
-        
-    # path('admin-',views.admin_,name='admin_')
-    # path('',views.adminhome,name='adminhome'),
-    # path('login/',views.admin_login,name='admin_login'),
-    # path('logout/',views.adminlogout,name='adminlogout'),
-    # path('product/',views.productdetail,name='productdetail'),
-    # path('add-product/',views.addproduct,name='addproduct'),
-    # path('edit-product/<int:product_id>',views.editproduct,name='editproduct'),
-    # path('add-category/',views.addcategory,name='addcategory'),
     
     # path('user-management/', views.user_management, name='user_management'),
     # path('category-management/',views.categorymanagement,name='categorymanagement'),
