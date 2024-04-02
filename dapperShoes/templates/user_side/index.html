@@ -132,18 +132,19 @@
                             <ul class="categories">
                                 {% comment %} <li><a href="shop-grid-right.html">Popularity</a></li>
                                 <li><a href="shop-grid-right.html">Average rating</a></li> {% endcomment %}
-                                <li><a href="shop-grid-right.html">Price: Low to High</a></li>
-                                <li><a href="shop-grid-right.html">Price: High to Low</a></li>
+                                <li><a href="{% url 'shop_app:low_to_high' %}">Price: Low to High</a></li>
+                                <li><a href="{% url 'shop_app:high_to_low' %}">Price: High to Low</a></li>
                             </ul>
                         </div>
                         <div class="widget-category mb-30">
                             <h5 class="section-title style-1 mb-30 wow fadeIn animated">Price Range</h5>
                             <ul class="categories">
-                                <li><a href="shop-grid-right.html">₹0-₹2000</a></li>
-                                <li><a href="shop-grid-right.html">₹2000-₹4000</a></li>
-                                <li><a href="shop-grid-right.html">₹4000-₹6000</a></li>
-                                <li><a href="shop-grid-right.html">₹6000-₹8000</a></li>
-                                <li><a href="shop-grid-right.html">₹8000+</a></li>
+                                <li><a href="{% url 'shop_app:price-range' 1 1 %}">All Price Ranges</a></li>
+                                <li><a href="{% url 'shop_app:price-range' 0 2000 %}">₹0-₹2000</a></li>
+                                <li><a href="{% url 'shop_app:price-range' 2000 4000 %}">₹2000-₹4000</a></li>
+                                <li><a href="{% url 'shop_app:price-range' 4000 6000 %}">₹4000-₹6000</a></li>
+                                <li><a href="{% url 'shop_app:price-range' 6000 8000 %}">₹6000-₹8000</a></li>
+                                <li><a href="{% url 'shop_app:price-range' 8000 100000 %}">₹8000+</a></li>
                             </ul>
                         </div>
                         <div class="banner-img wow fadeIn mb-45mb-lg-0 animated d-lg-block d-none">

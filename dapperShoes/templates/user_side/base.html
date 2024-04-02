@@ -109,27 +109,35 @@
                                         <li><a href="shop-compare.html">Shop – Compare</a></li>
                                     </ul> {% endcomment %}
                                 </li>
-                                <li ><a href="#">Men <i class="fi-rs-angle-down"></i></a>
-                                    <ul class="sub-menu">
-                                        <li><a href="blog-category-grid.html">Men Casuals</a></li>
-                                        <li><a href="blog-category-list.html">Men Formals</a></li>
-                                        <li><a href="blog-category-big.html">Men Sandals</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="blog-category-grid.html">Women <i class="fi-rs-angle-down"></i></a>
+                                {% for category in categories %}
+                                    <li>
+                                        
+                                        <a href="{% url 'shop_app:filter_category' category_filter=category.category_name %}">{{ category.category_name }} <i class="fi-rs-angle-down"></i></a>
+                                        <ul class="sub-menu">
+                                            {% for subcategory in category.subcategory_set.all %}
+                                                {% if subcategory.is_active %}
+                                                    <li><a href="{% url 'shop_app:filter_subcategory' subcategory_filter=subcategory.sub_category_name %}">{{ subcategory.sub_category_name }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                                {% comment %} <li>
+                                    <a href="blog-category-grid.html">Women <i class="fi-rs-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a href="blog-category-grid.html">Women Casuals</a></li>
                                         <li><a href="blog-category-list.html">Women Formals</a></li>
                                         <li><a href="blog-category-big.html">Women Sandals</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="#">Kids <i class="fi-rs-angle-down"></i></a>
+                                <li>
+                                    <a href="#">Kids <i class="fi-rs-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a href="blog-category-grid.html">Kids Casuals</a></li>
                                         <li><a href="blog-category-list.html">Kids Formals</a></li>
                                         <li><a href="blog-category-big.html">Kids Sandals</a></li> 
                                     </ul>
-                                </li>
+                                </li> {% endcomment %}
                                 <li>
                                     <a href="page-contact.html">Contact</a>
                                 </li>
@@ -137,7 +145,7 @@
                         </nav>
                     </div>
                     <div class="header-action-right">
-                        {% if request.user.is_authenticated %}
+                        {% comment %} {% if request.user.is_authenticated %} {% endcomment %}
                         <div class="search-style-1">
                             <form action="#">
                                 {% comment %} <select class="select-active">
@@ -157,7 +165,7 @@
                                 <input type="text" placeholder="Search for items…"> 
                             </form>
                         </div>
-                        {% endif %}
+                        {% comment %} {% endif %} {% endcomment %}
                         
                         <div class="header-action-icon-2">
                             <a href="{% url 'account_app:account' %}">

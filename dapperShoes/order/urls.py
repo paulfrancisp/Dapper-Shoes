@@ -11,8 +11,8 @@ urlpatterns = [
     path('order-success/<razorpay_order_id>/<payment_id>/<signature>/', views.order_success, name='order_success'), #Razorpay
 
 
-    path('success-page/<str:order_id>/<str:payment_id>/<str:signature>/', views.success_page, name='success_page'),  #COD
-    path('paymentfailed/<razorpay_order_id>/<payment_id>/<signature>/', views.paymentfailed, name='paymentfailed'),
+    path('success-page/<str:order_id>/<str:payment_id>/<str:signature>/', views.success_page, name='success_page'),  #COD/Razorpay success page
+    path('paymentfailed', views.paymentfailed, name='paymentfailed'),
     # path('payment_fail_order/', views.payment_fail_order, name='payment_fail_order'),
 
 

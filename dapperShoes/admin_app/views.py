@@ -38,7 +38,8 @@ def admin_dashboard(request):
 
 @never_cache
 def admin_orders(request):
-    order_list = Order.objects.all().order_by("-created_at")
+    # order_list = Order.objects.all().order_by("-created_at")
+    order_list = Order.objects.filter(is_ordered=True).order_by("-created_at")
     # order_product = OrderProduct.objects.filter(order=order_list)
 
     context = {
@@ -109,7 +110,7 @@ def admin_orders_detail(request,user_id,order_number):
 
 
     context = {
-        "orders":orders,
+        "ord":ord,
         "order":order,
         "orderproduct":orderproduct,
         # "user_address":user_address,
@@ -130,4 +131,4 @@ def change_order_status(request, order_id, status, user_id):
     print("user_id",user_id)
     
     # Redirect to some page after changing status
-    return redirect(reverse('admin_app:admin_orders_detail', kwargs={'user_id': user_id}))
+    return redirect(reverse('admin_app:admin_orders_detail', kwargs={'user_id': user_id, 'order_number': order.order.order_number}))

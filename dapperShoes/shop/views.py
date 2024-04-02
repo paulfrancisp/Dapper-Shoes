@@ -8,13 +8,27 @@ from cart.models import *
 # from cart.views import _cart_id
 from django.http import HttpResponse
 from django.utils import timezone
+from django.db.models import Min
 
 # Create your views here.
+# def navbar(request):
+#     # categories = Category.objects.filter(is_active=True)
+#     category = Category.objects.filter(is_active=True)
+#     sub_category = SubCategory.objects.filter(is_active=True)
+     
+
+#     context = {
+#         'categories1' : category,
+#         'subcategories1' : sub_category,
+#     }
+
+#     return render(request,'user_side/base.html',context)
+
 
 def index(request):
             
-    category = Category.objects.all()
-    sub_category = SubCategory.objects.all()
+    category = Category.objects.filter(is_active=True)
+    sub_category = SubCategory.objects.filter(is_active=True)
     products = Product.objects.filter(is_active=True).order_by('product_name')
     variants = Product_variant.objects.filter(product__in=products)
 
@@ -24,7 +38,12 @@ def index(request):
         if product.updated_at > three_days_ago:
             is_new[product.id] = True
 
-    print(is_new)
+    # print(is_new)
+
+    # Filter subcategories for each category
+    # category_subcategories = {}
+    # for category in category:
+    #     category_subcategories[category] = sub_category.filter(category=category)
 
     
     
@@ -34,6 +53,7 @@ def index(request):
         'products' : products,
         'variants' : variants,
         'is_new':is_new,
+        # 'category_subcategories': category_subcategories,
     }
     
     return render(request,'user_side/index.html',context)
@@ -105,5 +125,127 @@ def search(request):
 
 def home(request):
     return render(request,'user_side/index.html')
+
+
+def filter_category(request,category_filter):
+    category = Category.objects.filter(is_active=True)
+    sub_category = SubCategory.objects.filter(is_active=True)
+    filtered_category = Category.objects.filter(category_name=category_filter)
+
+    context = {
+        'categories' : category,
+        'subcategories' : sub_category,
+        'filtered_category': filtered_category,
+    }
+    return render(request,'user_side/shop-fullwidth.html',context)
+
+def filter_subcategory(request,subcategory_filter):
+    category = Category.objects.filter(is_active=True)
+    sub_category = SubCategory.objects.filter(is_active=True)
+    filtered_subcategory = SubCategory.objects.filter(sub_category_name=subcategory_filter)
+
+    context = {
+        'categories' : category,
+        'subcategories' : sub_category,
+        'filtered_subcategory' : filtered_subcategory,
+        # 'category_subcategories': category_subcategories,
+    }
+    return render(request,'user_side/shop-fullwidth.html',context)
+
+def low_to_high(request):
+
+    category = Category.objects.filter(is_active=True)
+    sub_category = SubCategory.objects.filter(is_active=True)
+    products = Product.objects.filter(is_active=True).annotate(min_sale_price=Min('product_var__sale_price')).order_by('min_sale_price')
+    variants = Product_variant.objects.filter(product__in=products)
+
+    three_days_ago = timezone.now() - timezone.timedelta(days=3)
+    is_new = {}
+    for product in products:
+        if product.updated_at > three_days_ago:
+            is_new[product.id] = True
+
+    print(is_new)
+
+    
+    
+    context = {
+        'categories' : category,
+        'subcategories' : sub_category,
+        'products' : products,
+        'variants' : variants,
+        'is_new':is_new,
+    }
+    
+    return render(request,'user_side/index.html',context)
+
+
+
+def high_to_low(request):
+
+    category = Category.objects.filter(is_active=True)
+    sub_category = SubCategory.objects.filter(is_active=True)
+    products = Product.objects.filter(is_active=True).annotate(min_sale_price=Min('product_var__sale_price')).order_by('-min_sale_price')
+    variants = Product_variant.objects.filter(product__in=products)
+
+    three_days_ago = timezone.now() - timezone.timedelta(days=3)
+    is_new = {}
+    for product in products:
+        if product.updated_at > three_days_ago:
+            is_new[product.id] = True
+
+    print(is_new)
+
+    
+    
+    context = {
+        'categories' : category,
+        'subcategories' : sub_category,
+        'products' : products,
+        'variants' : variants,
+        'is_new':is_new,
+    }
+    
+    return render(request,'user_side/index.html',context)
+
+
+
+def price_range(request,lower_price=0,upper_price=100000):
+    category = Category.objects.filter(is_active=True)
+    sub_category = SubCategory.objects.filter(is_active=True)
+    if lower_price == 1:
+        products = Product.objects.filter(is_active=True).order_by('product_name')
+    else:
+        products = Product.objects.filter(
+            is_active=True,
+            product_var__sale_price__gte=lower_price,
+            product_var__sale_price__lte=upper_price
+        ).annotate(
+            min_sale_price=Min('product_var__sale_price')
+        ).order_by('-min_sale_price')
+
+    variants = Product_variant.objects.filter(product__in=products)
+
+    three_days_ago = timezone.now() - timezone.timedelta(days=3)
+    is_new = {}
+    for product in products:
+        if product.updated_at > three_days_ago:
+            is_new[product.id] = True
+
+    print(is_new)
+
+    
+    
+    context = {
+        'categories' : category,
+        'subcategories' : sub_category,
+        'products' : products,
+        'variants' : variants,
+        'is_new':is_new,
+    }
+    return render(request,'user_side/index.html',context)
+
+
+
 
 

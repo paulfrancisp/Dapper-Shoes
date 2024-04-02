@@ -44,12 +44,9 @@
                             <h6 class="mb-1">Customer</h6>
                             <p class="mb-1">
                                 Name: {{user.username}}  <br>
-                                {% comment %} <template class="__cf_email__" data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template> <br> 
-                                {% if email %}
-                                    Email: {{user.email}}
-                                {% else%}
-                                Email : Not provided
-                                {% endif %} {% endcomment %}
+                                {% comment %} <template class="__cf_email__" data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template> <br>  {% endcomment %}
+                                Email: {{user.email}}
+                                
                             </p>
                             {% comment %} <a href="#">View profile</a> {% endcomment %}
                         </div>
@@ -101,8 +98,9 @@
 
                             
                                 <p class="mb-1">
-                                    Type: CASH ON DELIVERY<br>
-                                    Total: ₹{{ order.order_total }}
+                                    Type: {{ ord.payment.payment_method }}<br>
+                                    Order: {{ ord.order_number }} <br>
+                                    Total: ₹{{ ord.order_total }}
                                 </p>
                             
 

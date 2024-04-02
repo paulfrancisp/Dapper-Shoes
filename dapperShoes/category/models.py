@@ -30,7 +30,7 @@ class SubCategory(models.Model):
     sub_category_name = models.CharField(max_length=255)
     sub_slug = models.SlugField(unique=True, blank=True, null=True)
     description = models.TextField()
-    category = models.ForeignKey('Category', on_delete=models.CASCADE)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='subcategory_set')
     sub_category_image = models.ImageField(upload_to='sub_category_images/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_active =  models.BooleanField(default=True)
