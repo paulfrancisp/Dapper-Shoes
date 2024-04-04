@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.db.models import Min
 from .models import *
 from django.contrib import messages
+from django.db.models import Q
 
 # Create your views here.
 # def navbar(request):
@@ -123,7 +124,26 @@ def product_detail_attribute(request,product_id,attribute_value):
 
 
 def search(request):
-    return HttpResponse('Search page')
+    if request.method == "POST":
+        print('Inside search POST')
+        search_query = request.POST.get('search', '')
+        print('Inside search POST',search_query)
+        if search_query:
+            # Use Q objects to perform a case-insensitive search across multiple fields
+            products = Product.objects.filter(product_name__icontains=search_query)  # Search product name
+            print('qqqqqqqqqq')
+            return render(request, 'user_side/index.html', {'products': products, 'search_query': search_query})
+        else:
+            # If search query is empty, return an empty result or an appropriate message
+            print('wwwwwwwwwww')
+            return render(request, 'user_side/index.html', {'products': None, 'search_query': search_query})
+    else:
+        # Handle GET requests to the search page (if needed)
+        print('eeeeeeeeee')
+        return render(request, 'user_side/index.html')
+    # return HttpResponse('Search page')
+
+
 
 def home(request):
     return render(request,'user_side/index.html')
@@ -300,20 +320,31 @@ def wishlist(request):
 
 def add_wishlist(request,id):
     user_id = request.user.id
-
     user = User.objects.get(id = user_id)
     product_variant = Product_variant.objects.get(id=id)
+
     try:
         user_wishlist = Wishlist.objects.get(user=user)
     except:
         user_wishlist = Wishlist.objects.create(user=user)
 
     wishlist_items = WishlistItem.objects.filter(wishlist=user_wishlist,product = product_variant)
+
     if not wishlist_items:
        WishlistItem.objects.create(wishlist=user_wishlist,product = product_variant)
     else:
         messages.error(request,'item is already in your wishlist')
-        id = product_variant.id
-        return redirect('shop_app:product_detail',id)
+        # id = product_variant.id
+        # return redirect('shop_app:product_detail',id)
     return redirect('shop_app:wishlist')
 
+
+
+def wishlist_remove(request,id):
+    user_id = request.user.id
+    user = User.objects.get(id = user_id)
+    product_variant = Product_variant.objects.get(id=id)
+    user_wishlist = Wishlist.objects.get(user=user)
+    wishlist_items = WishlistItem.objects.get(wishlist=user_wishlist,product = product_variant)
+    wishlist_items.delete()
+    return redirect('shop_app:wishlist')

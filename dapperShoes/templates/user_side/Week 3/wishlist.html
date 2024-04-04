@@ -24,7 +24,7 @@
                                     <th scope="col">Product Image</th>
                                     <th scope="col">Product</th>
                                     <th scope="col">Price</th>
-                                    <th scope="col">Stock Status</th>
+                                    {% comment %} <th scope="col">Stock Status</th> {% endcomment %}
                                     <th scope="col">Remove</th>
 
                                 </tr>
@@ -34,24 +34,21 @@
                                 <tr>
                                     <td class="image product-thumbnail" colspan="1"><img src="{{wishlist_item.product.thumbnail_image.url}}" alt="#" style="width:40%"></td>
                                     <td class="product-des product-name" colspan="1">
-                                        <h5 class="product-name" style="color:black"><a href="{% url 'store_app:product_details' wishlist_item.product.id %}">{{wishlist_item.product.variant_name}}</a></h5>
-                                        
+                                        <h5 class="product-name" style="color:black"><a href="">{{wishlist_item.product.variant_name}}</a></h5>
+                                        {% comment %} {% url 'shop_app:product_details' wishlist_item.product.id %} {% endcomment %}
+                                        <p class="font-xs">Brand:{{wishlist_item.product.product.product_brand.brand_name}} &nbsp;&nbsp;&nbsp;&nbsp;Subcategory:{{wishlist_item.product.product.sub_category}}</p>
                                     </td>
-                                    <td class="price" colspan="1" data-title="Price"><span>{{wishlist_item.product.sale_price}}</span></td>
-                                    {% if wishlist_item.product.stock%}
-                                    <td class="text-center" colspan="1" data-title="Stock">
-                                        <span class="color3 font-weight-bold">{{wishlist_item.product.stock}}</span>
-                                    </td>
-                                    {% else %}
-
-                                    <td class="text-center" colspan="1" data-title="Stock">
+                                    <td class="price" colspan="1" data-title="Price"><span>{{wishlist_item.product.sale_price}} INR</span><br>
+                                    {% if wishlist_item.product.stock < 10 %}
+                                        <span class="color3 font-weight-bold" style="color:red">{{wishlist_item.product.stock}} units remaining.</span>
+                                    {% elif wishlist_item.product.stock == 0 %}
                                         <span class="color3 font-weight-bold" style="color:red">Out Of Stock</span>
-                                    </td>
                                     {%endif%}
-
+                                    </td>    
                                     
                                     <td class="text-right"> 
-                                        <a href="{% url 'store_app:wishlist_remove' wishlist_item.product.id %}" class="btn btn-danger"> Remove</a>
+                                        <a href="{% url 'shop_app:wishlist_remove' id=wishlist_item.product.id %}" class="btn btn-danger"> Remove</a>
+                                        {% comment %} {% url 'shop_app:wishlist_remove' wishlist_item.product.id %} {% endcomment %}
                                     </td>
                                 </tr>
                                 {% endfor %}

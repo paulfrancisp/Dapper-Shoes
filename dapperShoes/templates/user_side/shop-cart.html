@@ -41,7 +41,7 @@
                                             <td class="image product-thumbnail"><img src="{{ cart_item.variant.thumbnail_image.url }}" alt="#" ></td>
                                             <td class="product-des product-name">
                                                 <h5 class="product-name"><a href="{% url 'shop_app:product_detail_attribute' product_id=cart_item.variant.product_id attribute_value=cart_item.variant.attribute.attribute_value|default:'9' %}">{{ cart_item.variant.variant_name }}</a></h5>
-                                                <p class="font-xs">Brand:{{ cart_item.variant.product.product_brand.brand_name }}&nbsp;&nbsp;&nbsp;&nbsp;Subcategory:{{ cart_item.variant.product.sub_category }}
+                                                <p class="font-xs">Brand:{{ cart_item.variant.product.product.product_brand.brand_name }}&nbsp;&nbsp;&nbsp;&nbsp;Subcategory:{{ cart_item.variant.product.sub_category }}
                                                 </p>
                                                 <div class="">
                                                     {% if cart_item.quantity >= cart_item.variant.stock %}

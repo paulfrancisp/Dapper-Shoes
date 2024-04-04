@@ -183,7 +183,7 @@
                                                         <a href="{% url 'cart_app:add_cart' variant_id=variants.id %}">
                                                         <button type="submit" class="button button-add-to-cart " style="white-space: nowrap; text-decoration: none;  padding: 0px 40px;">Add to cart &nbsp;&nbsp;<i class="fi-rs-shopping-bag-add"></i></button>
                                                         </a>
-                                                        <a aria-label="Add To Wishlist" class="action-btn hover-up " href="" style="display: inline-block; text-decoration: none; margin-left: 150px;"><i class="fi-rs-heart"></i></a>
+                                                        <a aria-label="Add To Wishlist" class="action-btn hover-up " href="{% url 'shop_app:add_wishlist' id=products.id %}" style="display: inline-block; text-decoration: none; margin-left: 150px;"><i class="fi-rs-heart"></i></a>
                                                         {% comment %} {% url 'shop_app:add_wishlist' id=product_variant.id %}                                                 {% endcomment %}
 
                                                         {% comment %} <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> {% endcomment %}

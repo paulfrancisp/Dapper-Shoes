@@ -147,7 +147,8 @@
                     <div class="header-action-right">
                         {% comment %} {% if request.user.is_authenticated %} {% endcomment %}
                         <div class="search-style-1">
-                            <form action="#">
+                            <form method="POST" action="{% url 'shop_app:search' %}">
+                                {% csrf_token %}
                                 {% comment %} <select class="select-active">
                                     <option>Search in</option>
                                     <option>Women's Clothing</option>
@@ -162,7 +163,7 @@
                                     <option>Mother & Kids</option>
                                 </select> {% endcomment %}
                                
-                                <input type="text" placeholder="Search for items…"> 
+                                <input type="text" name="search" placeholder="Search for items…"> 
                             </form>
                         </div>
                         {% comment %} {% endif %} {% endcomment %}

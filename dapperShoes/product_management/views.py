@@ -8,6 +8,8 @@ from django.urls import reverse
 
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.images import ImageFile
+from django.core.exceptions import ValidationError
 
 
 
@@ -53,7 +55,20 @@ def edit_product(request,id):
             if subcategory_id:
                 product.sub_category = subcategory
             if image:
+                # try:
+                #     # Open the image file and check if it's a valid image format
+                #     ImageFile(image).open()  # This will raise an error if the image format is invalid
+                #     print('Add images of proper format2222222222222')
+
+                # except Exception as e:
+                #     # Handle invalid image format
+                #     messages.warning(request,"Add images of proper format")
+                #     print('Add images of proper format')
+                #     return render(request, 'admin_side/page-edit-product-list.html', {'error': 'Invalid image format. Please upload a valid image.'})
+
+                # # If the image format is valid, save the image to the product
                 product.images = image
+            
 
             product.save()
 

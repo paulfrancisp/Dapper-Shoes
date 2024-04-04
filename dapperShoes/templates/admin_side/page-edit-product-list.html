@@ -20,6 +20,13 @@
                 <span class="success" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
                 {% endfor %}
                 {% endif %}
+                <div class="form-group">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <span class="error" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
             </div>
             <div class="col-lg-6">
                 <div class="card mb-4">
