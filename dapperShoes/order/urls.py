@@ -16,4 +16,8 @@ urlpatterns = [
     # path('payment_fail_order/', views.payment_fail_order, name='payment_fail_order'),
 
 
+    # path('wallet_order/', views.wallet_order, name='wallet_order'),
+    # path('place_order_wallet/', views.place_order_wallet, name='place_order_wallet'),
+    # path('payment_fail_order/', views.payment_fail_order, name='payment_fail_order'),
+
 ]

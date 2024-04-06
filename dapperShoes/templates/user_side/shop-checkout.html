@@ -192,48 +192,31 @@
                                 </div>
 
 
-                                <div class="payment_option">
-                                    {% comment %} <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios3" checked="">
-                                        <label class="form-check-label" for="exampleRadios3" data-bs-toggle="collapse" data-target="#bankTranfer" aria-controls="bankTranfer">Direct Bank Transfer</label>
-                                        <div class="form-group collapse in" id="bankTranfer">
-                                            <p class="text-muted mt-5">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration. </p>
-                                        </div>
-                                    </div> 
-                                    <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios4" checked="">
-                                        <label class="form-check-label" for="exampleRadios4" data-bs-toggle="collapse" data-target="#razorpay" aria-controls="checkPayment">Razorpay</label>
-                                        <div class="form-group collapse in" id="checkPayment">
-                                            <p class="text-muted mt-5">Please send your cheque to Store Name, Store Street, Store Town, Store State / County, Store Postcode. </p>
-                                        </div> 
-                                    </div>{% endcomment %}
-                                    {% comment %} <div class="custome-radio">
-                                        <input class="form-check-input" required="" type="radio" name="payment_option" id="exampleRadios5" checked="">
-                                        <label class="form-check-label" for="exampleRadios5" data-bs-toggle="collapse" data-target="#cash_on_delivery" aria-controls="cash_on_delivery">Cash on delivery</label>
-                                      
-                                        {% comment %} <div class="form-group collapse in" id="paypal">
-                                            <p class="text-muted mt-5">Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.</p>
-                                        </div> 
-                                    </div> {% endcomment %}
-
-
-                                    <label>
-                                        <div>
-                                            <input type="radio" name="payment-option" value="cod" checked>Cash on delivery
-                                        </div>
-                                    </label>
-                                    <label>
-                                        <div>
-                                            <input type="radio" name="payment-option" value="razorpay">Razorpay
-                                        </div>
-                                    </label>
-                                    
-                                    <!-- Button for Cash on Delivery -->
-                                    {% comment %} <button id="cod-button" style="display: inline-block;">Place Order</button> {% endcomment %}
-                                    
-                                    <!-- Button for Razorpay -->
-                                    {% comment %} <button id="razorpay-button" style="display: none;">Pay with Razorpay</button> {% endcomment %}
-                                
+                                <div class="payment_option d-flex">
+                                    <div class="col-md-3">
+                                        <label >
+                                            <div>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio"  style="width: 30px; height: 30px;" name="payment-option" value="cod" checked>
+                                                <p>Cash on delivery</p> 
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>
+                                            <div>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="radio" style="width: 30px; height: 30px;" name="payment-option" value="razorpay">
+                                                <p>Razorpay</p> 
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>
+                                            <div>
+                                                &nbsp;&nbsp;&nbsp;<input type="radio" style="width: 30px; height: 30px;" name="payment-option" value="wallet">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <p>Wallet</p>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
                                 
                                 {% comment %} <div class="hidden mt-30 ">
@@ -244,6 +227,11 @@
                                 </div>
                                 <div id="card-button-container" >
                                     <button id="razorpay-button" type="submit" class="btn btn-fill-out btn-block mt-30" style="display: none;">Pay with Razorpay</button>
+                                </div>
+
+                                <div id="card-button-container" >
+                                    <button id="wallet-button" type="submit" class="btn btn-fill-out btn-block mt-30" style="display: none;">Pay from Wallet</button>
+                                    <p class="ms-1" id="wallet-details" style="display: none;" >Wallet Balance: ₹<span id="wallet-balance"></span></p>
                                 </div>
                                  
                             </div>
@@ -321,6 +309,10 @@
         // Get references to the buttons
         const codButton = document.getElementById('cod-button');
         const razorpayButton = document.getElementById('razorpay-button');
+        const walletButton = document.getElementById('wallet-button');
+
+        const walletDetails = document.getElementById('wallet-details');
+        const walletBalance = document.getElementById('wallet-balance');
     
         // Add event listener to the radio buttons
         document.querySelectorAll('input[name="payment-option"]').forEach(function (radio) {
@@ -330,13 +322,26 @@
                     // If Cash on Delivery is selected, show the Place Order button and hide the Razorpay button
                     codButton.style.display = 'inline-block';
                     razorpayButton.style.display = 'none';
+                    walletButton.style.display = 'none';
+                    walletDetails.style.display = 'none';
                 } else if (this.value === 'razorpay') {
                     // If Razorpay is selected, show the Razorpay button and hide the Place Order button
                     codButton.style.display = 'none';
+                    walletButton.style.display = 'none';
+                    walletDetails.style.display = 'none';
                     razorpayButton.style.display = 'inline-block';
+                } else if (this.value === 'wallet') {
+                    walletButton.style.display = 'block';
+                    walletBalance.style.display = 'inline-block';
+                    walletDetails.style.display = 'block';
+                    razorpayButton.style.display = 'none';
+                    codButton.style.display = 'none';
+                    
                 }
             });
         });
+        const walletBalanceValue = 1000; // Example value, replace with actual wallet balance
+        walletBalance.textContent = walletBalanceValue;
     </script>
 
 
@@ -485,6 +490,42 @@
 
 
         }
+
+        if(paymentMethod === "wallet"){
+
+            fetch('{% url "order_app:place_order_cod" %}', {
+            method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken,
+                    // Add any additional headers if needed
+                },
+                body: JSON.stringify({
+                formData,
+    
+                }),
+                })
+                .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok.');
+                }
+            })
+            .then(data => {
+                console.log('Response333:', data);
+                // Log the context if the response is successful
+                window.location.href= "{% url 'order_app:success_page' %}";
+                console.log('Context:', data.context);
+                // You can handle the context data here
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+            });
+    
+                    
+            }
 
 
     });
