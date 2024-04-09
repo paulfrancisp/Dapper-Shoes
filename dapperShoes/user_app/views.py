@@ -141,6 +141,7 @@ def user_otp_verification(request):
             # address = Address.objects.create(user=customer,)
             # address.save()
             customer = authenticate(request, username = uname, password=passw)     #authenticate(email = email_session, password=passw)
+            
             if customer is not None:
                 login(request,customer)
                 return redirect('shop_app:index')

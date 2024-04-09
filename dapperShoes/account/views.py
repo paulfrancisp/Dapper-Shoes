@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from order.models import *
 from django.contrib import messages
+from django.contrib.auth.models import User
+from wallet.models import *
 
 # Create your views here.
 @login_required(login_url='user_app:user_login')
@@ -190,7 +192,7 @@ def account_edit_address(request):
 def cancel_product(request, item_id):
     ordered_product = OrderProduct.objects.get(id = item_id)
     ordered_product.order_status = "Cancelled User"
-    ordered_product.total = 0
+    # ordered_product.total = 0
     ordered_product.save()
     ordered_product_quantity = ordered_product.quantity
 
@@ -200,7 +202,23 @@ def cancel_product(request, item_id):
     product_variant.save()
 
     order = ordered_product.order
+    print('1111111111111',order.payment.payment_method)
     order_products = OrderProduct.objects.filter(order = order)
+
+    if str(order.payment.payment_method) != 'CASH ON DELIVERY':
+        print('inside if satement',order.payment.payment_method )
+        user_wallet = Wallet.objects.get(user=request.user)
+        wallet_transaction = WalletTransaction.objects.filter(wallet=user_wallet).order_by('-id')
+        wallet_transaction = WalletTransaction.objects.create(
+            wallet = user_wallet,
+            transaction_type = "CREDIT",
+            amount = ordered_product.total,
+            wallet_payment_id = order.order_number,
+        )
+        user_wallet.balance += ordered_product.total
+        user_wallet.save()
+        wallet_transaction.save()
+
     order = Order.objects.get(id = order.id)
     order.order_total -= ordered_product.total
 

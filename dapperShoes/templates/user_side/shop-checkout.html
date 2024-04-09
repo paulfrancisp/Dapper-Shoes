@@ -219,20 +219,29 @@
                                     </div>
                                 </div>
                                 
-                                {% comment %} <div class="hidden mt-30 ">
-                                    
+                                {% comment %} <div class="hidden mt-30 "> 
                                 </div>{% endcomment %}
+
+                                
                                 <div id="card-button-container" >
                                     <button id="cod-button" type="submit" name="submit" class="btn btn-fill-out btn-block mt-30">Place Order</button>
                                 </div>
                                 <div id="card-button-container" >
                                     <button id="razorpay-button" type="submit" class="btn btn-fill-out btn-block mt-30" style="display: none;">Pay with Razorpay</button>
                                 </div>
-
+                                
                                 <div id="card-button-container" >
+                                    
                                     <button id="wallet-button" type="submit" class="btn btn-fill-out btn-block mt-30" style="display: none;">Pay from Wallet</button>
                                     <p class="ms-1" id="wallet-details" style="display: none;" >Wallet Balance: ₹<span id="wallet-balance"></span></p>
                                 </div>
+                                <p>
+                                {% if messages %}
+                                {% for message in messages %}
+                                <span class="error" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                                {% endfor %}
+                                {% endif %}
+                                </p>
                                  
                             </div>
                             {% comment %} <a href="#" class="btn btn-fill-out btn-block mt-30">Place Order</a> {% endcomment %}
@@ -296,6 +305,27 @@
                             
                         </div>
                      {% comment %} </form> {% endcomment %}
+                     <div class="mb-30 mt-50 me-3">
+                        <div class="heading_s1 mb-3 ms-4">
+                            <h4>&nbsp;Apply Coupon</h4>
+                        </div>
+                        <div class="total-amount">
+                            <div class="left ms-4">
+                                <div class="coupon">
+                                    <form id="couponform">
+                                        <div class="form-row row justify-content-center">     {% comment %} action="{% url 'user_app:user_login' %}" method="post" {% endcomment %}
+                                            <div class="form-group col-lg-6">
+                                                <input class="font-medium" name="Coupon" placeholder="Enter Your Coupon">
+                                            </div>
+                                            <div class="form-group col-lg-6">
+                                                <button type="submit" class="btn  btn-sm"><i class="fi-rs-label mr-10"></i>Apply</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
 
 
                     
@@ -304,7 +334,11 @@
             </div>
         </section>
     </main>
+
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    {% comment %} ---------- For cod, razorpay, wallet respective buttons to come up onclick ---------- {% endcomment %} 
     <script>
         // Get references to the buttons
         const codButton = document.getElementById('cod-button');
@@ -340,11 +374,27 @@
                 }
             });
         });
-        const walletBalanceValue = 1000; // Example value, replace with actual wallet balance
+        const walletBalanceValue = {{user_wallet.balance}}; // Example value, replace with actual wallet balance
         walletBalance.textContent = walletBalanceValue;
     </script>
 
 
+{% comment %} ---------- For coupon not to refresh the page ---------- {% endcomment %}       
+<script>
+    const form = document.getElementById('couponform');
+    function handleSubmit (e){
+            e.preventDefault()
+
+            //fetch...........
+
+    }
+
+    form.addEventListener('submit', handleSubmit);
+</script>
+
+
+
+{% comment %} ---------- For order placement cod, razorpay, wallet ---------- {% endcomment %}    
 <script>
 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -521,6 +571,8 @@
             })
             .catch(error => {
                 console.error('Error:', error);
+                //alert(error);
+                window.location.reload();
                 
             });
     
@@ -542,173 +594,6 @@
     }
     
 </script>
-
-    
-    
-
-
-    {% comment %} ----- Paypal ----- {% endcomment %}
-    {% comment %} <script>
-        // Listen for changes to the radio fields
-        document.querySelectorAll('input[name=payment-option]').forEach(function(el) {
-            el.addEventListener('change', function(event) {
-                // If PayPal is selected, show the PayPal button
-                if (event.target.value === 'paypal') {
-                    document.querySelector('#card-button-container').style.display = 'none';
-                    document.querySelector('#paypal-button-container').style.display = 'block';
-                } else {
-                    // If other payment option is selected, hide the PayPal button
-                    document.querySelector('#card-button-container').style.display = 'block';
-                    document.querySelector('#paypal-button-container').style.display = 'none';
-                }
-            });
-        });
-
-        // Hide Non-PayPal button by default
-        document.querySelector('#card-button-container').style.display = 'block';
-
-        // Render the PayPal button into #paypal-button-container
-        paypal.Buttons({
-            style: {
-                layout: 'horizontal',
-                color:  'blue',
-                shape:  'rect',
-                label:  'pay',
-                height: 48
-            },
-            createOrder: function(data, actions) {
-                // Implement your createOrder function here
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '88.44'
-                        }
-                    }]
-                });
-            },
-            onApprove: function(data, actions) {
-                // Implement your onApprove function here
-                return actions.order.capture().then(function(details){
-                    // Show a success mesage to the buyer
-                    alert('Transcation completed by ' + details.payer.name.given_name + '!');
-                });
-            }
-        }).render('#paypal-button-container');
-    </script> {% endcomment %}
-    {% comment %} <script>
-        //Render the PayPal button into #paypal-button-container
-        paypal.Button({
-            //Set up the transcation
-            createOrder: function(data, actions){
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: '88.44'
-                        }
-                    }]
-                });
-            },
-
-            //Finalize the transcation
-            OnApprove: function(data, actions){
-                return actions.order.capture().then(function(details){
-                    // Show a success mesage to the buyer
-                    alert('Transcation completed by ' + details.payer.name.given_name + '!');
-                });
-            }
-        }).render('#paypal-button-container');
-    </script> {% endcomment %}
-    
-    <!-- Paypal -->
-    {% comment %}<script src="https://www.paypal.com/sdk/js?client-id=ARStyQ3opJleA8O07tyXDKuX-w6EvTK3sDdczfBEdGe6t5qXYDoizmU75gTRt7z0_Sgh8cZuxvIe7gcY&currency=INR"></script> {% endcomment %}
-
-    {% comment %} <script>
-        // Listen for changes to the radio fields
-        document.querySelectorAll('input[name=payment-option]').forEach(function(el) {
-            el.addEventListener('change', function(event) {
-
-                // If PayPal is selected, show the PayPal button
-                if (event.target.value === 'paypal') {
-                    document.querySelector('#card-button-container').style.display = 'none';
-                    document.querySelector('#paypal-button-container').style.display = 'inline-block';
-                }
-
-                // If Card is selected, show the standard continue button
-                if (event.target.value === 'card') {
-                    document.querySelector('#card-button-container').style.display = 'inline-block';
-                    document.querySelector('#paypal-button-container').style.display = 'none';
-                }
-            });
-        });
-
-        // Hide Non-PayPal button by default
-        document.querySelector('#card-button-container').style.display = 'inline-block';  //none
-
-        // Render the PayPal button into #paypal-button-container
-        paypal.Buttons({
-            style: {
-                layout: 'horizontal',
-                color:  'blue',
-                shape:  'rect',
-                label:  'pay',
-                height: 48
-            
-            },
-
-            // Call your server to set up the transaction
-            createOrder: function(data, actions) {
-                return fetch('/demo/checkout/api/paypal/order/create/', {
-                    method: 'post'
-                }).then(function(res) {
-                    console.log(res)
-                    return res.json();
-                }).then(function(orderData) {
-                    return orderData.id;
-                });
-            },
-
-            // Call your server to finalize the transaction
-            onApprove: function(data, actions) {
-                return fetch('/demo/checkout/api/paypal/order/' + data.orderID + '/capture/', {
-                    method: 'post'
-                }).then(function(res) {
-                    return res.json();
-                }).then(function(orderData) {
-                    // Three cases to handle:
-                    //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                    //   (2) Other non-recoverable errors -> Show a failure message
-                    //   (3) Successful transaction -> Show confirmation or thank you
-
-                    // This example reads a v2/checkout/orders capture response, propagated from the server
-                    // You could use a different API or structure for your 'orderData'
-                    var errorDetail = Array.isArray(orderData.details) && orderData.details[0];
-
-                    if (errorDetail && errorDetail.issue === 'INSTRUMENT_DECLINED') {
-                        return actions.restart(); // Recoverable state, per:
-                        // https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
-                    }
-
-                    if (errorDetail) {
-                        var msg = 'Sorry, your transaction could not be processed.';
-                        if (errorDetail.description) msg += '\n\n' + errorDetail.description;
-                        if (orderData.debug_id) msg += ' (' + orderData.debug_id + ')';
-                        return alert(msg); // Show a failure message (try to avoid alerts in production environments)
-                    }
-
-                    // Successful capture! For demo purposes:
-                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-                    var transaction = orderData.purchase_units[0].payments.captures[0];
-                    alert('Transaction '+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
-
-                    // Replace the above to show a success message within this page, e.g.
-                    // const element = document.getElementById('paypal-button-container');
-                    // element.innerHTML = '';
-                    // element.innerHTML = '<h3>Thank you for your payment!</h3>';
-                    // Or go to another URL:  actions.redirect('thank_you.html');
-                });
-            }
-        }).render('#paypal-button-container');
-    </script>  {% endcomment %}
 
 
 

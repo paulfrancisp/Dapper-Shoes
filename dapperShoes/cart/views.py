@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from account.models import *
+from wallet.models import *
 import razorpay
 
 
@@ -149,9 +150,16 @@ def checkout(request, total=0, quantity=0, cart_items=None):
             
             try:
                 address = Address.objects.get(user=current_user)
+                
             except Address.DoesNotExist:
                 # Handle the case where the user doesn't have an address yet
                 address = None
+
+            try:
+                user_wallet = Wallet.objects.get(user=current_user)
+            except:
+                pass
+
 
             # #Razorpay creating order
             # total_amount = int(total * 100)
@@ -168,6 +176,7 @@ def checkout(request, total=0, quantity=0, cart_items=None):
                 'cart_items' : cart_items,
                 'address':address,
                 # 'payment': payment,
+                'user_wallet': user_wallet,
             }
             return render(request,'user_side/shop-checkout.html',context)
 

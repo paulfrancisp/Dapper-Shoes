@@ -12,6 +12,7 @@ from django.db.models import Min
 from .models import *
 from django.contrib import messages
 from django.db.models import Q
+from wallet.models import *
 
 # Create your views here.
 # def navbar(request):
@@ -29,11 +30,20 @@ from django.db.models import Q
 
 
 def index(request):
-            
+
+    user = request.user        
     category = Category.objects.filter(is_active=True)
     sub_category = SubCategory.objects.filter(is_active=True)
     products = Product.objects.filter(is_active=True).order_by('product_name')
     variants = Product_variant.objects.filter(product__in=products)
+    
+    if user.is_authenticated:
+        try:
+            user_wallet = Wallet.objects.get(user=user)
+        except Wallet.DoesNotExist:
+            user_wallet = Wallet.objects.create(user=user, balance=0)
+    else:
+        user_wallet = None
 
     three_days_ago = timezone.now() - timezone.timedelta(days=3)
     is_new = {}
@@ -56,6 +66,7 @@ def index(request):
         'products' : products,
         'variants' : variants,
         'is_new':is_new,
+        'user_wallet':user_wallet,
         # 'category_subcategories': category_subcategories,
     }
     

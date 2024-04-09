@@ -63,6 +63,11 @@
                                                     </div>
                                                     <button type="button" class="btn btn-primary" id="addFundsBtn">Add Funds</button>
                                                 </form>
+                                                {% if messages %}
+                                                {% for message in messages %}
+                                                <span class="error" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: green;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                                                {% endfor %}
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="card mt-4">
@@ -74,9 +79,9 @@
                                                     {% for transaction in wallet_transaction %}
                                                     <li class="list-group-item">
                                                         {% if transaction.transaction_type == 'CREDIT' %}
-                                                            <strong style="color: green;">{{ transaction.amount }}</strong> - {{ transaction.created_at }} - {{ transaction.transaction_type }} <span style="color:red"> <p>{{ transaction.transaction_detail }}<p></span>
+                                                            <strong style="color: green;">₹{{ transaction.amount }}</strong> - {{ transaction.created_at }} - {{ transaction.transaction_type }} <span style="color:red"> <p>{{ transaction.transaction_detail }}<p></span>
                                                         {% elif transaction.transaction_type == 'DEBIT' %}
-                                                            <strong style="color: red;">{{ transaction.amount }}</strong> - {{ transaction.created_at }} - {{ transaction.transaction_type }}
+                                                            <strong style="color: red;">₹{{ transaction.amount }}</strong> - {{ transaction.created_at }} - {{ transaction.transaction_type }}
                                                         {% endif %}
                                                     </li>
                                                     {% endfor %}

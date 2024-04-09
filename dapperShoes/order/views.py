@@ -7,6 +7,7 @@ from product_management.models import *
 from django.contrib import messages
 from .forms import OrderForm
 from account.models import *
+from wallet.models import *
 import razorpay
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -98,14 +99,70 @@ def place_order_cod(request, total=0, quantity=0):
             # return JsonResponse({'order_id': order_id}, status=200)
             return JsonResponse({'context': context}, status=200)
 
-        # elif selected_payment_method == 'wallet':
+        elif selected_payment_method == 'wallet':
+            payment_methods_instance = PaymentMethod.objects.get(method_name="Wallet")   
+            wallet = Wallet.objects.get(user = current_user)
+
+            if total<= wallet.balance: 
+                payment = Payment.objects.create(user=current_user,amount_paid=total,payment_status='SUCCESS',payment_method=payment_methods_instance,payment_order_id=order.order_number)
+                order.payment = payment   
+                order.is_ordered = True
+                order.save()
+
+                
+                
+                wallet_transaction = WalletTransaction.objects.create(
+                    wallet = wallet,
+                    transaction_type = "DEBIT",
+                    amount = total,
+                    wallet_payment_id = order.order_number,
+                )
+                wallet.balance -= total
+                wallet.save()
+                wallet_transaction.save()
+
+
+                #Moving cart item to OrderProduct table.
+                cart_items = cart.cartitem_set.all()
+                for cart_item in cart_items:
+                    orderproduct = OrderProduct()
+                    orderproduct.order_id = order.id
+                    # orderproduct.payment = payment
+                    orderproduct.user_id = request.user.id
+                    orderproduct.variant_id = cart_item.variant.id
+                    orderproduct.product_variant = cart_item.variant.variant_name
+                    orderproduct.images = cart_item.variant.thumbnail_image
+                    orderproduct.quantity = cart_item.quantity
+                    orderproduct.product_price = cart_item.variant.sale_price
+                    orderproduct.ordered = True
+                    orderproduct.save()
+
+
+                    #Reduce quantity of sold products
+                    variant = Product_variant.objects.get(id=cart_item.variant.id)
+                    variantt = Product_variant.objects.filter(id=cart_item.variant.id)
+                    print(variant)
+                    print(variantt)
+                    variant.stock -= cart_item.quantity
+                    variant.save()
+
+                #Clearing the cart
+                cart.cartitem_set.all().delete()    
+
+                context = {
+                    "success":True,
+                }
+                return JsonResponse({'message': 'Order placed successfully', 'context': context}, status=200)
+            else:
+                messages.warning(request,"Insufficent wallet balance!! Use other payment methods.") 
+                return JsonResponse({'message': 'Insufficent wallet balance'}, status=400)
         
         elif selected_payment_method == 'cod':
             payment_methods_instance = PaymentMethod.objects.get(method_name="CASH ON DELIVERY")
             print(payment_methods_instance,'iiiiiiiiiiiiiiiiCASH ON DELIVERY')
 
             # Create Payment instance
-            payment = Payment.objects.create(user=current_user,amount_paid=0,payment_status='PENDING',payment_method=payment_methods_instance)
+            payment = Payment.objects.create(user=current_user,amount_paid=0,payment_status='PENDING',payment_method=payment_methods_instance,payment_order_id=order.order_number)
             # print(payment)
 
             # Saving the payment and is_ordered values in Order table.

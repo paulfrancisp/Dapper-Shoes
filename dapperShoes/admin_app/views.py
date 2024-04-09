@@ -135,8 +135,6 @@ def change_order_status(request, order_id, status, user_id):
 
 
 
-
-
 def sales_report(request):
     if not request.user.is_superuser:
         return redirect('admin_app:admin_login')
