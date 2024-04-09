@@ -8,8 +8,13 @@ import json
 from django.views.decorators.cache import never_cache
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from decimal import Decimal
+from cart.models import *
 
 # Create your views here.
+
+########## ------------ Admin side urls ------------ ##########
+
 def coupon_list(request):
     coupons = Coupon.objects.all().order_by('id')
     return render(request,'admin_side/Week 3/coupon_list.html',{'coupons':coupons})
@@ -108,3 +113,96 @@ def delete_coupon(request,id):
         coupon.delete()
     return redirect(reverse('coupon_app:coupon_list'))
 
+
+
+
+
+
+
+
+
+########## ------------ User side urls ------------ ##########
+
+def apply_coupon(request):
+    if request.method == "POST":
+        # discount_amount = 0 
+
+        data = json.loads(request.body)
+        coupon_code = data.get('coupon_code')
+        print(coupon_code)
+        current_user = request.user
+        total = 0
+        quantity = 0
+
+        try:
+            # Attempt to get the Coupon object based on the provided coupon code
+            coupon = Coupon.objects.get(coupon_code=coupon_code)
+            cart= Cart.objects.get(user=current_user)
+
+            if coupon.is_expired == False:
+                cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
+                for cart_item in cart_items:
+                    total += (cart_item.variant.sale_price * cart_item.quantity)
+                    quantity += cart_item.quantity
+                
+        #         cart.coupon_applied = coupon
+
+        #         cart_item_instance= CartItem.objects.filter(user=request.user)
+        #         total = 0
+        #         for cart_item in cart_item_instance:
+        #             total += cart_item.subtotal()
+                print('total.....',total)
+                total = Decimal(total)
+                
+                coupon_discount = Decimal(coupon.discount_percentage)
+                discount_amount = (total * coupon_discount) / Decimal(100)
+                total_after_discount = total - discount_amount
+                print('total',total,'coupon_discount',coupon_discount,'discount_amount',discount_amount,'total_after_discount',total_after_discount)
+
+
+
+                try:
+                    user_coupon = UserCoupon.objects.get(coupon = coupon, user = request.user)
+                except Exception as e:
+                    print("exception usercoupon",str(e))
+                    user_coupon = UserCoupon.objects.create(user = request.user, coupon = coupon, usage_count = 0)
+
+                if user_coupon.apply_coupon() and total >= float(coupon.minimum_amount):
+                    # cart.coupon_discount = int(discount_amount)
+                    # cart.save()
+                    request.session['coupon_code'] = coupon_code
+                    data={'discount_amount':discount_amount, 'discount':coupon.discount_percentage, 'success':'Coupon Applied', 'total':total_after_discount, 'coupon_code':coupon_code}
+                    print(data)
+                    return JsonResponse(data,status=200)
+                
+                else:
+                    if coupon.expire_date < timezone.now().date():
+                        data={'error':'Coupon expired'}
+                        return JsonResponse(data)
+
+                    elif total < float(coupon.minimum_amount):
+                        data={'error':'Minimum amount required'}
+                        return JsonResponse(data)
+
+                    elif coupon.total_coupons == 0:
+                        data={'error':'Coupon not available'}
+                        return JsonResponse(data)
+                    
+                    elif user_coupon.apply_coupon() == False:
+                        data={'error':'Maximum Uses Reached'}
+                        return JsonResponse(data)
+
+
+                    data={'error':'Maximum uses of the coupon reached'}
+
+                    return JsonResponse(data,status=500)
+
+            else:
+                data = {'error': 'Coupon is Expired'}
+                return JsonResponse(data, status=200)       
+        except Coupon.DoesNotExist:
+            # Handle the case where the coupon does not exist
+            data = {'error': 'Coupon does not exist'}
+            return JsonResponse(data, status=200)
+        
+        # return JsonResponse(data, status=200)

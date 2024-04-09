@@ -291,6 +291,11 @@
                                             <td class="product-subtotal" colspan="2">{{total}} INR</td>
                                         </tr>
                                         <tr>
+                                            <th>Discount</th>
+                                            <td colspan="2"><p id="discount">0 INR</p></td>
+                                            
+                                        </tr>
+                                        <tr>
                                             <th>Shipping</th>
                                             <td colspan="2"><em>Free Shipping</em></td>
                                         </tr>
@@ -315,7 +320,7 @@
                                     <form id="couponform">
                                         <div class="form-row row justify-content-center">     {% comment %} action="{% url 'user_app:user_login' %}" method="post" {% endcomment %}
                                             <div class="form-group col-lg-6">
-                                                <input class="font-medium" name="Coupon" placeholder="Enter Your Coupon">
+                                                <input class="font-medium" id="coupon_code" name="Coupon" placeholder="Enter Your Coupon">
                                             </div>
                                             <div class="form-group col-lg-6">
                                                 <button type="submit" class="btn  btn-sm"><i class="fi-rs-label mr-10"></i>Apply</button>
@@ -384,8 +389,40 @@
     const form = document.getElementById('couponform');
     function handleSubmit (e){
             e.preventDefault()
-
+            const coupon_code = document.getElementById( "coupon_code" ).value; 
+            console.log("Coupon code entered: ", coupon_code)
+            const formData = {coupon_code};
             //fetch...........
+            fetch('{% url "coupon_app:apply_coupon" %}', {   
+                method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrftoken,
+                        // Add any additional headers if needed
+                    },
+                    body: JSON.stringify(formData),
+                    })
+                    .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Network response was not ok.');
+                    }
+                })
+                .then(data => {
+                    console.log('Response333:', data);
+                    // Log the context if the response is successful
+                    //window.location.href= "{% url 'order_app:success_page' %}";
+                    console.log('Context:', data.context);
+                    // You can handle the context data here
+                    var discount = data.discount_amount
+                    document.getElementById('discount').innerHTML = "INR"+discount
+                    
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                });
 
     }
 
