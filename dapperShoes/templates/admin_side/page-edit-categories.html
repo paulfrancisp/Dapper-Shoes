@@ -29,6 +29,14 @@
                                 <label for="category_name" class="form-label">Name</label>
                                 <input type="text" placeholder="Enter category name" class="form-control" id="category_name" name="name" value="{{ category_object.category_name }}">
                             </div>
+                            <div class="mb-4">
+                                <label class="form-label">Discount Percentage</label>
+                                <input type="number" placeholder="Type here" class="form-control"  name="discount_percentage" id="discount" value="{{ category_object.discount_percentage}}">
+                            </div>
+                            <div class="mb-4">
+                                <label for="expire_date">Expire Date</label>
+                                <input type="date" class="form-control" id="expire_date" name="expire_date" value="{{ category_object.expire_date}}">
+                            </div>
                             {% comment %} <div class="mb-4">
                                 <label for="category_slug" class="form-label">Slug</label>
                                 <input type="text" placeholder="Enter category slug" class="form-control" id="category_slug" name="slug" value="{{ category_object.cat_slug }}">

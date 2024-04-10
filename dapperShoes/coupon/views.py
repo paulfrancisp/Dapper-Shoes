@@ -168,9 +168,17 @@ def apply_coupon(request):
                     user_coupon = UserCoupon.objects.create(user = request.user, coupon = coupon, usage_count = 0)
 
                 if user_coupon.apply_coupon() and total >= float(coupon.minimum_amount):
-                    # cart.coupon_discount = int(discount_amount)
-                    # cart.save()
+                    cart.coupon_applied = coupon
+                    cart.coupon_discount = discount_amount
+                    cart.total_after_discount = total_after_discount
+                    cart.save()
+
+                    # Store string representations in session
                     request.session['coupon_code'] = coupon_code
+                    request.session['discount_amount'] = str(discount_amount)
+                    request.session['discount_percentage'] = str(coupon.discount_percentage)
+                    request.session['total_after_discount'] = str(total_after_discount)
+
                     data={'discount_amount':discount_amount, 'discount':coupon.discount_percentage, 'success':'Coupon Applied', 'total':total_after_discount, 'coupon_code':coupon_code}
                     print(data)
                     return JsonResponse(data,status=200)

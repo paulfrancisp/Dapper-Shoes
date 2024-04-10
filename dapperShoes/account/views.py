@@ -220,7 +220,11 @@ def cancel_product(request, item_id):
         wallet_transaction.save()
 
     order = Order.objects.get(id = order.id)
-    order.order_total -= ordered_product.total
+    if order.coupon_applied:
+        order.order_total -= ordered_product.total
+        order.order_total += order.coupon_discount
+    else:
+        order.order_total -= ordered_product.total
 
     # print("ordered_product.grand_totol:  ",ordered_product.grand_totol)
     # print("order.order_total:  ",order.order_total)

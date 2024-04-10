@@ -2,6 +2,7 @@ from django.db import models
 from category.models import Category, SubCategory
 from django.utils.text import slugify
 from PIL import Image
+from decimal import Decimal
 
 # Create your models here.
 class Brand(models.Model):
@@ -27,6 +28,7 @@ class Product(models.Model):
     images = models.ImageField(upload_to='products/', blank=True, default="")
     # product_price = models.DecimalField(max_digits=8, decimal_places=2, default="0.00")
     # stock = models.IntegerField()
+    
 
     def __str__(self):
         return self.product_name
@@ -112,39 +114,21 @@ class Product_variant(models.Model):
             img.save(self.thumbnail_image.path)
     
 
-    # def __str__(self):
-    #     return f"{self.product} {self.product.product_brand} {self.attribute.attribute_value}"
+    def calculate_discounted_price(self):
+        from category.models import Category
+        
 
-        # since attributes is a ManyToManyField, you need to loop through the attribute values to create a string representation.
-        # attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attributes.all()])
-        # return f"{self.product_name} {self.product_name.product_brand} {attribute_values_str}"
+        category = self.product.category
+        category_offer = Category.objects.filter(category_name=category).first()
 
-        # attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attributes.all()])
-        # return f"{self.product_name.product_name} {self.product_name.product_brand.Brand_name} {attribute_values_str}"
+        if category_offer.offer_is_active and category_offer.discount_percentage > 0:
+            discount_amount = self.max_price * (category_offer.discount_percentage / Decimal(100))
+            self.sale_price = self.max_price - discount_amount
+            return self.sale_price
+        else:
+            self.sale_price = self.max_price
+            return self.sale_price
 
-        # attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attributes.all()])
-        # product_name_str = f"{self.product_name.product_name} {self.product_name.product_brand.Brand_name}"
-        # return f"{product_name_str} {attribute_values_str}"
-    
-
-    # def save(self,*args, **kwargs):
-    #     slug = f"{self.product_name} {self.product_name.product_brand}" 
-    #     base_slug = slugify(slug)
-    #     # self.product_variant_slug = slugify(slug)
-    #     counter = Product_varient.objects.filter(product_variant_slug__startswith=base_slug).count()
-    #     if counter > 0:
-    #         self.product_variant_slug = f'{base_slug} {counter}'
-    #     else:
-    #         self.product_variant_slug = base_slug
-
-    #     # Check if any attribute value is not active, set the variant as not active
-    #     # for attr in self.attributes.all():
-    #     #     if not attr.attr_is_active:
-    #     #         is_active = False
-    #     #         break
-    #     # self.varient_is_active = is_active
-
-    #     super(Product_varient,self).save(*args, **kwargs)
 
 
 

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.utils import timezone
 
 # Create your models here.
 class Category(models.Model):
@@ -12,6 +13,11 @@ class Category(models.Model):
     # parent_category = models.ForeignKey('self', null=True, blank=True, related_name='child_categories', on_delete=models.CASCADE)
     # category_thumbnail = models.ImageField(upload_to='category_thumbnails/', null=True, blank=True)
 
+    # New offer fields
+    expire_date = models.DateField(null=True, blank=True)
+    discount_percentage = models.IntegerField(default=0)
+    offer_is_active = models.BooleanField(default=True)
+
     class Meta:
         verbose_name        = 'category'
         verbose_name_plural = 'categories'
@@ -19,6 +25,16 @@ class Category(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.category_name)
+
+        current_date = timezone.now().date()
+        if self.expire_date:
+            if self.expire_date < current_date:
+                self.offer_is_active = False
+            else:
+                self.offer_is_active = True
+        else:
+            self.offer_is_active = False
+
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self):

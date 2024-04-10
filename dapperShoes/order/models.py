@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from coupon.models import *
+from decimal import Decimal
 
 # Create your models here.
 class PaymentMethod(models.Model):
@@ -73,6 +75,9 @@ class Order(models.Model):
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    coupon_applied = models.ForeignKey(Coupon,on_delete=models.CASCADE, default = None,null = True)
+    coupon_discount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    # total_after_coupon_discount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
     
     
     def generate_order_number(self):    

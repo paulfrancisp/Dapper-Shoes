@@ -168,8 +168,19 @@ def place_order_cod(request, total=0, quantity=0):
             # Saving the payment and is_ordered values in Order table.
             order.payment = payment   #### ISSUE here
             order.is_ordered = True
+            order.coupon_applied = cart.coupon_applied
+            order.coupon_discount = cart.coupon_discount
+            order.order_total = cart.total_after_discount
             order.save()
 
+            if cart.coupon_applied:
+                coupon = Coupon.objects.get(id=cart.coupon_applied.id)
+                coupon.total_coupons -= 1
+                coupon.save()
+
+                user_coupon = UserCoupon.objects.get(coupon_id=coupon.id)
+                user_coupon.usage_count +=1
+                user_coupon.save()
 
             #Moving cart item to OrderProduct table.
             cart_items = cart.cartitem_set.all()

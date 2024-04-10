@@ -81,9 +81,13 @@ def cart_list(request, total=0, quantity=0, cart_items=None):
 
         
         cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
+        
+        print('cart_items cart_list',cart_items)
         for cart_item in cart_items:
-            total += (cart_item.variant.sale_price * cart_item.quantity)
+            total += (cart_item.variant.calculate_discounted_price() * cart_item.quantity)
+            print('  checkout total cart_list',total)
             quantity += cart_item.quantity
+            print('  checkout quantity cart_list',quantity)
 
         context={
             'total': total,
@@ -142,34 +146,31 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         pass
     
 
-    cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+    cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
+    print('cart_items checkout',cart_items)
+    for cart_item in cart_items:
+        total += (cart_item.variant.calculate_discounted_price() * cart_item.quantity)
+        print('  checkout total checkout',total)
+        quantity += cart_item.quantity
+        print('  checkout quantity checkout',quantity)
+        
+    try:
+        address = Address.objects.get(user=current_user)
+        
+    except Address.DoesNotExist:
+        # Handle the case where the user doesn't have an address yet
+        address = None
+
+    try:
+        user_wallet = Wallet.objects.get(user=current_user)
+    except:
+        pass
+
+
+    print('  checkout total',total,'  checkout quantity',quantity)
+
     for cart_item in cart_items:
         if cart_item.quantity <= cart_item.variant.stock:
-            total += (cart_item.variant.sale_price * cart_item.quantity)
-            quantity += cart_item.quantity
-            
-            try:
-                address = Address.objects.get(user=current_user)
-                
-            except Address.DoesNotExist:
-                # Handle the case where the user doesn't have an address yet
-                address = None
-
-            try:
-                user_wallet = Wallet.objects.get(user=current_user)
-            except:
-                pass
-
-
-            # #Razorpay creating order
-            # total_amount = int(total * 100)
-            # client = razorpay.Client(auth=("rzp_test_qoXpACMLfXbWKp", "ydDrIJw9JIb3RhaMLHSsGvyi"))
-
-            # data = { "amount": total_amount, "currency": "INR", "receipt": "order_rcptid_11" }
-            # payment = client.order.create(data=data)
-
-            # print('11111111111',payment)
-
             context={
                 'total': total,
                 'quantity' : quantity,

@@ -4,6 +4,8 @@ from .models import Category,SubCategory
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import never_cache
+from datetime import datetime
+from django.core.exceptions import ValidationError
 
 # Create your views here.
 # Note: These functions are being used in admin side.
@@ -35,6 +37,8 @@ def admin_categories(request):
         # Adding new category
         if request.method == 'POST':
             category = request.POST.get('category')
+            discount_percentage = request.POST.get('discount_percentage')
+            expire_date_str = request.POST.get('expire_date')
             description = request.POST.get('description')
             try:
                 image = request.FILES.get('image')
@@ -45,12 +49,33 @@ def admin_categories(request):
                 if category == '':
                     messages.warning(request,"Add category name")
                     return redirect('category_app:admin_categories')
-                if Category.objects.get(category_name=category):
+                if discount_percentage and not discount_percentage.isdigit():
+                    raise ValidationError("Discount percentage must be a number")
+                if discount_percentage:
+                    discount_percentage = int(discount_percentage)
+                    if discount_percentage < 0 or discount_percentage > 100:
+                        raise ValidationError("Discount percentage must be between 0 and 100")
+                if Category.objects.filter(category_name=category).exists():
                     messages.warning(request,"Category name is already taken")
                     return redirect('category_app:admin_categories')
-            except:
-                pass
-            categories = Category.objects.create(category_image=image,category_name=category,description=description)
+            except ValidationError as e:
+                messages.warning(request, e.message)
+                return redirect('category_app:admin_categories')
+
+            # Convert the expire_date string to a datetime.date object
+            if expire_date_str:
+                expire_date = datetime.strptime(expire_date_str, '%Y-%m-%d').date()                
+            else:
+                expire_date = None
+
+            print('.............',category,discount_percentage,expire_date)
+            if discount_percentage:
+                categories = Category.objects.create(category_image=image, category_name=category,
+                                                  description=description, discount_percentage=discount_percentage,
+                                                  expire_date=expire_date)
+            else:
+                categories = Category.objects.create(category_image=image, category_name=category,
+                                                  description=description)
             categories.save()
         
         # Displaying the category from DB
@@ -59,9 +84,8 @@ def admin_categories(request):
             'categories': categories
         }
         return render(request,'admin_side/page-categories.html',context)
-            # return redirect('category_app:admin_categories')
     return render(request,'admin_side/page-categories.html')
-    # return redirect('admin_app:admin_login')
+
 
 
 @never_cache
@@ -72,24 +96,21 @@ def edit_categories(request,id):
             category_name = request.POST.get('name')
             description = request.POST.get('description')
             category_image = request.FILES.get('image')
-            # try:
-            #     image = request.FILES.get('image')
-            #     print(image)
-            # except :
-            #     messages.warning(request,"Add category image")
-            #     return redirect('category_app:edit_categories')
-
-            # if category == '':
-            #     messages.warning(request,"Add category name")
-            #     return redirect('category_app:edit_categories')
-            # if Category.objects.get(category_name=category):
-            #     messages.warning(request,"Category name is already taken")
-            #     return redirect('category_app:edit_categories')
+            discount_percentage = request.POST.get('discount_percentage')
+            expire_date = request.POST.get('expire_date')
             
         
             if category_name:
                 category.category_name = category_name
                 category.slug = slugify(category_name)  # Updates the slug
+            
+            if discount_percentage:
+                category.discount_percentage = discount_percentage
+
+            if  expire_date:
+                # Convert the string to a datetime.date object
+                expire_date_str = datetime.strptime(expire_date, '%Y-%m-%d').date()
+                category.expire_date = expire_date_str
 
             if description:
                 category.description = description
