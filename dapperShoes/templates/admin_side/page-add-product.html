@@ -50,6 +50,14 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                            <div class="mb-4">
+                                <label class="form-label">Product Discount Percentage (if any)</label>
+                                <input type="number" placeholder="Type here" class="form-control"  name="discount_percentage" id="discount" >
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="expire_date">Expire Date</label>
+                                <input type="date" class="form-control" id="expire_date" name="expire_date" disabled>
+                            </div>
     
                             {% comment %} <div class="mb-3">
                                 <label class="form-label">Price</label>
@@ -122,5 +130,25 @@
             </div>
         </form>
         </section>
+
+        <script>
+            // Get references to the discount percentage and expire date input fields
+            const discountInput = document.getElementById('discount');
+            const expireDateInput = document.getElementById('expire_date');
+        
+            // Add an event listener to the discount percentage input field
+            discountInput.addEventListener('input', function() {
+                // Check if the discount percentage field is not empty and not equal to 0
+                if (this.value.trim() !== '' && parseInt(this.value.trim()) !== 0) {
+                    // Enable the expire date input field
+                    expireDateInput.disabled = false;
+                } else {
+                    // Disable the expire date input field
+                    expireDateInput.disabled = true;
+                    // Reset the value of expire date input field
+                    expireDateInput.value = '';
+                }
+            });
+        </script>
 
 {% endblock %}

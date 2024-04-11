@@ -9,30 +9,14 @@ from django.contrib import messages
 from account.models import *
 from wallet.models import *
 import razorpay
+import json
+from django.http import JsonResponse
 
 
 # Create your views here.
-# def _cart_id(request):
-#     cart = request.session.session_key
-#     print("already exit cart id: ",cart)
-#     if not cart:
-#         cart = request.session.create()
-#         print("created cart Id: ",cart)
-#     return cart
-
-# def _cart_id(request):
-#     current_user = request.user
-
-#     # Check if the user is authenticated
-#     try:
-#         cart= Cart.objects.get(user=current_user)
-#     except Cart.DoesNotExist:
-#         # For anonymous users, use some other logic to identify the cart (if needed)
-#         cart= Cart.objects.create(user=current_user)
-#     return cart 
-
 @login_required(login_url='user_app:user_login')
 def add_cart(request, variant_id):
+    print('Reached back end add_cart',variant_id)
     current_user = request.user
     variant = Product_variant.objects.get(id=variant_id)
     try:
@@ -61,15 +45,26 @@ def add_cart(request, variant_id):
             # user = current_user
         )
         cart_item.save()
+        return redirect('cart_app:cart_list')
+    
+    total=0
+    cart_items=None
+    cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
+        
+    print('cart_items cart_list',cart_items)
+    for cart_item in cart_items:
+        total += (cart_item.variant.calculate_discounted_price() * cart_item.quantity)
+        print('  checkout total cart_list',total)
     # return HttpResponse(cart_item.quantity)
     ## return redirect(reverse('store_app:product_detail', kwargs={'id': product.id}))
     # Instead of using reverse, you can directly use the URL
-    return redirect('cart_app:cart_list')
+    data = {'qty':cart_item.quantity, 'total':total}
+    return JsonResponse(data)
     ## return render(request, 'user_side/shop-detail-product-page.html')
 
 
 def cart_list(request, total=0, quantity=0, cart_items=None):
-
+    print('Reached back end cart list')
     current_user = request.user
     if current_user.is_authenticated:
         try:
@@ -116,7 +111,18 @@ def remove_cart(request, variant_id):
         cart_item.save()
     else:
         cart_item.delete()
-    return redirect('cart_app:cart_list')
+    # return redirect('cart_app:cart_list')
+
+    total=0
+    cart_items=None
+    cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
+        
+    print('cart_items cart_list',cart_items)
+    for cart_item in cart_items:
+        total += (cart_item.variant.calculate_discounted_price() * cart_item.quantity)
+    
+    data = {'qty':cart_item.quantity, 'total':total}
+    return JsonResponse(data)
 
 
 def remove_cart_item(request, variant_id):

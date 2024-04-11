@@ -26,7 +26,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Name</label>
+                                    <label for="product_name" class="form-label">Name*</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="category" name="category" />
                                 </div>
                                 <div class="mb-4">
@@ -34,19 +34,19 @@
                                     <input type="text" placeholder="Type here" class="form-control" id="slug" name="slug" />
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label">Images</label>
+                                    <label class="form-label">Images*</label>
                                     <input class="form-control" type="file" id="image" name="image">
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label">Discount Percentage</label>
-                                    <input type="number" placeholder="Type here" class="form-control"  name="discount_percentage" id="discount" >
+                                    <label class="form-label">Category Discount Percentage(if any)</label>
+                                    <input type="number" placeholder="Type here" class="form-control" name="discount_percentage" id="discount">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="expire_date">Expire Date</label>
-                                    <input type="date" class="form-control" id="expire_date" name="expire_date">
+                                    <label class="form-label" for="expire_date">Expire Date</label>
+                                    <input type="date" class="form-control" id="expire_date" name="expire_date" disabled>
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label">Description</label>
+                                    <label class="form-label">Description*</label>
                                     <textarea placeholder="Type here" class="form-control" id="description" name="description"></textarea>
                                 </div>
                                 <div class="d-grid">
@@ -165,5 +165,20 @@
                 </div> <!-- card body .// -->
             </div> <!-- card .// -->
         </section> <!-- content-main end// -->
+
+        <script>
+            document.getElementById("discount").addEventListener("input", function() {
+                var discountPercentage = this.value.trim();
+                var expireDateInput = document.getElementById("expire_date");
+                if (discountPercentage && parseInt(discountPercentage) !== 0) {
+                    // Enable the expiration date input if the discount percentage is not empty and not zero
+                    expireDateInput.removeAttribute("disabled");
+                } else {
+                    // Disable the expiration date input if the discount percentage is either empty or zero
+                    expireDateInput.setAttribute("disabled", "disabled");
+                    expireDateInput.value = ""; // Reset the value when disabled
+                }
+            });
+        </script>
 
 {% endblock %} 

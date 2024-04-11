@@ -125,8 +125,15 @@ def edit_categories(request,id):
             
         
         category_object = Category.objects.get(id=id)
+
+        # Check if discount_percentage is 0 and set expire_date_disabled accordingly
+        expire_date_disabled = False
+        if category_object.discount_percentage == 0:
+            expire_date_disabled = True
+
         context = {
-            'category_object' : category_object
+            'category_object' : category_object,
+            'expire_date_disabled': expire_date_disabled
         }
         return render(request,'admin_side/page-edit-categories.html',context)
     else:

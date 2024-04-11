@@ -142,7 +142,7 @@ def apply_coupon(request):
             if coupon.is_expired == False:
                 cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
                 for cart_item in cart_items:
-                    total += (cart_item.variant.sale_price * cart_item.quantity)
+                    total += (cart_item.variant.calculate_discounted_price() * cart_item.quantity)
                     quantity += cart_item.quantity
                 
         #         cart.coupon_applied = coupon

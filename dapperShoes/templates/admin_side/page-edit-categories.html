@@ -31,11 +31,11 @@
                             </div>
                             <div class="mb-4">
                                 <label class="form-label">Discount Percentage</label>
-                                <input type="number" placeholder="Type here" class="form-control"  name="discount_percentage" id="discount" value="{{ category_object.discount_percentage}}">
+                                <input type="number" placeholder="Type here" class="form-control" name="discount_percentage" id="discount" value="{{ category_object.discount_percentage }}">
                             </div>
                             <div class="mb-4">
                                 <label for="expire_date">Expire Date</label>
-                                <input type="date" class="form-control" id="expire_date" name="expire_date" value="{{ category_object.expire_date}}">
+                                <input type="date" class="form-control" id="expire_date" name="expire_date" value="{{ category_object.expire_date }}" {% if category_object.discount_percentage == 0 %}disabled{% endif %}>
                             </div>
                             {% comment %} <div class="mb-4">
                                 <label for="category_slug" class="form-label">Slug</label>
@@ -86,4 +86,22 @@
             </div>
         </div>
     </section>
+
+    <script>
+        // Get references to the discount percentage and expire date input elements
+        var discountInput = document.getElementById('discount');
+        var expireDateInput = document.getElementById('expire_date');
+    
+        // Add an event listener to the discount percentage input field
+        discountInput.addEventListener('input', function() {
+            // If the discount percentage is non-zero, enable the expire date input field
+            if (parseInt(this.value) !== 0) {
+                expireDateInput.removeAttribute('disabled');
+            } else {
+                // If the discount percentage is zero, disable the expire date input field
+                expireDateInput.setAttribute('disabled', 'disabled');
+            }
+        });
+    </script>
+    
 {% endblock %}

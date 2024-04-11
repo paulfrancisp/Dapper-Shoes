@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.images import ImageFile
 from django.core.exceptions import ValidationError
-
+from datetime import datetime
 
 
 # Create your views here.
@@ -41,7 +41,10 @@ def edit_product(request,id):
             subcategory_id = request.POST.get('subcategory_id')
             subcategory = get_object_or_404(SubCategory, id=subcategory_id)
             image = request.FILES.get('image')
-            
+            discount_percentage = request.POST.get('discount_percentage')
+            expire_date = request.POST.get('expire_date')
+            print(".......",discount_percentage,".............",expire_date)
+
             if title:
                 product.product_name = title
             if brand_id:
@@ -55,19 +58,15 @@ def edit_product(request,id):
             if subcategory_id:
                 product.sub_category = subcategory
             if image:
-                # try:
-                #     # Open the image file and check if it's a valid image format
-                #     ImageFile(image).open()  # This will raise an error if the image format is invalid
-                #     print('Add images of proper format2222222222222')
-
-                # except Exception as e:
-                #     # Handle invalid image format
-                #     messages.warning(request,"Add images of proper format")
-                #     print('Add images of proper format')
-                #     return render(request, 'admin_side/page-edit-product-list.html', {'error': 'Invalid image format. Please upload a valid image.'})
-
-                # # If the image format is valid, save the image to the product
                 product.images = image
+            
+            if discount_percentage:
+                product.discount_percentage = discount_percentage
+
+            if  expire_date:
+                # Convert the string to a datetime.date object
+                expire_date_str = datetime.strptime(expire_date, '%Y-%m-%d').date()
+                product.expire_date = expire_date_str
             
 
             product.save()
@@ -77,6 +76,11 @@ def edit_product(request,id):
         categories = Category.objects.all()
         subcategory = SubCategory.objects.all()
         brands = Brand.objects.all()
+
+        # Check if discount_percentage is 0 and set expire_date_disabled accordingly
+        # expire_date_disabled = False
+        # if product.discount_percentage == 0:
+        #     expire_date_disabled = True
 
         context = {
             'product': product,
@@ -100,6 +104,8 @@ def add_product(request):
             price = request.POST.get('price')
             category_id = request.POST.get('category_id')
             sub_category_id = request.POST.get('sub_category_id')
+            discount_percentage = request.POST.get('discount_percentage')
+            expire_date_str = request.POST.get('expire_date')
             print(category_id, brand_id)
             image = request.FILES.get('image')
             additional_images = request.FILES.getlist('additional_image_1')
@@ -115,18 +121,36 @@ def add_product(request):
                 if title == '':
                     messages.warning(request,"Add product title")
                     return redirect('product_management_app:add_product')
-                if Product.objects.get(product_name=title):
-                    messages.warning(request,"product name is already exists")
-                    return redirect('product_management_app:add_product')   
-            except:
-                pass
+                if Product.objects.filter(product_name=title).exists():
+                    messages.warning(request, "Product name already exists")
+                    return redirect('product_management_app:add_product')
+                if discount_percentage and not discount_percentage.isdigit():
+                    raise ValidationError("Discount percentage must be a number")
+                if discount_percentage:
+                    discount_percentage = int(discount_percentage)
+                    if discount_percentage < 0 or discount_percentage > 100:
+                        raise ValidationError("Discount percentage must be between 0 and 100")
+                 
+            except ValidationError as e:
+                messages.warning(request, e.message)
+                return redirect('product_management_app:add_product')
             
-            
+            if expire_date_str:
+                expire_date = datetime.strptime(expire_date_str, '%Y-%m-%d').date()                
+            else:
+                expire_date = None
+
             category = Category.objects.get(id = category_id)
             sub_category = SubCategory.objects.get(id = sub_category_id)
             brand = Brand.objects.get(id = brand_id)
             print(brand)
-            product = Product.objects.create(product_name=title, product_brand=brand , description=description, category=category, sub_category=sub_category, images =image)
+
+            ################# NEED TO CHECK THIS  PART ####################
+            if discount_percentage:
+                product = Product.objects.create(product_name=title, product_brand=brand , description=description, category=category, sub_category=sub_category, images =image, discount_percentage=discount_percentage, expire_date=expire_date)
+            else:
+                product = Product.objects.create(product_name=title, product_brand=brand , description=description, category=category, sub_category=sub_category, images =image)
+            
             product.save()
             return redirect('product_management_app:product_list')
             
@@ -275,7 +299,7 @@ def edit_variant(request,id):
         # color = request.POST.getlist('color')  # Use getlist for multi-select  
         size = request.POST.getlist('size')  # Use getlist for multi-select
         # is_active = request.POST.get('is_active')
-        thumbnail_image = request.FILES.get('thumbnail_image')
+        thumbnail_image = request.FILES.get('product_varient_image')
 
         if variant_name:
             product_variant.variant_name = variant_name

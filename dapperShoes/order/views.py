@@ -31,7 +31,7 @@ def place_order_cod(request, total=0, quantity=0):
     cart_items = cart.cartitem_set.all()
     for cart_item in cart_items:
         if cart_item.quantity <= cart_item.variant.stock:
-            total += cart_item.variant.sale_price * cart_item.quantity
+            total += cart_item.variant.calculate_discounted_price() * cart_item.quantity
             quantity += cart_item.quantity
         else:
             messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
@@ -133,7 +133,7 @@ def place_order_cod(request, total=0, quantity=0):
                     orderproduct.product_variant = cart_item.variant.variant_name
                     orderproduct.images = cart_item.variant.thumbnail_image
                     orderproduct.quantity = cart_item.quantity
-                    orderproduct.product_price = cart_item.variant.sale_price
+                    orderproduct.product_price = cart_item.variant.calculate_discounted_price()
                     orderproduct.ordered = True
                     orderproduct.save()
 
@@ -193,7 +193,7 @@ def place_order_cod(request, total=0, quantity=0):
                 orderproduct.product_variant = cart_item.variant.variant_name
                 orderproduct.images = cart_item.variant.thumbnail_image
                 orderproduct.quantity = cart_item.quantity
-                orderproduct.product_price = cart_item.variant.sale_price
+                orderproduct.product_price = cart_item.variant.calculate_discounted_price()
                 orderproduct.ordered = True
                 orderproduct.save()
 
@@ -293,7 +293,7 @@ def order_success(request, razorpay_order_id,payment_id,signature):
     cart_items = cart.cartitem_set.all()
     for cart_item in cart_items:
         if cart_item.quantity <= cart_item.variant.stock:
-            total += cart_item.variant.sale_price * cart_item.quantity
+            total += cart_item.variant.calculate_discounted_price() * cart_item.quantity
             quantity += cart_item.quantity
         else:
             messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
@@ -319,7 +319,7 @@ def order_success(request, razorpay_order_id,payment_id,signature):
         orderproduct.product_variant = cart_item.variant.variant_name
         orderproduct.images = cart_item.variant.thumbnail_image
         orderproduct.quantity = cart_item.quantity
-        orderproduct.product_price = cart_item.variant.sale_price
+        orderproduct.product_price = cart_item.variant.calculate_discounted_price()
         orderproduct.ordered = True
         orderproduct.save()
 

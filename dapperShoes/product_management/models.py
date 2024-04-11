@@ -3,6 +3,7 @@ from category.models import Category, SubCategory
 from django.utils.text import slugify
 from PIL import Image
 from decimal import Decimal
+from django.utils import timezone
 
 # Create your models here.
 class Brand(models.Model):
@@ -28,7 +29,11 @@ class Product(models.Model):
     images = models.ImageField(upload_to='products/', blank=True, default="")
     # product_price = models.DecimalField(max_digits=8, decimal_places=2, default="0.00")
     # stock = models.IntegerField()
-    
+
+    # New offer fields
+    expire_date = models.DateField(null=True, blank=True)
+    discount_percentage = models.IntegerField(default=0)
+    offer_is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.product_name
@@ -49,6 +54,15 @@ class Product(models.Model):
             size = (679,679)
             img=img.resize(size, Image.BOX)
             img.save(self.images.path)
+
+        current_date = timezone.now().date()
+        if self.expire_date:
+            if self.expire_date < current_date:
+                self.offer_is_active = False
+            else:
+                self.offer_is_active = True
+        else:
+            self.offer_is_active = False
 
 
 class Attribute(models.Model):
@@ -116,18 +130,43 @@ class Product_variant(models.Model):
 
     def calculate_discounted_price(self):
         from category.models import Category
-        
+        from product_management.models import Product
 
         category = self.product.category
-        category_offer = Category.objects.filter(category_name=category).first()
+        category_offer = Category.objects.get(category_name=category)
 
-        if category_offer.offer_is_active and category_offer.discount_percentage > 0:
-            discount_amount = self.max_price * (category_offer.discount_percentage / Decimal(100))
+        product = self.product
+        product_offer = Product.objects.get(product_name=product)
+
+        # if category_offer.discount_percentage > product_offer.discount_percentage:
+        #     if category_offer.offer_is_active and category_offer.discount_percentage > 0:
+        #         discount_amount = self.max_price * (category_offer.discount_percentage / Decimal(100))
+        #         self.sale_price = self.max_price - discount_amount
+        #         return self.sale_price
+        #     else:
+        #         self.sale_price = self.max_price
+        #         return self.sale_price
+        
+        # elif product_offer.discount_percentage > category_offer.discount_percentage :
+        #     if product_offer.offer_is_active and product_offer.discount_percentage > 0:
+        #         discount_amount = self.max_price * (product_offer.discount_percentage / Decimal(100))
+        #         self.sale_price = self.max_price - discount_amount
+        #         return self.sale_price
+        #     else:
+        #         self.sale_price = self.max_price
+        #         return self.sale_price
+
+        # Determine the maximum discount percentage between category and product offers
+        max_discount_percentage = max(category_offer.discount_percentage, product_offer.discount_percentage)
+
+        # Check if either category or product offer is active and the max_discount_percentage is greater than 0
+        if max_discount_percentage > 0 and (category_offer.offer_is_active or product_offer.offer_is_active):
+            discount_amount = self.max_price * (max_discount_percentage / Decimal(100))
             self.sale_price = self.max_price - discount_amount
-            return self.sale_price
         else:
             self.sale_price = self.max_price
-            return self.sale_price
+
+        return self.sale_price
 
 
 

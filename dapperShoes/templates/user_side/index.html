@@ -215,8 +215,10 @@
                                                     </span>
                                                 </div> 
                                                 <div class="product-price">
-                                                    <span>{{ product.product_var.first.sale_price }} INR</span>
-                                                    <span style="text-decoration: line-through; color: grey; font-size: 90%; margin-left:3px">{{ product.product_var.first.max_price }} INR</span>
+                                                    <span>{{ product.product_var.first.calculate_discounted_price }} INR</span>
+                                                    {% if product.product_var.first.calculate_discounted_price != product.product_var.first.max_price %}
+                                                        <span style="text-decoration: line-through; color: grey; font-size: 90%; margin-left:3px">{{ product.product_var.first.max_price }} INR</span>
+                                                    {% endif %}
                                                 </div>
                                                 <div class="product-action-1 show">
                                                     <a aria-label="View Product" class="action-btn hover-up" href="{% url 'shop_app:product_detail' product_id=product.id%}"><i class="fas fa-search-plus"></i></a>
