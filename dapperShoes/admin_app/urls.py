@@ -13,15 +13,4 @@ urlpatterns = [
     path('sales_report/',views.sales_report,name='sales_report'),
 
 
-    # path('admin-users-list',views.admin_users_list,name='admin_users_list'),
-    # path('admin-products-list',views.admin_products_list,name='admin_products_list'),
-    
-    # path('user-management/', views.user_management, name='user_management'),
-    # path('category-management/',views.categorymanagement,name='categorymanagement'),
-
-    # path('blockuser/<int:user_id>/', views.blockuser, name='blockuser'),
-    # path('unblockuser/<int:user_id>/', views.unblockuser, name='unblockuser'),
-
-    # path('deactivate-product/<int:product_id>/',views.deactivateproduct,name='deactivateproduct'),
-    # path('activate-product/<int:product_id>/',views.activateproduct,name='activateproduct'),
 ]

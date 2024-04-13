@@ -6,32 +6,12 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import never_cache
 from datetime import datetime
 from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 # Note: These functions are being used in admin side.
 
-
-# def categories(request):
-#     if request.user.is_authenticated and request.user.is_superuser:
-#         categories = Category.objects.all()
-#         context = {
-#             'categories': categories
-#         }
-#         return render(request,'admin_side/page-categories.html',context)
-#     return redirect('admin_app:admin_login')
-
-
-# def admin_categories(request):
-#     if request.user.is_authenticated and request.user.is_superuser:
-        # categories = Category.objects.all()
-        # context = {
-        #     'categories': categories
-        # }
-        # return render(request,'admin_side/page-categories.html',context)
-    # return redirect('admin_app:admin_login')
-        # pass
-
-@never_cache
+@login_required(login_url='admin_app:admin_login')
 def admin_categories(request):
     if request.user.is_authenticated and request.user.is_superuser:
         # Adding new category
@@ -88,7 +68,7 @@ def admin_categories(request):
 
 
 
-@never_cache
+@login_required(login_url='admin_app:admin_login')
 def edit_categories(request,id):
     if request.user.is_authenticated and request.user.is_superuser:
         if request.method == 'POST':
@@ -181,7 +161,7 @@ def deactivate_category(request, id):
 #---------------------------------------------
 
 ##### Sub-categories #####
-@never_cache
+@login_required(login_url='admin_app:admin_login')
 def admin_sub_categories(request):
     if request.user.is_authenticated and request.user.is_superuser:
         # Adding new sub-category
@@ -227,7 +207,7 @@ def admin_sub_categories(request):
         return render(request,'admin_side/page-sub-categories.html',context)
     return redirect('admin_app:admin_login')
 
-@never_cache
+@login_required(login_url='admin_app:admin_login')
 def edit_sub_categories(request,id):
     if request.user.is_authenticated and request.user.is_superuser:
         if request.method == 'POST':

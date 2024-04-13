@@ -18,12 +18,6 @@ def place_order_cod(request, total=0, quantity=0):
 
     current_user = request.user
 
-    #If cart count <= 0 then redirect to home page.
-    # cart = Cart.objects.filter(user=current_user)
-    # cart_count = cart.count()
-    # if  cart_count <= 0:
-    #     redirect(request,'shop_app:home')
-
     cart = Cart.objects.filter(user=current_user).first()
     if not cart:
         return redirect('shop_app:home')
@@ -36,11 +30,12 @@ def place_order_cod(request, total=0, quantity=0):
         else:
             messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
             return redirect('cart_app:cart_list')
+    
+    print('.............total.............',total)
+    if cart.coupon_applied:
+        total  -= cart.coupon_discount
 
-    # cart_items = CartItem.objects.filter(cart=cart)  #if any issue comes here use get() instead of filter here or in above orm query or add this query above cart= Cart.objects.get(user=current_user)
-    # for cart_item in cart_items:
-    #     total += (cart_item.variant.sale_price * cart_item.quantity)
-    #     quantity += cart_item.quantity
+    print('.............total.............',total)
     
     print('Outside if method POST')
     print('Request Method:', request.method)
@@ -95,8 +90,6 @@ def place_order_cod(request, total=0, quantity=0):
                     # 'key_id': settings.RAZOR_PAY_KEY_ID
                 }
             
-            # order_id = razorpay_order.get('id')
-            # return JsonResponse({'order_id': order_id}, status=200)
             return JsonResponse({'context': context}, status=200)
 
         elif selected_payment_method == 'wallet':
@@ -121,7 +114,7 @@ def place_order_cod(request, total=0, quantity=0):
                 wallet.save()
                 wallet_transaction.save()
 
-
+    
                 #Moving cart item to OrderProduct table.
                 cart_items = cart.cartitem_set.all()
                 for cart_item in cart_items:
@@ -135,6 +128,7 @@ def place_order_cod(request, total=0, quantity=0):
                     orderproduct.quantity = cart_item.quantity
                     orderproduct.product_price = cart_item.variant.calculate_discounted_price()
                     orderproduct.ordered = True
+                    orderproduct.total = total
                     orderproduct.save()
 
 
@@ -178,9 +172,14 @@ def place_order_cod(request, total=0, quantity=0):
                 coupon.total_coupons -= 1
                 coupon.save()
 
-                user_coupon = UserCoupon.objects.get(coupon_id=coupon.id)
+                user_coupon = UserCoupon.objects.get(coupon_id=coupon.id,user_id=current_user)
                 user_coupon.usage_count +=1
                 user_coupon.save()
+
+                # cart.coupon_applied = None
+                # cart.coupon_discount = 0.00
+                # cart.total_after_discount = 0.00
+                # cart.save()
 
             #Moving cart item to OrderProduct table.
             cart_items = cart.cartitem_set.all()
@@ -195,6 +194,7 @@ def place_order_cod(request, total=0, quantity=0):
                 orderproduct.quantity = cart_item.quantity
                 orderproduct.product_price = cart_item.variant.calculate_discounted_price()
                 orderproduct.ordered = True
+                orderproduct.total = total
                 orderproduct.save()
 
 
@@ -213,12 +213,6 @@ def place_order_cod(request, total=0, quantity=0):
                 "success":True,
             }
             return JsonResponse({'message': 'Order placed successfully', 'context': context}, status=200)
-
-            # return render(request,'user_side/Week 2/order-success.html',context)
-            # else:
-            #     print('FORM is Invalid')
-            #     print(form.errors)
-            #     return render(request, 'user_side/shop-checkout.html')  #, {'form': form}
     else:
         # If request method is not POST, redirect to the checkout page
         # return redirect('cart_app:checkout')
@@ -303,7 +297,7 @@ def order_success(request, razorpay_order_id,payment_id,signature):
 
 
     # Saving the payment and is_ordered values in Order table.
-    order.payment = payment   #### ISSUE here
+    order.payment = payment   
     order.is_ordered = True
     order.save()
 
@@ -321,12 +315,12 @@ def order_success(request, razorpay_order_id,payment_id,signature):
         orderproduct.quantity = cart_item.quantity
         orderproduct.product_price = cart_item.variant.calculate_discounted_price()
         orderproduct.ordered = True
+        orderproduct.total = total
         orderproduct.save()
 
 
         #Reduce quantity of sold products
         variant = Product_variant.objects.get(id=cart_item.variant.id)
-        # variantt = Product_variant.objects.filter(id=cart_item.variant.id)
 
         variant.stock -= cart_item.quantity
         variant.save()

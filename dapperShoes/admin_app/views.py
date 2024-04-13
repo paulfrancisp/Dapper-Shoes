@@ -6,6 +6,7 @@ from order.models import *
 from account.models import *
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 @never_cache
@@ -31,12 +32,12 @@ def admin_login(request):
     return render(request,'admin_side/page-account-login.html')
 
 
-@never_cache
+@login_required(login_url='admin_app:admin_login')
 def admin_dashboard(request):
     return render(request,'admin_side/page-admin-dashboard.html')
 
 
-@never_cache
+@login_required(login_url='admin_app:admin_login')
 def admin_orders(request):
     # order_list = Order.objects.all().order_by("-created_at")
     order_list = Order.objects.filter(is_ordered=True).order_by("-created_at")
@@ -47,29 +48,11 @@ def admin_orders(request):
         # "order_product":order_product
     }
     return render(request,'admin_side/Week_2/page-orders-list.html',context)
-# def admin_orders(request):
-#     order_list = Order.objects.all().order_by("-created_at")
-    
-#     # Initialize an empty list to store OrderProduct objects
-#     order_products = []
-    
-#     # Iterate over each Order object in order_list
-#     for order in order_list:
-#         # Retrieve OrderProduct objects related to the current Order object
-#         order_product = OrderProduct.objects.filter(order=order)
-        
-#         # Append the retrieved OrderProduct objects to the list
-#         order_products.extend(order_product)
-    
-#     context = {
-#         "order_lists": order_list,
-#         "order_products": order_products
-#     }
-#     return render(request, 'admin_side/Week_2/page-orders-list.html', context)
 
 
 
 
+@login_required(login_url='admin_app:admin_login')
 def admin_orders_detail(request,user_id,order_number):
 
     user = User.objects.get(id=user_id)
@@ -91,23 +74,6 @@ def admin_orders_detail(request,user_id,order_number):
 
     orderproduct = OrderProduct.objects.filter(order = ord).order_by("-created_at")
     
-    # total_user_orders = Order.objects.filter(user=user_id)
-    # print("total_user_orders",total_user_orders)
-    
-    # try:
-    #     user_address = Address.objects.get(is_default = True, account = user)
-    # except:
-    #     user_address = None
-    # print("user address:",user_address)
-    # total_product_price = 0
-    # grant_total = 0
-    # discount = 0
-    # for i in orders:
-        # total_product_price = i.product_price
-        # grant_total = i.grand_totol
-
-    # discount = grant_total-total_product_price
-
 
     context = {
         "ord":ord,
@@ -134,7 +100,7 @@ def change_order_status(request, order_id, status, user_id):
     return redirect(reverse('admin_app:admin_orders_detail', kwargs={'user_id': user_id, 'order_number': order.order.order_number}))
 
 
-
+@login_required(login_url='admin_app:admin_login')
 def sales_report(request):
     if not request.user.is_superuser:
         return redirect('admin_app:admin_login')

@@ -75,22 +75,6 @@ def add_coupon(request):
 
 
 
-# def toggle_coupon_status(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         coupon_id = data.get('coupon_id')
-#         activate = data.get('activate')
-        
-#         try:
-#             coupon = Coupon.objects.get(id=coupon_id)
-#             coupon.is_active = activate
-#             coupon.save()
-#             return JsonResponse({'success': True, 'active': coupon.is_active})
-#         except Coupon.DoesNotExist:
-#             return JsonResponse({'success': False, 'message': 'Coupon not found'})
-#         except Exception as e:
-#             return JsonResponse({'success': False, 'message': str(e)})
-
 
 @never_cache
 def deactivate_coupon(request, id):

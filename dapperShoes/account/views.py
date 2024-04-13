@@ -94,35 +94,6 @@ def account_change_password(request):
 
 
 
-# @login_required(login_url='user_app:user_login')
-# def account_create_address(request):
-#     print('outside POST')
-#     if request.method == 'POST':
-#         print('inside POST')
-#         first_name = request.POST.get('first_name')
-#         last_name = request.POST.get('last_name')
-#         address_line = request.POST.get('address')
-#         town_city = request.POST.get('town_city')
-#         state = request.POST.get('state')
-#         zip_code = request.POST.get('zip_code')
-#         phone_number = request.POST.get('phone_number')
-
-        
-#         # Create a new Address object for the current user
-#         address = Address.objects.create(user=request.user,first_name=first_name, last_name=last_name , address=address_line, town_city=town_city ,state=state, zip_code=zip_code, phone_number =phone_number)
-#         address.save()
-
-#         return render(request,'user_side/page-account/account-my-address.html')
-
-    
-#     # context = {
-#     #     'product': product,
-#     #     'categories' : categories,
-#     #     'subcategory' : subcategory,
-#     #     'brands' : brands,
-#     # }
-
-#     return render(request,'user_side/page-account/account-create-address.html')  #,context
 
 
 @login_required(login_url='user_app:user_login')
@@ -220,14 +191,12 @@ def cancel_product(request, item_id):
         wallet_transaction.save()
 
     order = Order.objects.get(id = order.id)
-    if order.coupon_applied:
-        order.order_total -= ordered_product.total
-        order.order_total += order.coupon_discount
-    else:
-        order.order_total -= ordered_product.total
-
-    # print("ordered_product.grand_totol:  ",ordered_product.grand_totol)
-    # print("order.order_total:  ",order.order_total)
+    # if order.coupon_applied:
+    #     order.order_total -= ordered_product.total
+    #     order.order_total += order.coupon_discount
+    # else:
+    #     order.order_total -= ordered_product.total
+    order.order_total -= ordered_product.total
 
     order.save()
     # print("ordered Products:  ",order_products)

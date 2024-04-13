@@ -68,27 +68,6 @@ def user_signup(request):
 
 
 
-# @never_cache
-# def user_send_otp(request):            
-
-#     otp_value = random.randint(100000, 999999)
-#     request.session['otp_session'] = otp_value
-#     request.session.set_expiry(300)
-#     email = request.session['email_session']
-#     # request.session.modified = True 
-#     print('Email in session in user_send_otp()',email)
-
-#     #send_mail( 'Subject', 'Message body', 'Senders email', ['Recipients email'], Fail silently)
-#     send_mail(
-#         'OTP verification from Dapper Shoes',
-#         f" Dear User,\n\n Your One-Time Password (OTP) for verification is:{request.session['otp_session']}. \n\nPlease use above OPT to complete your signup to Dapper Shoes website.",
-#         'dappershoes.official@gmail.com',
-#         [request.session['email_session']],
-#         fail_silently=False
-#     )
-#     request.session['email_session'] = email
-
-#     return render(request,'user_side/otp.html',{'email':email})
 @never_cache
 def user_send_otp(request):            
     otp_value = random.randint(100000, 999999)
@@ -114,7 +93,6 @@ def user_send_otp(request):
 
 
 
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True) 
 @never_cache
 def user_otp_verification(request):
 
@@ -208,48 +186,3 @@ def forgot_password(request):
     return render(request,'user_side/forgot_password.html')
 
 
-
-# @never_cache
-# def forgot_password_verification(request):
-#     # if request.method=='POST':
-#     #     email_session=request.session['email']
-#     return render(request,'user_side/forgot_password_otp_verification.html')
-
-
-
-### @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-### @never_cache
-### def user_index(request):         
-###     # if request.user.is_authenticated:       
-###     #     # if request.user.is_superuser:
-###     #     #     return redirect("admin_dashboard")
-###     #     return render(request,'user_side/index.html')  
-###     return render(request,'user_side/index.html')
-#######################################################################
-
-# def user_404(request):
-#     return render(request,'user_side/page-404.html')
-
-# def user_account(request):
-#     return render(request,'user_side/page-account.html')
-
-# def user_contact(request):
-#     return render(request,'user_side/page-contact.html')
-
-# def user_cart(request):
-#     return render(request,'user_side/shop-cart.html')
-
-# def user_checkout(request):
-#     return render(request,'user_side/shop-checkout.html')
-
-# def user_wishlist(request):
-#     return render(request,'user_side/shop-wishlist.html')
-
-# def user_fullwidth(request):
-#     return render(request,'user_side/shop-fullwidth.html')
-
-# def user_product_full(request):
-#     return render(request,'user_side/shop-product-full.html')
-
-# def user_logout(request):
-#     pass

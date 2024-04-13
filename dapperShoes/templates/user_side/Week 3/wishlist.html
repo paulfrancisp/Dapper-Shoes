@@ -34,11 +34,11 @@
                                 <tr>
                                     <td class="image product-thumbnail" colspan="1"><img src="{{wishlist_item.product.thumbnail_image.url}}" alt="#" style="width:40%"></td>
                                     <td class="product-des product-name" colspan="1">
-                                        <h5 class="product-name" style="color:black"><a href="">{{wishlist_item.product.variant_name}}</a></h5>
+                                        <h5 class="product-name" style="color:black"><a href="{% url 'shop_app:product_detail_attribute' product_id=wishlist_item.product.product.id attribute_value=wishlist_item.product.attribute.attribute_value|default:'9' %}">{{wishlist_item.product.variant_name}}</a></h5>
                                         {% comment %} {% url 'shop_app:product_details' wishlist_item.product.id %} {% endcomment %}
                                         <p class="font-xs">Brand:{{wishlist_item.product.product.product_brand.brand_name}} &nbsp;&nbsp;&nbsp;&nbsp;Subcategory:{{wishlist_item.product.product.sub_category}}</p>
                                     </td>
-                                    <td class="price" colspan="1" data-title="Price"><span>{{wishlist_item.product.sale_price}} INR</span><br>
+                                    <td class="price" colspan="1" data-title="Price"><span>{{wishlist_item.product.calculate_discounted_price}} INR</span><br>
                                     {% if wishlist_item.product.stock < 10 %}
                                         <span class="color3 font-weight-bold" style="color:red">{{wishlist_item.product.stock}} units remaining.</span>
                                     {% elif wishlist_item.product.stock == 0 %}

@@ -11,10 +11,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.images import ImageFile
 from django.core.exceptions import ValidationError
 from datetime import datetime
-
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-@never_cache
+@login_required(login_url='admin_app:admin_login')
 def product_list(request):
     if request.user.is_authenticated and request.user.is_superuser:
         products = Product.objects.all().order_by('id')
@@ -25,7 +25,7 @@ def product_list(request):
     return redirect('admin_app:admin_login')
 
 
-@never_cache
+@login_required(login_url='admin_app:admin_login')
 def edit_product(request,id):
     if request.user.is_authenticated and request.user.is_superuser:
         product = get_object_or_404(Product, id=id)
@@ -93,7 +93,7 @@ def edit_product(request,id):
     return redirect('admin_app:admin_login')                                                                            
     
 
-
+@login_required(login_url='admin_app:admin_login')
 def add_product(request):
     if request.user.is_authenticated and request.user.is_superuser:
 
@@ -197,7 +197,7 @@ def deactivate_product(request, id):
 
 
 ################ ------- WEEK 2 ------- ################
-
+@login_required(login_url='admin_app:admin_login')
 def variant_list(request,id):
     product_variants = Product_variant.objects.filter(product_id=id).order_by('id')
     # product_variants = get_object_or_404(Product_Variant,Product=id)
@@ -210,83 +210,7 @@ def variant_list(request,id):
 
 
 
-# def edit_variant(request,id):
-#     old_product = Product_varient.objects.get(id=id)
-#     products =Product.objects.all()
-
-#     attributes = Attribute.objects.filter(is_active=True)
-#     print(attributes)
-# #    to get the old varient
-#     attr_values_list = [item['attribute_value'] for item in old_product.attributes.all().values('attribute_value')]
-  
-#     attribute_dict = {}
-#     for attribute in attributes:
-#         attribute_values = attribute.attribute_value.filter(is_active=True )
-#         attribute_dict[attribute.atrribute_name] = attribute_values  
-#          #to show how many atribute in fronend
-#         attribute_values_count = attributes.count()  
-
-#     try:    
-#         if request.method == "POST":
-            
-#             product = request.POST['product']
-#             sku_id = request.POST['sku_id']
-#             max_price = request.POST['max_price']
-#             product_image=request.FILES.getlist('product_image')
-#             sale_price = request.POST['sale_price']
-#             stock = request.POST['stock']      
-#             thumbnail_image = request.FILES.get('existing_product_images')     
-        
-#             #getting all atributes  
-#             attribute_values = request.POST.getlist('attributes')
-        
-#             attribute_ids = []
-#             for req_atri in attribute_values:
-#                 if req_atri != 'None':
-#                   attribute_ids.append(req_atri)   
-
-#             product_id =Product.objects.get(id=product)
-
-
-#             # old_product.product = product_id,65
-#             old_product.sku_id = sku_id
-#             old_product.max_price  = max_price 
-#             old_product.sale_price  = sale_price 
-#             old_product.stock  = stock 
-
-#             if thumbnail_image != None:
-#                 old_product.thumbnail_image = thumbnail_image
-             
-
-#             old_product.save()
-#             old_product.atributes.set(attribute_ids)
-#             if not product_image :
-#                 for image in product_image:
-#                     Product_Image.objects.create(product_variant=old_product,image=image)
-#             else:
-#                 old_product.additional_product_images.all().delete()
-#                 for image in product_image:
-#                     Product_Image.objects.create(product_variant=old_product,image=image)
-#             messages.success(request, 'Product variation Added.')
-        
-#             return redirect(reverse('product_varient_detail', kwargs={'product_id': product_id.id}))
-   
-#     except IntegrityError:
-            
-#             messages.error(request, 'Product already exists.')
-#             return redirect(reverse('product_varient_detail', kwargs={'product_id': product_id.id}))
-     
-    
-#     print(attribute_dict)
-#     context={
-#         "old_product":old_product,
-#         "products": products, 
-#         'attribute_dict': attribute_dict,
-#         'attr':attr_values_list,
-#     }
-
-#     return render(request,"admin_side/Week_2/edit-product-variant.html",context)
-
+@login_required(login_url='admin_app:admin_login')
 def edit_variant(request,id):
     product_variant = get_object_or_404(Product_variant, id=id)
     attribute_value = Attribute_value.objects.all()
@@ -309,37 +233,10 @@ def edit_variant(request,id):
             product_variant.sale_price = sale_price
         if stock:
             product_variant.stock = stock
-        
-        
-        # if color:
-        #     # product_variant.color = color
-        #     product_variant.attributes.set(color)  # Use set to update ManyToManyField
-        #     # Clear existing colors and add selected colors
-        #     # product_variant.attributes.clear()
-        #     # for color_id in color:
-        #     #     color_instance = Attribute_values.objects.get(id=color_id)
-        #     #     product_variant.attributes.add(color_instance)
-        # # if is_active:
-        # #     product_variant.is_active = True if is_active == 'on' else False
-        # if size:
-        #     product_variant.attributes.set(size)  # Use set to update ManyToManyField
-            
-        # Clear existing colors and add selected colors
-        # product_variant.attributes.clear()
-        # for color_id in color:
-        #     color_instance = Attribute_value.objects.get(id=color_id)
-        #     product_variant.attributes.add(color_instance)
-
-
-
-
 
 
         # Clear existing sizes and add selected sizes
         product_variant.attribute.clear()
-        # for size_id in size:
-        #     size_instance = Attribute_value.objects.get(id=size_id)
-        #     product_variant.attribute.add(size_instance)
         for size_id in size:
             size_instance = Attribute_value.objects.get(id=size_id)
             product_variant.attribute.add(size_instance)
@@ -361,7 +258,7 @@ def edit_variant(request,id):
 
     return render(request, 'admin_side/Week_2/edit-product-variant.html',context)
 
-
+@login_required(login_url='admin_app:admin_login')
 def add_variant(request, id):
     if request.user.is_authenticated and request.user.is_superuser:
         if request.method == 'POST':

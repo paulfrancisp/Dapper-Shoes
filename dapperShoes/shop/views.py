@@ -16,19 +16,6 @@ from wallet.models import *
 from cart.models import *
 
 # Create your views here.
-# def navbar(request):
-#     # categories = Category.objects.filter(is_active=True)
-#     category = Category.objects.filter(is_active=True)
-#     sub_category = SubCategory.objects.filter(is_active=True)
-     
-
-#     context = {
-#         'categories1' : category,
-#         'subcategories1' : sub_category,
-#     }
-
-#     return render(request,'user_side/base.html',context)
-
 
 def index(request):
 
@@ -51,15 +38,7 @@ def index(request):
     for product in products:
         if product.updated_at > three_days_ago:
             is_new[product.id] = True
-
-    # print(is_new)
-
-    # Filter subcategories for each category
-    # category_subcategories = {}
-    # for category in category:
-    #     category_subcategories[category] = sub_category.filter(category=category)
-
-    
+  
     
     context = {
         'categories' : category,
@@ -89,8 +68,6 @@ def product_detail(request,product_id):
             # For anonymous users, use some other logic to identify the cart (if needed)
             cart= Cart.objects.create(user=current_user)
     
-    # cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id')
-    # print(cart_items,"......qqqqqqqqqq........qqqqqqqqqq....")
 
     # Initialize in_cart with a default value
     in_cart = False
@@ -107,7 +84,6 @@ def product_detail(request,product_id):
         'images' : images,
         'attributes': attributes,
         'in_cart' : in_cart,
-        # 'product_detail_url': reverse('shop_app:product_detail', kwargs={'product_id': products.id}),
     }
     return render(request,'user_side/shop-detail-product-page.html',context)
 
@@ -119,16 +95,6 @@ def product_detail_attribute(request,product_id,attribute_value):
     images = Product_Image.objects.filter(product_id_id=product_id)
     attributes = Attribute_value.objects.all()
 
-    # # Initialize in_cart with a default value
-    # in_cart = False
-
-    # if request.user.is_authenticated:
-    #     in_cart = CartItem.objects.filter(cart=_cart_id(request),variant=variants).exists()  #Give a True or False value, if True won't show add to cart else it will show.
-
-    # print(variants)
-    # print(product_id)
-    # print(attribute_value)
-
     current_user = request.user
     if current_user.is_authenticated:
         try:
@@ -137,8 +103,6 @@ def product_detail_attribute(request,product_id,attribute_value):
             # For anonymous users, use some other logic to identify the cart (if needed)
             cart= Cart.objects.create(user=current_user)
     
-    # cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id')
-    # print(cart_items,"......qqqqqqqqqq........qqqqqqqqqq....")
 
     # Initialize in_cart with a default value
     in_cart = False
@@ -176,7 +140,7 @@ def search(request):
         # Handle GET requests to the search page (if needed)
         print('eeeeeeeeee')
         return render(request, 'user_side/index.html')
-    # return HttpResponse('Search page')
+
 
 
 

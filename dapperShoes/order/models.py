@@ -133,7 +133,7 @@ class OrderProduct(models.Model):
 
     
     def save(self, *args, **kwargs):
-        self.total=self.product_price*self.quantity
+        # self.total=self.product_price*self.quantity
    
         super().save(*args, **kwargs)
 

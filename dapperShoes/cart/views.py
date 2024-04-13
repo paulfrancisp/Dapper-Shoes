@@ -151,6 +151,11 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         # cart= Cart.objects.create(user=current_user)
         pass
     
+    if cart.coupon_applied :
+        cart.coupon_applied = None
+        cart.coupon_discount = 0.00
+        cart.total_after_discount = 0.00
+        cart.save()
 
     cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
     print('cart_items checkout',cart_items)
