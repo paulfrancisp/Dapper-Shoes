@@ -100,7 +100,10 @@
                                 <p class="mb-1">
                                     Type: {{ ord.payment.payment_method }}<br>
                                     Order: {{ ord.order_number }} <br>
-                                    Total: ₹{{ ord.order_total }}
+                                    Total: ₹ <br>
+                                    Coupon discount: ₹ <br>
+                                    Coupon applied:  <br>
+                                    {% comment %} <strong style="font-weight: bold;">Grand total: ₹{{ ord.order_total }}</strong> {% endcomment %}
                                 </p>
                             
 
@@ -200,8 +203,11 @@
                         </table>
                     </div> <!-- table-responsive// -->
                 </div> <!-- col// -->
-                <div class="col-lg-1"></div>
+                <div class="">
+                    <strong style="font-weight: bold;">Grand total: ₹{{ ord.order_total }}</strong>
+                </div>
                 <div class="col-lg-2">
+                    
                     {% comment %} <div class="box shadow-sm bg-light">
                         <h6 class="mb-15">Payment info</h6>
                         <p>

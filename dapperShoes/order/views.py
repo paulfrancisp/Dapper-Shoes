@@ -72,6 +72,7 @@ def place_order_cod(request, total=0, quantity=0):
         if selected_payment_method == 'razorpay':
             client = razorpay.Client(auth=("rzp_test_qoXpACMLfXbWKp", "ydDrIJw9JIb3RhaMLHSsGvyi"))
             amount = int(total * 100)  # Amount in paisa
+            print('Amount inside razorpay total',total,' amount in paise ',amount)
             order_data = {
                 'amount': amount,
                 'currency': 'INR',
@@ -292,6 +293,9 @@ def order_success(request, razorpay_order_id,payment_id,signature):
         else:
             messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
             return redirect('cart_app:cart_list')
+    
+    if cart.coupon_applied:
+        total  -= cart.coupon_discount
     
     order = Order.objects.get(user=current_user, is_ordered=False, order_number=payment.payment_order_id)
 

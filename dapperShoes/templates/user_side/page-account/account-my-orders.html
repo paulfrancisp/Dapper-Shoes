@@ -75,7 +75,7 @@
                                                                         
                                                                         <td>
                                                                             {% for order_product in order.order_product.all %}
-                                                                            ₹{{ order_product.total }} for {{ order_product.quantity }} item<br>
+                                                                            ₹{{ order_product.total}} for {{ order_product.quantity }} item<br>                  {% comment %} {{ order_product.total|floatformat:"0" }} {% endcomment %}
                                                                             {% endfor %}
                                                                             {% comment %} ₹{{ order.order_total }} {% endcomment %}
                                                                         </td>

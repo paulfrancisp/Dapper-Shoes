@@ -191,13 +191,7 @@ def cancel_product(request, item_id):
         wallet_transaction.save()
 
     order = Order.objects.get(id = order.id)
-    # if order.coupon_applied:
-    #     order.order_total -= ordered_product.total
-    #     order.order_total += order.coupon_discount
-    # else:
-    #     order.order_total -= ordered_product.total
-    order.order_total -= ordered_product.total
-
+    order.order_status = ordered_product.order_status
     order.save()
     # print("ordered Products:  ",order_products)
     # print("order :",order)
@@ -209,7 +203,7 @@ def return_product(request,item_id):
     ordered_product = OrderProduct.objects.get(id = item_id)
     print('helloo',ordered_product)
     ordered_product.order_status = "Returned User"
-    ordered_product.total = 0
+    # ordered_product.total = 0
     ordered_product.save()
     ordered_product_quantity = ordered_product.quantity
 
@@ -218,12 +212,27 @@ def return_product(request,item_id):
     product_variant.stock += ordered_product_quantity
     product_variant.save()
 
-
     order = ordered_product.order
+
+    if order.payment.payment_method:
+        print('inside if satement',order.payment.payment_method )
+        user_wallet = Wallet.objects.get(user=request.user)
+        wallet_transaction = WalletTransaction.objects.filter(wallet=user_wallet).order_by('-id')
+        wallet_transaction = WalletTransaction.objects.create(
+            wallet = user_wallet,
+            transaction_type = "CREDIT",
+            amount = ordered_product.total,
+            wallet_payment_id = order.order_number,
+        )
+        user_wallet.balance += ordered_product.total
+        user_wallet.save()
+        wallet_transaction.save()
+
+
+    
     order_products = OrderProduct.objects.filter(order = order)
     order = Order.objects.get(id = order.id)
-    order.order_total -= ordered_product.total
-
+    order.order_status = ordered_product.order_status
     order.save()
 
 
