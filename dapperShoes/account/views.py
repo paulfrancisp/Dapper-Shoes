@@ -44,9 +44,15 @@ def account_order_detail(request,order_id):
 
     order_products = OrderProduct.objects.filter(order=order)
     # print("product_details order",order.id)
+
+    order_actual_total = 0
+    for i in order_products:
+        order_actual_total += i.product_price
+
     context = {
         'order_detail':order,
         'order_products':order_products,
+        'order_actual_total':order_actual_total,
     }
 
     return render(request,'user_side/page-account/account-order-detail.html',context)
@@ -238,3 +244,25 @@ def return_product(request,item_id):
 
     return redirect("account_app:account_order_detail", order_id=order.id)
 
+
+@login_required(login_url='user_app:user_login')
+def get_invoice(request,id):
+
+    user_id = request.user.id
+    user = User.objects.get(id = user_id)
+    order_actual_total = 0
+    order = Order.objects.get(id = id)
+    order_products = OrderProduct.objects.filter(order = order)
+
+    for i in order_products:
+        order_actual_total += i.product_price
+
+    context = {
+        "user" : user,
+        "order" : order,
+        "order_products" : order_products,
+        "order_actual_total":order_actual_total,
+    }
+
+
+    return render(request,"user_side/page-account/order_invoice.html",context)

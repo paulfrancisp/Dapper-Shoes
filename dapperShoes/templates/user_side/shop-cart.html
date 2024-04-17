@@ -43,7 +43,7 @@
                                                 <h5 class="product-name"><a href="{% url 'shop_app:product_detail_attribute' product_id=cart_item.variant.product_id attribute_value=cart_item.variant.attribute.attribute_value|default:'9' %}">{{ cart_item.variant.variant_name }}</a></h5>
                                                 <p class="font-xs">Brand:{{ cart_item.variant.product.product.product_brand.brand_name }}&nbsp;&nbsp;&nbsp;&nbsp;Subcategory:{{ cart_item.variant.product.sub_category }}
                                                 </p>
-                                                <div class="">
+                                                {% comment %} <div class="">
                                                     {% if cart_item.quantity >= cart_item.variant.stock %}
                                                         {% if messages %}
                                                         {% for message in messages %}
@@ -51,19 +51,20 @@
                                                         {% endfor %}
                                                         {% endif %}
                                                     {% endif %}
-                                                </div>
+                                                </div> {% endcomment %}
+                                                {% comment %} <span id="warning" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;"></span> {% endcomment %}
                                             </td>
                                             <td class="price" data-title="Price"><span>{{ cart_item.variant.calculate_discounted_price }} INR </span></td>
                                             <td class="text-center" data-title="Stock">
                                                 <div class="detail-qty border radius  m-auto">
-                                                    <a onclick="Down_for_increment({{ cart_item.variant.id }})" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                                    <span class="qty-val" id="qty">{{ cart_item.quantity }}</span>
-                                                    <a onclick="Up_for_increment({{ cart_item.variant.id }})"  class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
+                                                    <a onclick="Down_for_increment({{ cart_item.variant.id }},{{cart_item.id}})" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
+                                                    <span class="qty-val" id="{{cart_item.variant.id}}">{{ cart_item.quantity }}</span>
+                                                    <a onclick="Up_for_increment({{ cart_item.variant.id }},{{cart_item.id}})"  class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
                                                 </div>
 
                                             </td>
                                             <td class="text-right" data-title="Cart">
-                                                <span id="subtotal">{{ cart_item.sub_total }} INR</span>
+                                                <span id="{{cart_item.id}}">{{ cart_item.sub_total }} INR</span>
                                             </td> 
                                             <td class="action" data-title="Remove"><a href="{% url 'cart_app:remove_cart_item' cart_item.variant.id %}" class="text-muted"><i class="fi-rs-trash"></i></a></td>
                                         </tr>
@@ -140,7 +141,7 @@
     
     const csrftoken = getCookie('csrftoken');
 
-    function Up_for_increment (variantId){
+    function Up_for_increment (variantId,cartItemID){
        console.log(variantId)
         fetch("/add-cart/"+ variantId , {
         
@@ -153,29 +154,42 @@
                 })
                 .then(response => {
                     console.log(response)
+                    if (!response.ok) {
+                        throw new Error('No more stock available for this product');
+                    }
                     return response.json()   
             })
             .then(data => {
-                var qty = document.getElementById('qty')
-                var subtotal = document.getElementById('subtotal');
+                console.log(data,'...............',variantId);
+
+                if (!data.qty){
+                   // window.location.reload()    
+                }
+
+                var qty = document.getElementById(variantId)
+                var subtotal = document.getElementById(cartItemID);
                 var total = document.getElementById('total');
                 var total2 = document.getElementById('total2');
                 qty.innerHTML = data.qty;
 
-                subtotal.innerHTML = data.total;
+                subtotal.innerHTML = data.subtotal+" INR";
                 total.innerHTML = data.total;
                 total2.innerHTML = data.total;
                 // You can handle the context data here
+                
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error( error,"qwert"); 
+                const { message } = error;
+                alert(message)
                 
+                                
             });
     }
 
 
 
-    function Down_for_increment (variantId){
+    function Down_for_increment (variantId,cartItemID){
         console.log(variantId)
          fetch("/remove-cart/"+ variantId , {
          
@@ -188,15 +202,23 @@
                  })
                  .then(response => {
                      console.log(response)
+                     
                      return response.json()   
              })
              .then(data => {
-                 var qty = document.getElementById('qty')
-                 var subtotal = document.getElementById('subtotal');
+                 var qty = document.getElementById(variantId)
+                 var subtotal = document.getElementById(cartItemID);
                  var total = document.getElementById('total');
                  var total2 = document.getElementById('total2');
+
+                 console.log(data)
+
+                if(data.total == 0){
+                    window.location.reload();
+                }
+
                  qty.innerHTML = data.qty;
-                 subtotal.innerHTML = data.total;
+                 subtotal.innerHTML = data.subtotal+" INR";
                  total.innerHTML = data.total;
                  total2.innerHTML = data.total;
                  // You can handle the context data here

@@ -491,7 +491,7 @@
             if (response.ok) {
                 return response.json();
             } else {
-                throw new Error('Network response was not ok.');
+                throw new Error('Cash on delivery is only available for amount less than ₹1000');
             }
         })
         .then(data => {
@@ -503,6 +503,8 @@
         })
         .catch(error => {
             console.error('Error:', error);
+            window.location.reload()
+            //alert(error.message);
             
         });
 

@@ -36,7 +36,15 @@ def add_cart(request, variant_id):
             cart_item.quantity +=1
             cart_item.save()
         else:
-            messages.error(request,"No more stock available for this product")
+            # messages.error(request,"No more stock available for this product")
+            error_message = "No more stock available for this product"
+            response_data = {
+                'error': error_message
+            }
+            return JsonResponse(response_data, status=400)
+
+        
+        subtotal = cart_item.quantity * cart_item.variant.calculate_discounted_price()
     except CartItem.DoesNotExist:
         cart_item = CartItem.objects.create(
             variant=variant,
@@ -52,13 +60,13 @@ def add_cart(request, variant_id):
     cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
         
     print('cart_items cart_list',cart_items)
-    for cart_item in cart_items:
-        total += (cart_item.variant.calculate_discounted_price() * cart_item.quantity)
+    for cart_item1 in cart_items:
+        total += (cart_item1.variant.calculate_discounted_price() * cart_item1.quantity)
         print('  checkout total cart_list',total)
     # return HttpResponse(cart_item.quantity)
     ## return redirect(reverse('store_app:product_detail', kwargs={'id': product.id}))
     # Instead of using reverse, you can directly use the URL
-    data = {'qty':cart_item.quantity, 'total':total}
+    data = {'qty':cart_item.quantity, 'total':total,'subtotal':subtotal}
     return JsonResponse(data)
     ## return render(request, 'user_side/shop-detail-product-page.html')
 
@@ -106,22 +114,23 @@ def remove_cart(request, variant_id):
 
     variant = get_object_or_404(Product_variant, id=variant_id)
     cart_item = CartItem.objects.get(variant=variant, cart=cart)
+    
     if cart_item.quantity>1:
         cart_item.quantity -= 1
         cart_item.save()
     else:
         cart_item.delete()
     # return redirect('cart_app:cart_list')
-
+    subtotal = cart_item.quantity * cart_item.variant.calculate_discounted_price()
     total=0
     cart_items=None
     cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
         
     print('cart_items cart_list',cart_items)
-    for cart_item in cart_items:
-        total += (cart_item.variant.calculate_discounted_price() * cart_item.quantity)
+    for cart_item1 in cart_items:
+        total += (cart_item1.variant.calculate_discounted_price() * cart_item1.quantity)
     
-    data = {'qty':cart_item.quantity, 'total':total}
+    data = {'qty':cart_item.quantity, 'total':total,'subtotal':subtotal}
     return JsonResponse(data)
 
 
@@ -157,7 +166,15 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         cart.total_after_discount = 0.00
         cart.save()
 
-    cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
+    try:
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
+    except CartItem.DoesNotExist:
+
+        return redirect('cart_app:cart_list')
+    
+    if cart_items.count() <= 0:
+        return redirect('cart_app:cart_list')
+
     print('cart_items checkout',cart_items)
     for cart_item in cart_items:
         total += (cart_item.variant.calculate_discounted_price() * cart_item.quantity)

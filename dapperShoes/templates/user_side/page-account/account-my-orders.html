@@ -74,11 +74,11 @@
                                                                         <td>{{ order.order_status }}</td>
                                                                         
                                                                         <td>
-                                                                            {% for order_product in order.order_product.all %}
-                                                                            ₹{{ order_product.total}} for {{ order_product.quantity }} item<br>                  {% comment %} {{ order_product.total|floatformat:"0" }} {% endcomment %}
-                                                                            {% endfor %}
-                                                                            {% comment %} ₹{{ order.order_total }} {% endcomment %}
-                                                                        </td>
+                                                                            {% comment %} {% for order_product in order.order_product.all %}
+                                                                            ₹{{ order_product.total}} for {{ order_product.quantity }} item<br>                  
+                                                                            {% endfor %} {% endcomment %}
+                                                                            ₹{{ order.order_total }}
+                                                                        </td>{% comment %} {{ order_product.total|floatformat:"0" }} {% endcomment %}
                                                                         <td><a href="{% url 'account_app:account_order_detail' order.id %}" class="btn-small d-block">View</a></td>
                                                                     </tr>
                                                                 
