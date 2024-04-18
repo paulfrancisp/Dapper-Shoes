@@ -60,7 +60,7 @@
                                                             <tr>
                                                                 <th>Order</th>
                                                                 <th>Date</th>
-                                                                <th>Status</th>
+                                                                <th>Payment status</th>
                                                                 <th>Total</th>
                                                                 <th>Actions</th>
                                                             </tr>
@@ -71,7 +71,7 @@
                                                                     <tr>
                                                                         <td>{{ order.order_number }}</td>
                                                                         <td>{{ order.created_at }}</td>
-                                                                        <td>{{ order.order_status }}</td>
+                                                                        <td>{{ order.payment.payment_status }}</td>
                                                                         
                                                                         <td>
                                                                             {% comment %} {% for order_product in order.order_product.all %}

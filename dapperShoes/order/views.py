@@ -150,9 +150,6 @@ def place_order_cod(request, total=0, quantity=0):
 
                     #Reduce quantity of sold products
                     variant = Product_variant.objects.get(id=cart_item.variant.id)
-                    variantt = Product_variant.objects.filter(id=cart_item.variant.id)
-                    print(variant)
-                    print(variantt)
                     variant.stock -= cart_item.quantity
                     variant.save()
 
@@ -220,9 +217,6 @@ def place_order_cod(request, total=0, quantity=0):
 
                     #Reduce quantity of sold products
                     variant = Product_variant.objects.get(id=cart_item.variant.id)
-                    variantt = Product_variant.objects.filter(id=cart_item.variant.id)
-                    print(variant)
-                    print(variantt)
                     variant.stock -= cart_item.quantity
                     variant.save()
 
@@ -363,7 +357,6 @@ def order_success(request, razorpay_order_id,payment_id,signature):
 
         #Reduce quantity of sold products
         variant = Product_variant.objects.get(id=cart_item.variant.id)
-
         variant.stock -= cart_item.quantity
         variant.save()
 
@@ -381,58 +374,75 @@ def order_success(request, razorpay_order_id,payment_id,signature):
 
 def paymentfailed(request):   #, razorpay_order_id,payment_id,signature
 
-    # payment = Payment.objects.get(payment_id=razorpay_order_id)         
-    # payment.payment_status = 'FAILED'
-    # # payment.payment_id = payment_id
-    # payment.payment_signature = signature
-    # current_user = payment.user
-    # total = 0
-    # quantity = 0
-    # payment.save()
+    current_user = request.user
+    total = 0
+    quantity = 0
 
-    # print('order no test',razorpay_order_id)
+    payment_method = PaymentMethod.objects.get(method_name = "Razorpay")
+    order = Order.objects.filter(user=current_user, is_ordered=False).order_by("-id").first()  
+    order_prod = OrderProduct.objects.filter(order=order)
 
+    # payment = Payment.objects.create(
+    #     user = current_user,
+    #     payment_status = 'FAILED',
+    #     payment_method = payment_method,
+    #     payment_order_id = order.order_number,
+    #     amount_paid = 0,
+    #     is_paid = False,
+    # )
 
-    # cart = Cart.objects.filter(user=current_user).first()
-    # if not cart:
-    #     return redirect('shop_app:home')
+    payment = Payment.objects.get(payment_order_id=order.order_number)
+    payment.payment_status = "FAILED"
+    payment.save()
     
-    # cart_items = cart.cartitem_set.all()
-    # for cart_item in cart_items:
-    #     if cart_item.quantity <= cart_item.variant.stock:
-    #         total += cart_item.variant.calculate_discounted_price() * cart_item.quantity
-    #         quantity += cart_item.quantity
-    #     else:
-    #         messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
-    #         return redirect('cart_app:cart_list')
-    
-    # if cart.coupon_applied:
-    #     total  -= cart.coupon_discount
-    
-    # order = Order.objects.get(user=current_user, is_ordered=False, order_number=payment.payment_order_id)
+    order.payment = payment
+    order.order_status = 'Pending Payment'
+    order.save()
+
+    print('oooooooo',order.order_status)
 
 
+    cart = Cart.objects.filter(user=current_user).first()
+    if not cart:
+        return redirect('shop_app:home')
+    
+    cart_items = cart.cartitem_set.all()
+    for cart_item in cart_items:
+        if cart_item.quantity <= cart_item.variant.stock:
+            total += cart_item.variant.calculate_discounted_price() * cart_item.quantity
+            quantity += cart_item.quantity
+        else:
+            # messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
+            return redirect('cart_app:cart_list')
+    
+    if cart.coupon_applied:
+        total  -= cart.coupon_discount
+    
+    # order = Order.objects.filter(user=current_user, is_ordered=False).first()  
     # # Saving the payment and is_ordered values in Order table.
     # order.payment = payment
     # order.save()
 
 
-    # #Moving cart item to OrderProduct table.
-    # cart_items = cart.cartitem_set.all()
-    # for cart_item in cart_items:
-    #     orderproduct = OrderProduct()
-    #     orderproduct.order_id = order.id
-    #     # orderproduct.payment = payment
-    #     orderproduct.user_id = request.user.id
-    #     orderproduct.variant_id = cart_item.variant.id
-    #     orderproduct.product_variant = cart_item.variant.variant_name
-    #     orderproduct.images = cart_item.variant.thumbnail_image
-    #     orderproduct.quantity = cart_item.quantity
-    #     orderproduct.product_price = cart_item.variant.calculate_discounted_price()
-    #     orderproduct.ordered = True
-    #     orderproduct.total = total
-    #     orderproduct.save()
-
+    #Moving cart item to OrderProduct table.
+    cart_items = cart.cartitem_set.all()
+    for cart_item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        # orderproduct.payment = payment
+        orderproduct.user_id = request.user.id
+        orderproduct.variant_id = cart_item.variant.id
+        orderproduct.product_variant = cart_item.variant.variant_name
+        orderproduct.images = cart_item.variant.thumbnail_image
+        orderproduct.quantity = cart_item.quantity
+        orderproduct.product_price = cart_item.variant.calculate_discounted_price()
+        orderproduct.ordered = True
+        orderproduct.total = total
+        orderproduct.order_status = 'Pending Payment'
+        orderproduct.save()
+    
+    #Clearing the cart
+    cart.cartitem_set.all().delete()
 
 
     return render(request, 'user_side/Week 3/payment-failed.html')

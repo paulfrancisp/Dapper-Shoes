@@ -11,6 +11,8 @@ from category.models import *
 from product_management.models import *
 from django.db.models import Sum
 from django.db.models.functions import Coalesce
+from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 @never_cache
@@ -94,10 +96,28 @@ def change_order_status(request, order_id, status, user_id):
     order = get_object_or_404(OrderProduct, id=order_id)
     order.order_status = status
     order.save()
+
+    print("ssssssssssssss",status)
+
+    if status == "Delivered":
+        try:
+            print("Inside try block")
+            payment = Payment.objects.get(payment_order_id=order.order.order_number)
+            payment.is_paid = True
+            payment.payment_status = "SUCCESS"
+            payment.save()
+
+            print("status////", status)
+            print("payment_status///", payment.payment_status)
+        except ObjectDoesNotExist:
+            print("Inside except block")
+            # Handle the case where the Payment object does not exist
+            # You can log an error, display a message, or perform any other action here
+            print("Payment does not exist for order ID:", order_id)
+
+
     print("user_id",user_id)
 
-    
-    
     # Redirect to some page after changing status
     return redirect(reverse('admin_app:admin_orders_detail', kwargs={'user_id': user_id, 'order_number': order.order.order_number}))
 
@@ -152,7 +172,9 @@ def sales_report(request):
 
 @login_required(login_url='admin_app:admin_login')
 def admin_dashboard(request):
-    orders = Order.objects.exclude(payment__payment_status="FAILED").order_by("-created_at")
+    # orders = Order.objects.exclude(payment__payment_status="FAILED").order_by("-created_at")
+    orders = Order.objects.all().order_by("-created_at")
+
     if request.method == 'POST':
         # Get the form data
         date = request.POST.get('date')
@@ -183,41 +205,58 @@ def admin_dashboard(request):
     created_at__year=current_year,
     created_at__month=current_month,
     order_status='Delivered'
-    ).aggregate(total_earnings=Sum('grand_totol'))
+    ).aggregate(total_earnings=Sum('total'))
 
     # If there are no earnings for the month, set total_earnings to 0
     total_earnings = total_earnings['total_earnings'] if total_earnings['total_earnings'] else 0
 
     top_selling_products = OrderProduct.objects.filter(order_status='Delivered') \
-    .values('product_variant', 'product_id') \
+    .values('product_variant', 'variant_id') \
     .annotate(total_quantity=Coalesce(Sum('quantity'), 0)) \
     .order_by('-total_quantity')[:10]
-
+    print("dddd................",top_selling_products)
+    
     top_10_product = []
     top_selling_brands = []
     top_selling_categories = []
+    product = []  # Initialize an empty list
+
     for i in top_selling_products:
         product_variant = i['product_variant']
-        product_name = product_variant[10:] if len(product_variant) > 10 else product_variant
-        product = Product.objects.get(product_name__contains=product_name)
-        top_10_product.append(product)
-        top_selling_brands.append(product.brand) 
-        top_selling_categories.append(product.category)
+        product_name = product_variant[0:] if len(product_variant) > 0 else product_variant
+        product_name = product_name[:10]
+        # product = Product.objects.filter(product_name__contains=product_name)
+        filtered_products = Product.objects.filter(product_name__contains=product_name)
+        product.extend(filtered_products)  # Append filtered products to the list
+    print("#############productddd############",product)
+
+    for i in product:
+        top_10_product.append(i)
+        top_selling_brands.append(i.product_brand.brand_name) 
+        top_selling_categories.append(i.category.category_name)
 
     top_selling_brands = list(set(top_selling_brands))
     top_selling_categories = list(set(top_selling_categories))
+    
+    print('top_selling_brands',top_selling_brands)
+    print('top_selling_categories',top_selling_categories)
 
     top_10_product = list(set(top_10_product))
                                           
     payment = Payment.objects.distinct("payment_status")
     categories = Category.objects.filter(is_active = True)
     order_products = OrderProduct.objects.filter(order_status = "Delivered")
+    print("qqqqqqqqqqqqqqq",order_products)
     products = Product.objects.all()
     categories = Category.objects.all()
     
     revenue = 0
     for i in order_products:
-        revenue += i.grand_totol
+        # revenue += i.total
+        if i.total is not None:  # Check if total is not None
+            revenue += i.total
+    
+    print("revvvvvvv",revenue)
     
 
     chart_month = []
@@ -235,7 +274,7 @@ def admin_dashboard(request):
         chart_month.append(c)
 
         for user in User.objects.all():
-            if user.joined_on.month == month:
+            if user.date_joined.month == month:
                 user_count += 1
         new_users.append(user_count)
 
@@ -244,10 +283,30 @@ def admin_dashboard(request):
             order_c += 1
 
         orders_count.append(order_c)
+        total_orders = len(orders)
+
+        orders_list = Order.objects.all().order_by("-created_at")[:10]
 
 
-    total_orders = len(orders)
+
+    # print("total_orders",total_orders,
+    #     "\n total_products",len(products),
+    #     "\n total_categories",len(categories),
+    #     "\n chart_month",chart_month,
+    #     "\n new_users",new_users,
+    #     "\n orders_count",orders_count,
+    #     '\n categories',categories,
+    #     '\n payment',payment,
+    #     "\n top_selling_products",top_10_product,
+    #     "\n top_selling_brands",top_selling_brands,
+    #     "\n top_selling_categories",top_selling_categories,
+    #     "\n total_earnings",total_earnings,)
+
+    
+
     context = {
+        "orders":orders,
+        "orders_list":orders_list,
         "revenue":revenue,
         "total_orders":total_orders,
         "total_products":len(products),
@@ -264,4 +323,4 @@ def admin_dashboard(request):
 
 
     }
-    return render(request,'admin_side/page-admin-dashboard.html')
+    return render(request,'admin_side/page-admin-dashboard.html',context)

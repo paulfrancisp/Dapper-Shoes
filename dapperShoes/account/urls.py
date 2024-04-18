@@ -15,6 +15,10 @@ urlpatterns = [
     path('cancel-product/<int:item_id>/', views.cancel_product, name='cancel_product'),
     path('return-product/<int:item_id>/', views.return_product, name='return_product'),
 
+    
+
+    path('repay_payment/<int:id>/', views.repay_payment, name='repay_payment'),
+
 
     
 #     path('',views.account,name='account'),

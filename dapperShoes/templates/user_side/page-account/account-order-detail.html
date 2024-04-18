@@ -21,6 +21,15 @@
                                 </div>
                                 <div class="card-text  mb-0 me-2">
                                     <p class="card-text text-right">Payment Method: {{ order_detail.payment.payment_method.method_name }}</p>
+                                    
+                                    {% if order_detail.payment.payment_status == "SUCCESS" %}
+                                    <p class="card-text text-right " >Payment Status: <span class="text-success">{{ order_detail.payment.payment_status }}</span></p>
+                                    {% elif order_detail.payment.payment_status == "PENDING" %}
+                                    <p class="card-text text-right">Payment Status: <span class="text-warning">{{ order_detail.payment.payment_status }}</span></p>
+                                    {% elif order_detail.payment.payment_status == "FAILED"  %}
+                                    <p class="card-text text-right ">Payment Status: <span class="text-danger">{{ order_detail.payment.payment_status }}</span></p>
+                                    {% endif %}
+
                                     {% if order_detail.coupon_applied %}
                                         <p class="card-text text-right">Total: ₹{{ order_actual_total }}</p>
                                         <p class="card-text text-right">Coupon discount: <span style="color:red">₹{{ order_detail.coupon_discount }}</span></p>
@@ -56,7 +65,7 @@
                                         <th>Quantity</th>
                                         <th>Price</th>
                                         <th>Order Status</th>
-                                        <th>Action</th>
+                                        <th>Action/Remarks</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -70,15 +79,16 @@
                                             <td>{{ item.quantity }} </td>
                                             <td>₹{{ item.product_price }} </td>
                                             <td class="product-details">{{ item.order_status }}</td>
-                                            <td>
-                                                {% if item.order_status == "New" or item.order_status == "Accepted" %}
-                                                    <a href="{% url 'account_app:cancel_product' item.id %}" class="btn cancel-product">Cancel</a>
-                                                {% elif item.order_status == "Delivered"%}
-                                                    <a href="{% url 'account_app:return_product' item.id %}" class="btn return-product">Return</a>
-                                                {% else %}
-                                                    <button class="btn btn-danger cancel-product" disabled>Cancel</button>
-                                                {% endif %}
-                                            </td>
+                                            
+                                            {% if item.order_status == "New" or item.order_status == "Accepted" %}
+                                            <td><a href="{% url 'account_app:cancel_product' item.id %}" class="btn cancel-product">Cancel</a></td>
+                                            {% elif item.order_status == "Delivered"%}
+                                            <td><a href="{% url 'account_app:return_product' item.id %}" class="btn return-product">Return</a></td>
+                                            {% else %}
+                                            <td><div class="" disabled>Payment failed!!<br> Please repay through wallet to place the order.</div></td>
+                                                
+                                            {% endif %}
+                                            
                                         </tr>
 
 
@@ -90,11 +100,19 @@
                         </div>
                         {% comment %} <p><strong>Grand Total : ₹{{ order_detail.order_total }}</strong></p> {% endcomment %}
                         {% comment %} {% if product_ispaid == True %} {% endcomment %}
+                        {% if order_detail.payment.payment_status == "FAILED" %}
+                        <a href="{% url 'account_app:repay_payment' order_detail.id %}" >
+                            <div class="text-center"> <!-- Add this div to center align the button -->
+                                <button class="btn btn-primary">Repay</button>
+                            </div>
+                        </a>
+                        {% else %}
                         <a href="{% url 'account_app:get_invoice' order_detail.id %}" >
                             <div class="text-center"> <!-- Add this div to center align the button -->
                                 <button class="btn btn-primary">Get Invoice</button>
                             </div>
                         </a>
+                        {% endif %}
                         {% comment %} {% endif %} {% endcomment %}
                     </div>
                 </div>
@@ -148,6 +166,8 @@
             });
         });
     });
+
+
 </script>
 
 {% endblock %}

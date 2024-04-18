@@ -29,7 +29,7 @@ def account(request):
 
 @login_required(login_url='user_app:user_login')
 def account_my_orders(request):
-    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
     context = {
         'orders' : orders,
     }
@@ -266,3 +266,65 @@ def get_invoice(request,id):
 
 
     return render(request,"user_side/page-account/order_invoice.html",context)
+
+
+
+
+#####################################################
+
+
+def repay_payment(request,id):
+
+    current_user = request.user
+    order = Order.objects.get(id=id)
+    orderproducts = OrderProduct.objects.filter(order=order)
+
+    payment_methods_instance = PaymentMethod.objects.get(method_name="Wallet")   
+    wallet = Wallet.objects.get(user = current_user)
+
+    if order.order_total<= wallet.balance:
+
+        payment = Payment.objects.get(payment_order_id=order.order_number)
+        payment.payment_status = "SUCCESS"
+        payment.payment_method = payment_methods_instance
+        payment.is_paid = True
+        payment.amount_paid = order.order_total        
+        payment.save()
+
+        order.is_ordered = True
+        order.order_status = "New"
+        # if cart.coupon_applied:
+        # coupon_applied
+        # coupon_discount
+        order.save()
+        for orderproduct in orderproducts:
+            orderproduct.order_status = "New"
+            orderproduct.ordered = True
+            product = Product_variant.objects.get(variant_name__icontains = orderproduct.product_variant)
+            product.stock -= orderproduct.quantity
+            product.save()
+            orderproduct.save()
+
+
+        # if cart.coupon_applied:
+        #     coupon = Coupon.objects.get(id=cart.coupon_applied.id)
+        #     coupon.total_coupons -= 1
+        #     coupon.save()
+
+        #     user_coupon = UserCoupon.objects.get(coupon_id=coupon.id,user_id=current_user)
+        #     user_coupon.usage_count +=1
+        #     user_coupon.save()
+
+        
+        
+        wallet_transaction = WalletTransaction.objects.create(
+            wallet = wallet,
+            transaction_type = "DEBIT",
+            amount = order.order_total,
+            wallet_payment_id = order.order_number,
+        )
+        wallet.balance -= order.order_total
+        wallet.save()
+        wallet_transaction.save()
+  
+    return redirect('account_app:account_order_detail',order_id=order.id)

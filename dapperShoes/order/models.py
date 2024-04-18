@@ -46,6 +46,7 @@ class Payment(models.Model):
 class Order(models.Model):
     ORDER_STATUS_CHOICES =(
         ("New", "New"),
+        ("Pending Payment", "Pending Payment"),
         ("Accepted", "Accepted"),
         ("Delivered", "Delivered"),
         ("Cancelled_Admin", "Cancelled Admin"),
@@ -110,6 +111,7 @@ class OrderProduct(models.Model):
     ORDER_STATUS_CHOICES =(
         
         ("New", "New"),
+        ("Pending Payment", "Pending Payment"),
         ("Accepted", "Accepted"),
         ("Delivered", "Delivered"),
         ("Cancelled_Admin", "Cancelled Admin"),

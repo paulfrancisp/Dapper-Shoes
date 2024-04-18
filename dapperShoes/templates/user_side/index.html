@@ -205,15 +205,16 @@
                                                 </div> {% endcomment %}
                                             </div>
                                             <div class="product-content-wrap">
-                                                <div class="product-category">
-                                                    <a href="#">{{product.sub_category}}</a>
-                                                </div>
+                                                
                                                 <h2><a href="#">{{product.product_name}}</a></h2>
-                                                <div class="rating-result" title="90%">
+                                                {% comment %} <div class="rating-result" title="90%">
                                                     <span>
                                                         <span>90%</span>
                                                     </span>
-                                                </div> 
+                                                </div>  {% endcomment %}
+                                                <div class="product-category">
+                                                    <a href="#">{{product.sub_category}}</a>
+                                                </div>
                                                 <div class="product-price">
                                                     <span>{{ product.product_var.first.calculate_discounted_price }} INR</span>
                                                     {% if product.product_var.first.calculate_discounted_price != product.product_var.first.max_price %}
