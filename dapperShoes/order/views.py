@@ -394,12 +394,6 @@ def paymentfailed(request):   #, razorpay_order_id,payment_id,signature
     payment = Payment.objects.get(payment_order_id=order.order_number)
     payment.payment_status = "FAILED"
     payment.save()
-    
-    order.payment = payment
-    order.order_status = 'Pending Payment'
-    order.save()
-
-    print('oooooooo',order.order_status)
 
 
     cart = Cart.objects.filter(user=current_user).first()
@@ -417,6 +411,27 @@ def paymentfailed(request):   #, razorpay_order_id,payment_id,signature
     
     if cart.coupon_applied:
         total  -= cart.coupon_discount
+
+    # Saving the payment and is_ordered values in Order table.
+    
+    order.payment = payment
+    order.order_status = 'Pending Payment'
+    if cart.coupon_applied:
+        order.coupon_applied = cart.coupon_applied
+        order.coupon_discount = cart.coupon_discount
+        order.order_total = cart.total_after_discount
+    else:
+        order.order_total = total
+    order.save()
+
+    if cart.coupon_applied:
+        coupon = Coupon.objects.get(id=cart.coupon_applied.id)
+        coupon.total_coupons -= 1
+        coupon.save()
+
+        user_coupon = UserCoupon.objects.get(coupon_id=coupon.id,user_id=current_user)
+        user_coupon.usage_count +=1
+        user_coupon.save()
     
     # order = Order.objects.filter(user=current_user, is_ordered=False).first()  
     # # Saving the payment and is_ordered values in Order table.

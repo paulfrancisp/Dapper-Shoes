@@ -327,4 +327,5 @@ def repay_payment(request,id):
         wallet.save()
         wallet_transaction.save()
   
-    return redirect('account_app:account_order_detail',order_id=order.id)
+    # return redirect('account_app:account_order_detail',order_id=order.id)
+    return redirect('order_app:success_page')
