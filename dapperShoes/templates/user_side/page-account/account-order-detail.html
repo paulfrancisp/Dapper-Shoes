@@ -85,7 +85,7 @@
                                             {% elif item.order_status == "Delivered"%}
                                             <td><a href="{% url 'account_app:return_product' item.id %}" class="btn return-product">Return</a></td>
                                             {% else %}
-                                            <td><div class="" disabled>Payment failed!!<br> Please repay through wallet to place the order.</div></td>
+                                            <td><div class="" disabled>Payment failed!!<br> Repay through wallet complete the order.</div></td>
                                                 
                                             {% endif %}
                                             
@@ -103,7 +103,7 @@
                         {% if order_detail.payment.payment_status == "FAILED" %}
                         <a href="{% url 'account_app:repay_payment' order_detail.id %}" >
                             <div class="text-center"> <!-- Add this div to center align the button -->
-                                <button class="btn btn-primary">Repay</button>
+                                <button class="btn btn-primary">Repay from wallet</button>
                             </div>
                         </a>
                         {% else %}
@@ -112,6 +112,11 @@
                                 <button class="btn btn-primary">Get Invoice</button>
                             </div>
                         </a>
+                        {% endif %}
+                        {% if messages %}
+                        {% for message in messages %}
+                        <span class="error" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                        {% endfor %}
                         {% endif %}
                         {% comment %} {% endif %} {% endcomment %}
                     </div>

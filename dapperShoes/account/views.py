@@ -273,7 +273,7 @@ def get_invoice(request,id):
 #####################################################
 
 
-def repay_payment(request,id):
+def repay_payment(request,id):  
 
     current_user = request.user
     order = Order.objects.get(id=id)
@@ -292,9 +292,9 @@ def repay_payment(request,id):
         payment.save()
 
         order.is_ordered = True
-        order.order_status = "New"
-        # if cart.coupon_applied:
-        # coupon_applied
+        order.order_status = "New"  #####
+        # if cart.coupon_applied:   ##### do "git push origin master" was not able to push code on 12:56am 4/19/2024
+        # coupon_applied            #####
         # coupon_discount
         order.save()
         for orderproduct in orderproducts:
@@ -327,5 +327,8 @@ def repay_payment(request,id):
         wallet.save()
         wallet_transaction.save()
   
-    # return redirect('account_app:account_order_detail',order_id=order.id)
-    return redirect('order_app:success_page')
+        # return redirect('account_app:account_order_detail',order_id=order.id)
+        return redirect('order_app:success_page')
+    else:
+        messages.warning(request,"Insufficent wallet balance!! Please refill your wallet.")
+        return redirect('order_app:success_page')
