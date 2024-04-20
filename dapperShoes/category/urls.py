@@ -10,10 +10,7 @@ urlpatterns = [
    path('category-activate/<int:id>',views.deactivate_category,name='deactivate_category'),
    path('category-deactivate/<int:id>',views.activate_category,name='activate_category'),
    
-   # path('admin-add-category',views.admin_add_categories,name='admin_add_categories'),
-   # path('search',views.search,name='search'),
-
-
+   
    # sub-categories
    path('admin-sub-categories',views.admin_sub_categories,name='admin_sub_categories'),
    path('edit-sub-category/<int:id>',views.edit_sub_categories,name='edit_sub_categories'),

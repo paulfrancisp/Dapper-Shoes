@@ -6,7 +6,6 @@
             <div class="content-header">
                 <div>
                     <h2 class="content-title card-title">Categories </h2>
-                    {% comment %} <p>Add, edit or delete a category</p> {% endcomment %}
                 </div>
                 
             </div>
@@ -57,11 +56,6 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            {% comment %} <th class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </th> {% endcomment %}
                                             <th>ID</th>
                                             <th>Name</th>
                                             <th>Slug</th>
@@ -75,14 +69,8 @@
                                     <tbody>
                                         {% for category in categories %}
                                         <tr>
-                                            {% comment %} <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td> {% endcomment %}
                                             <td>{{category.id}}</td>
                                             <td>
-                                                {% comment %} {{category.category_name}} {% endcomment %}
                                                 <a href="{% url 'category_app:edit_categories' category.id%}">
                                                     <strong style="font-weight: bold;">{{category.category_name}}</strong>
                                                 </a>
@@ -98,25 +86,13 @@
                                             </td>
                                             <td>{{category.description}}</td>
                                             <td class="pt-2">
-                                                {% comment %} <img src="{{category.category_image.url}}" style="max-width: 40px; height: auto;"></td> {% endcomment %}
                                                 {% if category.category_image %}
                                                     <img src="{{ category.category_image.url }}" style="max-width: 40px; height: auto;">
                                                 {% else %}
-                                                    {% comment %} <img src="{{ 'Uavailable' }}" style="max-width: 40px; height: auto;"> {% endcomment %}
                                                     <span>Unavailable</span>
                                                 {% endif %}
                                             </td>        
                                             <td class="text-end">
-                                                {% comment %} <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        {% comment %} <a class="dropdown-item" href="#">View detail</a> {% endcomment %}{% comment %}
-                                                        <a class="dropdown-item" href="{% url 'category_app:edit_categories' id=category.id%}">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="{% url 'category_app:delete_categories' id=category.id%}">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end --> {% endcomment %}
-
-
                                                 {% if  category.is_active %}
                                                 <a   href="{% url 'category_app:deactivate_category' category.id %}"  class="btn btn-sm font-sm alert-danger rounded block-user-btn">
                                                     Block
@@ -126,34 +102,9 @@
                                                     Unblock
                                                 </a>
                                                 {% endif %} 
-
-
-
                                             </td>
                                         </tr>
                                         {% endfor %}
-                                        {% comment %} <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
-                                            <td>1</td>
-                                            <td><b>Men clothes</b></td>
-                                            <td>Men clothes</td>
-                                            <td>/men</td>
-                                            <td>1</td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr> {% endcomment %}
                                         
                                     </tbody>
                                 </table>

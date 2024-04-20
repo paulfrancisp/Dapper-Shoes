@@ -9,8 +9,6 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
 from account.models import *
-# from cart.models import *
-# from cart.views import _cart_id
 
 
 # Create your views here.
@@ -21,8 +19,6 @@ def user_logout(request):
         logout(request)  
     return redirect('shop_app:index')
 
-
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True) 
 @never_cache
 def user_signup(request):          
     if request.method == 'POST':
@@ -77,8 +73,6 @@ def user_send_otp(request):
     # Assign email session before sending the email
     email = request.session['email_session']
     
-    print('Email in session in user_send_otp()', email)
-    
     send_mail(
         'OTP verification from Dapper Shoes',
         f"Dear User,\n\nYour One-Time Password (OTP) for verification is: {request.session['otp_session']}. \n\nPlease use the above OTP to complete your signup to Dapper Shoes website.",
@@ -88,7 +82,6 @@ def user_send_otp(request):
     )
     
     request.session['email_session'] = email
-    print('Email in session in user_send_otp()11111111111111111', request.session['email_session'])
     return render(request, 'user_side/otp.html', {'email': email})
 
 
@@ -113,11 +106,8 @@ def user_otp_verification(request):
             return redirect('user_app:user_login')
 
         elif str(otp_entered) == str(otp_session):
-            print('Email in session in user_otp_verification()',email_session)
             customer = User.objects.create_user(username = uname, email = email_session, password = passw ) #if create() is used then password won't be hashed it needs to be hashed seperately.
             customer.save()
-            # address = Address.objects.create(user=customer,)
-            # address.save()
             customer = authenticate(request, username = uname, password=passw)     #authenticate(email = email_session, password=passw)
             
             if customer is not None:
@@ -144,22 +134,6 @@ def user_login(request):
             user=authenticate(request,username=username,password=pass1)  
 
             if user is not None:
-                # try:
-                #     cart=Cart.objects.get(cart_id=_cart_id(request))  
-                #     is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
-                #     print(is_cart_item_exists)
-
-                #     if  is_cart_item_exists:
-                #         cart_item = CartItem.objects.filter(cart=cart)
-                #         print(cart_item)
-
-                #         for item in cart_item:
-                #             item.user = user
-                #             item.save()
-                # except:
-                #     print('Entering inside except block')
-                #     pass    
-                
                 login(request,user)                                      
                 return redirect('shop_app:index')                                  
             else:      

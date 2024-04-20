@@ -49,10 +49,16 @@ def account_order_detail(request,order_id):
     for i in order_products:
         order_actual_total += i.product_price
 
+    try:
+        user_wallet = Wallet.objects.get(user=request.user)
+    except:
+        pass
+
     context = {
         'order_detail':order,
         'order_products':order_products,
         'order_actual_total':order_actual_total,
+        'user_wallet':user_wallet,
     }
 
     return render(request,'user_side/page-account/account-order-detail.html',context)
@@ -292,10 +298,7 @@ def repay_payment(request,id):
         payment.save()
 
         order.is_ordered = True
-        order.order_status = "New"  #####
-        # if cart.coupon_applied:   ##### do "git push origin master" was not able to push code on 12:56am 4/19/2024
-        # coupon_applied            #####
-        # coupon_discount
+        order.order_status = "New" 
         order.save()
         for orderproduct in orderproducts:
             orderproduct.order_status = "New"
@@ -304,16 +307,6 @@ def repay_payment(request,id):
             product.stock -= orderproduct.quantity
             product.save()
             orderproduct.save()
-
-
-        # if cart.coupon_applied:
-        #     coupon = Coupon.objects.get(id=cart.coupon_applied.id)
-        #     coupon.total_coupons -= 1
-        #     coupon.save()
-
-        #     user_coupon = UserCoupon.objects.get(coupon_id=coupon.id,user_id=current_user)
-        #     user_coupon.usage_count +=1
-        #     user_coupon.save()
 
         
         
@@ -326,8 +319,7 @@ def repay_payment(request,id):
         wallet.balance -= order.order_total
         wallet.save()
         wallet_transaction.save()
-  
-        # return redirect('account_app:account_order_detail',order_id=order.id)
+
         return redirect('order_app:success_page')
     else:
         messages.warning(request,"Insufficent wallet balance!! Please refill your wallet.")

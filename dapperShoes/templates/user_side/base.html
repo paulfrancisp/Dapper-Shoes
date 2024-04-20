@@ -20,8 +20,6 @@
     <link rel="stylesheet" href="{% static 'assets_user/css/main.css' %}">
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-    {% comment %} <script src="https://www.paypal.com/sdk/js?client-id=ARStyQ3opJleA8O07tyXDKuX-w6EvTK3sDdczfBEdGe6t5qXYDoizmU75gTRt7z0_Sgh8cZuxvIe7gcY&currency=INR"></script> {% endcomment %}
 </head>
 
 <body>
@@ -52,12 +50,7 @@
                         <div class="header-info header-info-right">
                             <ul>
                                 <li>
-                                    <a class="language-dropdown-active" href="#"> <i class="fi-rs-world"></i> English {% comment %} <i class="fi-rs-angle-small-down"></i>{% endcomment %}</a> 
-                                    {% comment %} <ul class="language-dropdown">
-                                        <li><a href="#"><img src="{% static 'assets_user/imgs/theme/flag-fr.png' %}" alt="">Français</a></li>
-                                        <li><a href="#"><img src="{% static 'assets_user/imgs/theme/flag-dt.png' %}" alt="">Deutsch</a></li>
-                                        <li><a href="#"><img src="{% static 'assets_user/imgs/theme/flag-ru.png' %}" alt="">Pусский</a></li>
-                                    </ul> {% endcomment %}
+                                    <a class="language-dropdown-active" href="#"> <i class="fi-rs-world"></i> English </a> 
                                 </li>
                                 {% if request.user.is_authenticated %}
                                 <li><i class="fi-rs-user"></i><a href="{% url 'user_app:user_logout' %}">Log Out</a></li>
@@ -74,40 +67,14 @@
             <div class="container">
                 <div class="header-wrap header-space-between position-relative">
                     <div class="logo logo-width-1">
-                        {% comment %} <a href="index.html"><img src="{% static 'assets_user/imgs/theme/logo.svg' %}" alt="logo"></a> ###Evara logo{% endcomment %}
                         <h4 class="border border-dark p-2">Dapper Shoes</h4>
                     </div>
                     <div class="main-menu main-menu-grow main-menu-padding-1 main-menu-lh-1 main-menu-mrg-1 hm3-menu-padding d-none d-lg-block hover-boder">
                         <nav>
                             <ul>
                                 <li><a class="active" href="{% url 'shop_app:index' %}">Home </a>
-                                    {% comment %} <ul class="sub-menu">
-                                        <li><a href="index.html">Home 1</a></li>
-                                        <li><a href="index-2.html">Home 2</a></li>
-                                        <li><a href="index-3.html">Home 3</a></li>
-                                        <li><a href="index-4.html">Home 4</a></li>
-                                    </ul> {% endcomment %}
                                 </li>
-                                <li><a href="{% url 'shop_app:shop' %}">Shop </a>             {% comment %} {% url '' %} {% endcomment %}
-                                    {% comment %} <ul class="sub-menu">
-                                        <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
-                                        <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
-                                        <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
-                                        <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
-                                        <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                                        <li><a href="#">Single Product <i class="fi-rs-angle-right"></i></a>
-                                            <ul class="level-menu">
-                                                <li><a href="shop-product-right.html">Product – Right Sidebar</a></li>
-                                                <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
-                                                <li><a href="shop-product-full.html">Product – No sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="shop-filter.html">Shop – Filter</a></li>
-                                        <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                                        <li><a href="shop-cart.html">Shop – Cart</a></li>
-                                        <li><a href="shop-checkout.html">Shop – Checkout</a></li>
-                                        <li><a href="shop-compare.html">Shop – Compare</a></li>
-                                    </ul> {% endcomment %}
+                                <li><a href="{% url 'shop_app:shop' %}">Shop </a>
                                 </li>
                                 {% for category in categories %}
                                     <li>
@@ -122,56 +89,25 @@
                                         </ul>
                                     </li>
                                 {% endfor %}
-                                {% comment %} <li>
-                                    <a href="blog-category-grid.html">Women <i class="fi-rs-angle-down"></i></a>
-                                    <ul class="sub-menu">
-                                        <li><a href="blog-category-grid.html">Women Casuals</a></li>
-                                        <li><a href="blog-category-list.html">Women Formals</a></li>
-                                        <li><a href="blog-category-big.html">Women Sandals</a></li>
-                                    </ul>
-                                </li>
                                 <li>
-                                    <a href="#">Kids <i class="fi-rs-angle-down"></i></a>
-                                    <ul class="sub-menu">
-                                        <li><a href="blog-category-grid.html">Kids Casuals</a></li>
-                                        <li><a href="blog-category-list.html">Kids Formals</a></li>
-                                        <li><a href="blog-category-big.html">Kids Sandals</a></li> 
-                                    </ul>
-                                </li> {% endcomment %}
-                                <li>
-                                    <a href="page-contact.html">Contact</a>
+                                    <a href="#">Contact</a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
                     <div class="header-action-right">
-                        {% comment %} {% if request.user.is_authenticated %} {% endcomment %}
                         <div class="search-style-1">
                             <form method="POST" action="{% url 'shop_app:search' %}">
                                 {% csrf_token %}
-                                {% comment %} <select class="select-active">
-                                    <option>Search in</option>
-                                    <option>Women's Clothing</option>
-                                    <option>Men's Clothing</option>
-                                    <option>Cellphones</option>
-                                    <option>Computer & Office</option>
-                                    <option>Consumer Electronics</option>
-                                    <option>Jewelry & Accessories</option>
-                                    <option>Home & Garden</option>
-                                    <option>Luggage & Bags</option>
-                                    <option>Shoes</option>
-                                    <option>Mother & Kids</option>
-                                </select> {% endcomment %}
                                
                                 <input type="text" name="search" placeholder="Search for items…"> 
                             </form>
                         </div>
-                        {% comment %} {% endif %} {% endcomment %}
                         
                         <div class="header-action-icon-2">
                             <a href="{% url 'account_app:account' %}">
                                 <img width="32" height="32" src="https://img.icons8.com/windows/32/gender-neutral-user.png" alt="gender-neutral-user"/>
-                                <!-- You can use your own path and filename for the user profile icon -->
+                                
                             </a>
                         </div>
                         
@@ -179,7 +115,7 @@
                             <div class="header-action-icon-2">
                                 <a href="{% url 'shop_app:wishlist' %}">
                                     <img class="svgInject ms-2" alt="Evara" src="{% static 'assets_user/imgs/theme/icons/icon-heart.svg' %}">
-                                    {% comment %} <span class="pro-count blue">4</span> {% endcomment %}
+                                    
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
@@ -187,43 +123,6 @@
                                     <img alt="Evara" src="{% static 'assets_user/imgs/theme/icons/icon-cart.svg' %}">
                                     <span class="pro-count blue">{{cart_count}}</span>
                                 </a>
-                                {% comment %} <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                    <ul>
-                                        <li>
-                                            <div class="shopping-cart-img">
-                                                <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets_user/imgs/shop/thumbnail-3.jpg' %}"></a>
-                                            </div>
-                                            <div class="shopping-cart-title">
-                                                <h4><a href="shop-product-right.html">Plain Striola Shirts</a></h4>
-                                                <h3><span>1 × </span>$800.00</h3>
-                                            </div>
-                                            <div class="shopping-cart-delete">
-                                                <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="shopping-cart-img">
-                                                <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets_user/imgs/shop/thumbnail-1.jpg' %}"></a>
-                                            </div>
-                                            <div class="shopping-cart-title">
-                                                <h4><a href="shop-product-right.html">Macbook Pro 2022</a></h4>
-                                                <h3><span>1 × </span>$3200.00</h3>
-                                            </div>
-                                            <div class="shopping-cart-delete">
-                                                <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <div class="shopping-cart-footer">
-                                        <div class="shopping-cart-total">
-                                            <h4>Total <span>$4000.00</span></h4>
-                                        </div>
-                                        <div class="shopping-cart-button">
-                                            <a href="shop-cart.html">View cart</a>
-                                            <a href="shop-checkout.html">Checkout</a>
-                                        </div>
-                                    </div>
-                                </div> {% endcomment %}
                             </div>
                             <div class="header-action-icon d-block d-lg-none">
                                 <div class="burger-icon">
@@ -242,7 +141,6 @@
         <div class="mobile-header-wrapper-inner">
             <div class="mobile-header-top">
                 <div class="mobile-header-logo">
-                    {% comment %} <a href="index.html"><img src="{% static 'assets_user/imgs/theme/logo.svg' %}" alt="logo"></a> {% endcomment %}
                     <h4 class="border border-dark p-2">Dapper Shoes</h4>
                 </div>
                 <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
@@ -284,96 +182,24 @@
                     <nav>
                         <ul class="mobile-menu">
                             <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'shop_app:index' %}">Home</a>
-                                {% comment %} <ul class="dropdown">
-                                    <li><a href="index.html">Home 1</a></li>
-                                    <li><a href="index-2.html">Home 2</a></li>
-                                    <li><a href="index-3.html">Home 3</a></li>
-                                    <li><a href="index-4.html">Home 4</a></li>
-                                </ul> {% endcomment %}
+                                
                             </li>
                             <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'shop_app:shop' %}">shop</a>
-                                {% comment %} <ul class="dropdown">
-                                    <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
-                                    <li><a href="shop-grid-left.html">Shop Grid – Left Sidebar</a></li>
-                                    <li><a href="shop-list-right.html">Shop List – Right Sidebar</a></li>
-                                    <li><a href="shop-list-left.html">Shop List – Left Sidebar</a></li>
-                                    <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Single Product</a>
-                                        <ul class="dropdown">
-                                            <li><a href="shop-product-right.html">Product – Right Sidebar</a></li>
-                                            <li><a href="shop-product-left.html">Product – Left Sidebar</a></li>
-                                            <li><a href="shop-product-full.html">Product – No sidebar</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="shop-filter.html">Shop – Filter</a></li>
-                                    <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                                    <li><a href="shop-cart.html">Shop – Cart</a></li>
-                                    <li><a href="shop-checkout.html">Shop – Checkout</a></li>
-                                    <li><a href="shop-compare.html">Shop – Compare</a></li>
-                                </ul> {% endcomment %}
+                                
                             </li>
                             <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Men</a>
                                 <ul class="dropdown">
-                                    {% comment %} <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Women's Fashion</a>
-                                        <ul class="dropdown">
-                                            <li><a href="shop-product-right.html">Dresses</a></li>
-                                            <li><a href="shop-product-right.html">Blouses & Shirts</a></li>
-                                            <li><a href="shop-product-right.html">Hoodies & Sweatshirts</a></li>
-                                            <li><a href="shop-product-right.html">Women's Sets</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Men's Fashion</a>
-                                        <ul class="dropdown">
-                                            <li><a href="shop-product-right.html">Jackets</a></li>
-                                            <li><a href="shop-product-right.html">Casual Faux Leather</a></li>
-                                            <li><a href="shop-product-right.html">Genuine Leather</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Technology</a>
-                                        <ul class="dropdown">
-                                            <li><a href="shop-product-right.html">Gaming Laptops</a></li>
-                                            <li><a href="shop-product-right.html">Ultraslim Laptops</a></li>
-                                            <li><a href="shop-product-right.html">Tablets</a></li>
-                                            <li><a href="shop-product-right.html">Laptop Accessories</a></li>
-                                            <li><a href="shop-product-right.html">Tablet Accessories</a></li>
-                                        </ul>
-                                    </li> {% endcomment %}
                                 </ul>
                             </li>
                             <li class="menu-item-has-children"><span class="menu-expand"></span><a href="blog-category-fullwidth.html">Women</a>
                                 <ul class="dropdown">
-                                    {% comment %} <li><a href="blog-category-grid.html">Blog Category Grid</a></li>
-                                    <li><a href="blog-category-list.html">Blog Category List</a></li>
-                                    <li><a href="blog-category-big.html">Blog Category Big</a></li>
-                                    <li><a href="blog-category-fullwidth.html">Blog Category Wide</a></li>
-                                    <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Single Product Layout</a>
-                                        <ul class="dropdown">
-                                            <li><a href="blog-post-left.html">Left Sidebar</a></li>
-                                            <li><a href="blog-post-right.html">Right Sidebar</a></li>
-                                            <li><a href="blog-post-fullwidth.html">No Sidebar</a></li>
-                                        </ul>
-                                    </li> {% endcomment %}
                                 </ul>
                             </li>
                             <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Kids</a>
                                 <ul class="dropdown">
-                                    {% comment %} <li><a href="page-about.html">About Us</a></li>
-                                    <li><a href="page-contact.html">Contact</a></li>
-                                    <li><a href="page-account.html">My Account</a></li>
-                                    <li><a href="page-login-register.html">login/register</a></li>
-                                    <li><a href="page-purchase-guide.html">Purchase Guide</a></li>
-                                    <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
-                                    <li><a href="page-terms.html">Terms of Service</a></li>
-                                    <li><a href="page-404.html">404 Page</a></li> {% endcomment %}
                                 </ul>
                             </li>
                             <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Contact</a>
-                                {% comment %} <ul class="dropdown">
-                                    <li><a href="#">English</a></li>
-                                    <li><a href="#">French</a></li>
-                                    <li><a href="#">German</a></li>
-                                    <li><a href="#">Spanish</a></li>
-                                </ul> {% endcomment %}
                             </li>
                         </ul>
                     </nav>
@@ -423,7 +249,6 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="widget-about font-md mb-md-5 mb-lg-0">
                         <div class="logo logo-width-1 wow fadeIn animated">
-                            {% comment %} <a href="index.html"><img src="{% static 'assets_user/imgs/theme/logo.svg' %}" alt="logo"></a> {% endcomment %}
                             <h4 class=" p-2" style="margin-left:-10px;">Dapper Shoes</h4>
                         </div>
                         <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
@@ -503,21 +328,6 @@
         </div>
     </div>
 </footer>
-<!-- Preloader Start -->
-{% comment %} <div id="preloader-active">
-    <div class="preloader d-flex align-items-center justify-content-center">
-        <div class="preloader-inner position-relative">
-            <div class="text-center">
-                <h5 class="mb-5">Now Loading</h5>
-                <div class="loader">
-                    <div class="bar bar1"></div>
-                    <div class="bar bar2"></div>
-                    <div class="bar bar3"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> {% endcomment %}
 <!-- Vendor JS-->
 <script src="{% static 'assets_user/js/vendor/modernizr-3.6.0.min.js' %}"></script>
 <script src="{% static 'assets_user/js/vendor/jquery-3.6.0.min.js' %}"></script>

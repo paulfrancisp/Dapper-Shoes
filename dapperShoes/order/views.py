@@ -31,25 +31,16 @@ def place_order_cod(request, total=0, quantity=0):
             messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
             return redirect('cart_app:cart_list')
     
-    print('.............total.............',total)
     if cart.coupon_applied:
         total  -= cart.coupon_discount
-
-    print('.............total.............',total)
     
-    print('Outside if method POST')
-    print('Request Method:', request.method)
 
     if request.method == 'POST':
-        print('Inside if method POST')
-        # form = OrderForm(request.POST)
         data_inst = json.loads(request.body)
         print(data_inst)
 
         data = Order()
         data.user = current_user
-        print('cccccccccccc',current_user)
-        # data.first_name = data_inst['first_name']
         data.first_name = data_inst.get('formData').get('first_name')
         data.last_name = data_inst.get('formData').get('last_name')
         data.phone_number = data_inst.get('formData').get('phone_number')
@@ -58,7 +49,6 @@ def place_order_cod(request, total=0, quantity=0):
         data.state = data_inst.get('formData').get('state')
         data.zip_code = data_inst.get('formData').get('zip_code')
         selected_payment_method = data_inst.get('formData').get('selected_payment_method')
-        print(selected_payment_method,'ppppppppppppppppppppppppppppppppppppp')
 
         data.order_total = total
         data.ip = request.META.get('REMOTE_ADDR')
@@ -79,7 +69,6 @@ def place_order_cod(request, total=0, quantity=0):
                 'receipt': 'order_rcptid_11',
             }
             razorpay_order = client.order.create(data=order_data)
-            # order_id = razorpay_order['id']
 
             payment_methods_instance = PaymentMethod.objects.get(method_name="Razorpay")
             payment = Payment.objects.create(user=current_user,amount_paid=0,payment_id=razorpay_order['id'],payment_order_id=order.order_number,payment_status='PENDING',payment_method=payment_methods_instance)
@@ -87,8 +76,6 @@ def place_order_cod(request, total=0, quantity=0):
             context = {
                     'order_id': razorpay_order['id'],
                     'amount': razorpay_order['amount'],
-                    # 'currency': order['currency'],
-                    # 'key_id': settings.RAZOR_PAY_KEY_ID
                 }
             
             return JsonResponse({'context': context}, status=200)
@@ -136,7 +123,6 @@ def place_order_cod(request, total=0, quantity=0):
                 for cart_item in cart_items:
                     orderproduct = OrderProduct()
                     orderproduct.order_id = order.id
-                    # orderproduct.payment = payment
                     orderproduct.user_id = request.user.id
                     orderproduct.variant_id = cart_item.variant.id
                     orderproduct.product_variant = cart_item.variant.variant_name
@@ -167,12 +153,10 @@ def place_order_cod(request, total=0, quantity=0):
         elif selected_payment_method == 'cod':
             if total<= 1000: 
                 payment_methods_instance = PaymentMethod.objects.get(method_name="CASH ON DELIVERY")
-                print(payment_methods_instance,'iiiiiiiiiiiiiiiiCASH ON DELIVERY')
 
                 # Create Payment instance
                 payment = Payment.objects.create(user=current_user,amount_paid=0,payment_status='PENDING',payment_method=payment_methods_instance,payment_order_id=order.order_number)
-                # print(payment)
-
+                
                 # Saving the payment and is_ordered values in Order table.
                 order.payment = payment   #### ISSUE here
                 order.is_ordered = True
@@ -193,17 +177,11 @@ def place_order_cod(request, total=0, quantity=0):
                     user_coupon.usage_count +=1
                     user_coupon.save()
 
-                    # cart.coupon_applied = None
-                    # cart.coupon_discount = 0.00
-                    # cart.total_after_discount = 0.00
-                    # cart.save()
-
                 #Moving cart item to OrderProduct table.
                 cart_items = cart.cartitem_set.all()
                 for cart_item in cart_items:
                     orderproduct = OrderProduct()
                     orderproduct.order_id = order.id
-                    # orderproduct.payment = payment
                     orderproduct.user_id = request.user.id
                     orderproduct.variant_id = cart_item.variant.id
                     orderproduct.product_variant = cart_item.variant.variant_name
@@ -231,8 +209,6 @@ def place_order_cod(request, total=0, quantity=0):
                 messages.warning(request,"Cash on delivery is only available for payments less than ₹1000") 
                 return JsonResponse({'message': 'Cash on delivery is only available for payments less than ₹1000'}, status=400)
     else:
-        # If request method is not POST, redirect to the checkout page
-        # return redirect('cart_app:checkout')
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 @csrf_exempt
@@ -269,9 +245,7 @@ def place_order_razpay(request):
                 return redirect('order_app:order_success',razorpay_order_id,payment_id,signature)  #####Need to write view fn
 
         except Exception as e:
-            # pass
             print('Exception:', str(e))
-            # print('qqqqqqq',payment_id,'qqqqqqqqqqqq',razorpay_order_id,'qqqqqqq',signature)
             return redirect('order_app:paymentfailed')
     else:
         messages.error(request,"Payment is Faied, Try Again")
@@ -286,7 +260,6 @@ def order_success(request, razorpay_order_id,payment_id,signature):
 
     payment = Payment.objects.get(payment_id=razorpay_order_id)         
     payment.payment_status = 'SUCCESS'
-    # payment.payment_id = payment_id
     payment.payment_signature = signature
     payment.is_paid = True
     current_user = payment.user
@@ -343,7 +316,6 @@ def order_success(request, razorpay_order_id,payment_id,signature):
     for cart_item in cart_items:
         orderproduct = OrderProduct()
         orderproduct.order_id = order.id
-        # orderproduct.payment = payment
         orderproduct.user_id = request.user.id
         orderproduct.variant_id = cart_item.variant.id
         orderproduct.product_variant = cart_item.variant.variant_name
@@ -361,18 +333,13 @@ def order_success(request, razorpay_order_id,payment_id,signature):
         variant.save()
 
     #Clearing the cart
-    cart.cartitem_set.all().delete()    
-
-    context = {
-        "success":True,
-    }
-    # return JsonResponse({'message': 'Order placed successfully', 'context': context}, status=200)
+    cart.cartitem_set.all().delete()
     return redirect('order_app:success_page')
 
 
 
 
-def paymentfailed(request):   #, razorpay_order_id,payment_id,signature
+def paymentfailed(request):  
 
     current_user = request.user
     total = 0
@@ -381,15 +348,6 @@ def paymentfailed(request):   #, razorpay_order_id,payment_id,signature
     payment_method = PaymentMethod.objects.get(method_name = "Razorpay")
     order = Order.objects.filter(user=current_user, is_ordered=False).order_by("-id").first()  
     order_prod = OrderProduct.objects.filter(order=order)
-
-    # payment = Payment.objects.create(
-    #     user = current_user,
-    #     payment_status = 'FAILED',
-    #     payment_method = payment_method,
-    #     payment_order_id = order.order_number,
-    #     amount_paid = 0,
-    #     is_paid = False,
-    # )
 
     payment = Payment.objects.get(payment_order_id=order.order_number)
     payment.payment_status = "FAILED"
@@ -406,14 +364,12 @@ def paymentfailed(request):   #, razorpay_order_id,payment_id,signature
             total += cart_item.variant.calculate_discounted_price() * cart_item.quantity
             quantity += cart_item.quantity
         else:
-            # messages.error(request,f"Insufficient quantity. Available quantity is {cart_item.variant.stock} units.")
             return redirect('cart_app:cart_list')
     
     if cart.coupon_applied:
         total  -= cart.coupon_discount
 
     # Saving the payment and is_ordered values in Order table.
-    
     order.payment = payment
     order.order_status = 'Pending Payment'
     if cart.coupon_applied:
@@ -432,19 +388,12 @@ def paymentfailed(request):   #, razorpay_order_id,payment_id,signature
         user_coupon = UserCoupon.objects.get(coupon_id=coupon.id,user_id=current_user)
         user_coupon.usage_count +=1
         user_coupon.save()
-    
-    # order = Order.objects.filter(user=current_user, is_ordered=False).first()  
-    # # Saving the payment and is_ordered values in Order table.
-    # order.payment = payment
-    # order.save()
-
 
     #Moving cart item to OrderProduct table.
     cart_items = cart.cartitem_set.all()
     for cart_item in cart_items:
         orderproduct = OrderProduct()
         orderproduct.order_id = order.id
-        # orderproduct.payment = payment
         orderproduct.user_id = request.user.id
         orderproduct.variant_id = cart_item.variant.id
         orderproduct.product_variant = cart_item.variant.variant_name

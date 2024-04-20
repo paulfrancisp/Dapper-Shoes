@@ -10,9 +10,7 @@
                 <div class="content-header">
                     <h2 class="content-title">Edit Product</h2>
                     <div>
-                        {% comment %} <a href=""> {% endcomment %}
                         <button id="saveBtn" class="btn btn-md rounded font-sm hover-up">Save Changes</button>
-                        {% comment %} </a> {% endcomment %}
                     </div>
                 </div>
                 {% if messages %}
@@ -45,8 +43,6 @@
                                 
                             </select>
                         </div>
-                        {% comment %} </div>
-                        <div class="card-body"> {% endcomment %}
                         <div class="mb-3">
                             <label class="form-label">Category</label>
                             <select class="form-select" id="categorySelect" name="category_id" required>
@@ -74,16 +70,6 @@
                             <input type="date" class="form-control" id="expire_date" name="expire_date" value="{{ product.expire_date }}" {% if product.discount_percentage == 0 %}disabled{% endif %}>
                         </div>
 
-                        {% comment %} <div class="mb-3">
-                            <label class="form-label">Price</label>
-                            <input type="text" placeholder="Type here" class="form-control" id="price" name="price" value="{{ product.product_price }}" required>
-                        </div> {% endcomment %}
-                        
-                            {% comment %} </div>
-                        </div> <!-- card end// -->
-                            Image
-                            <div class="card mb-4"> {% endcomment %}
-                            {% comment %} <div class="card-body"> {% endcomment %}
                         <div class="mb-3">
                             <label class="form-label">Description</label>
                             <textarea placeholder="Type here" class="form-control" rows="4" id="description" name="description">{{ product.description }}</textarea>
@@ -108,34 +94,13 @@
                 </div>
                 <!-- End of card for main image upload -->
                 
-                <!-- Card for additional images -->
-                 {% comment %} <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h4>Additional Images</h4>
-                        </div>
-                        <div class="card-body">
-                            <!-- Additional image fields -->
-                            {% for image in product.product_images.all %}
-                            <div class="input-upload mb-3">
-                                <img src="{{ image.image.url }}" class="img-thumbnail" alt="Additional Image">
-                                {% comment %} <input type="file" class="form-control mt-3" name="additional_image_{{ forloop.counter }}" multiple> {% endcomment %}{% comment %} 
-                                <input type="file" class="form-control mt-3" name="additional_image_1" multiple>
-
-                            </div>
-                            {% endfor %}
-                            <!-- End of additional image fields -->
-                        </div>
-                    </div> <!-- card end// -->
-                </div>  {% endcomment %}
-                <!-- End of card for additional images -->
+                
             </div>
         </div>
     </form>
    
 </section>
 
-{% comment %} <div id="errorContainer"></div> {% endcomment %}
 <script>
     // Get references to the discount percentage and expire date input elements
     var discountInput = document.getElementById('discount');

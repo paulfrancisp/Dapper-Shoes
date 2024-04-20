@@ -10,7 +10,6 @@
                     <div class="content-header">
                         <h2 class="content-title">Add New Product</h2>
                         <div>
-                            {% comment %} <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> {% endcomment %}
                             <button class="btn btn-md rounded font-sm hover-up">Save Changes</button>
                         </div>
                     </div>
@@ -31,8 +30,6 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            {% comment %} </div>
-                            <div class="card-body"> {% endcomment %}
                             <div class="mb-3">
                                 <label class="form-label">Category</label>
                                 <select class="form-select" id="categorySelect" name="category_id" required>
@@ -59,16 +56,7 @@
                                 <input type="date" class="form-control" id="expire_date" name="expire_date" disabled>
                             </div>
     
-                            {% comment %} <div class="mb-3">
-                                <label class="form-label">Price</label>
-                                <input type="text" placeholder="Type here" class="form-control" id="price" name="price" value="{{ product.product_price }}" required>
-                            </div> {% endcomment %}
                             
-                                {% comment %} </div>
-                            </div> <!-- card end// -->
-                                Image
-                                <div class="card mb-4"> {% endcomment %}
-                                {% comment %} <div class="card-body"> {% endcomment %}
                             <div class="mb-3">
                                 <label class="form-label">Description</label>
                                 <textarea placeholder="Type here" class="form-control" rows="4" id="description" name="description">{{ product.description }}</textarea>
@@ -109,22 +97,6 @@
                             </div>
                         </div> <!-- card end// -->
                     </div>
-                    <!-- End of card for additional images -->
-                    <!-- Card for main image upload -->
-                    {% comment %} <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="card-header">
-                                <h4>Main Image</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="input-upload">
-                                    <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
-                                    <input type="file" class="form-control" id="category_image" name="image" required>
-                                </div>
-                            </div>
-                        </div> <!-- card end// -->
-                    </div> {% endcomment %}
-                    <!-- End of card for main image upload -->
                 </div>
                 
             </div>

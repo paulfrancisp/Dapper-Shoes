@@ -37,18 +37,10 @@
                                 <label for="expire_date">Expire Date</label>
                                 <input type="date" class="form-control" id="expire_date" name="expire_date" value="{{ category_object.expire_date }}" {% if category_object.discount_percentage == 0 %}disabled{% endif %}>
                             </div>
-                            {% comment %} <div class="mb-4">
-                                <label for="category_slug" class="form-label">Slug</label>
-                                <input type="text" placeholder="Enter category slug" class="form-control" id="category_slug" name="slug" value="{{ category_object.cat_slug }}">
-                            </div>  {% endcomment %}
                             <div class="mb-4">
                                 <label for="category_description" class="form-label">Description</label>
                                 <textarea placeholder="Enter category description" class="form-control" id="category_description" name="description" >{{ category_object.description}} </textarea>
                             </div>
-                            {% comment %} <div class="mb-4">
-                                <label for="category_image" class="form-label">Image</label>
-                                <input type="file" class="form-control" id="category_image" name="image">
-                            </div> {% endcomment %}
                             
                             <div class="d-grid">
                                 <a href="{% url 'category_app:edit_categories' category_object.id%}">
@@ -69,8 +61,7 @@
                             <div class="card-body">
                                 <div class="input-upload">
                                     {% if category_object.category_image %}
-                                        <img src="{{ category_object.category_image.url }}" alt="" > {% comment %}style="max-width: 100%; height: auto;"{% endcomment %}
-                                        {% comment %} <input type="file" class="form-control" id="category_image" name="image"/> {% endcomment %}
+                                        <img src="{{ category_object.category_image.url }}" alt="" > 
                                     {% else %}
                                         <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
                                     {% endif %}

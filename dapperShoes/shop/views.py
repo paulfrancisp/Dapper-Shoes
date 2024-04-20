@@ -3,9 +3,7 @@ from django.views.decorators.cache import never_cache
 from category.models import Category, SubCategory
 from product_management.models import *
 from django.urls import reverse
-# from django.shortcuts import get_object_or_404
 from cart.models import *
-# from cart.views import _cart_id
 from django.http import HttpResponse
 from django.utils import timezone
 from django.db.models import Min
@@ -16,7 +14,6 @@ from wallet.models import *
 from cart.models import *
 
 # Create your views here.
-
 def index(request):
 
     user = request.user        
@@ -47,7 +44,6 @@ def index(request):
         'variants' : variants,
         'is_new':is_new,
         'user_wallet':user_wallet,
-        # 'category_subcategories': category_subcategories,
     }
     
     return render(request,'user_side/index.html',context)
@@ -77,8 +73,6 @@ def product_detail(request,product_id):
 
 
     context = {
-        # 'categories' : category,
-        # 'subcategories' : sub_category,
         'products' : products,
         'variants' : variants,
         'images' : images,
@@ -130,15 +124,12 @@ def search(request):
         if search_query:
             # Use Q objects to perform a case-insensitive search across multiple fields
             products = Product.objects.filter(product_name__icontains=search_query)  # Search product name
-            print('qqqqqqqqqq')
             return render(request, 'user_side/index.html', {'products': products, 'search_query': search_query})
         else:
             # If search query is empty, return an empty result or an appropriate message
-            print('wwwwwwwwwww')
             return render(request, 'user_side/index.html', {'products': None, 'search_query': search_query})
     else:
         # Handle GET requests to the search page (if needed)
-        print('eeeeeeeeee')
         return render(request, 'user_side/index.html')
 
 
@@ -333,8 +324,6 @@ def add_wishlist(request,id):
        WishlistItem.objects.create(wishlist=user_wishlist,product = product_variant)
     else:
         messages.error(request,'item is already in your wishlist')
-        # id = product_variant.id
-        # return redirect('shop_app:product_detail',id)
     return redirect('shop_app:wishlist')
 
 

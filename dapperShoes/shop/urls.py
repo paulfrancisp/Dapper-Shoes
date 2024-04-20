@@ -8,8 +8,6 @@ urlpatterns = [
     path('product-detail-attribute/<int:product_id>/<int:attribute_value>', views.product_detail_attribute, name='product_detail_attribute'),
     path('home',views.home,name='home'),
     path('shop',views.shop,name='shop'),
-
-    # path('navbar',views.navbar, name='navbar'),
     path('search', views.search, name='search'),
 
 
@@ -25,14 +23,4 @@ urlpatterns = [
     path('wishlist',views.wishlist, name='wishlist'),
     path('add_wishlist/<int:id>/',views.add_wishlist, name='add_wishlist'),
     path('wishlist_remove/<int:id>/',views.wishlist_remove, name='wishlist_remove'),
-
-    # path('product-detail',views.product_detail,name='product_detail'),
-    # path('<slug:slug>',views.product_details,name='product_details'),
-    
-    # path('predict',views.search_predict, name="predict"),  
-    # path('home/search',views.search_product,name='search_product'),
-    # path('category/search/<int:id>',views.category_products,name='search_category'),
-    # path('brand/search/<int:id>',views.brand_products,name='search_brand'),
-
-
 ]

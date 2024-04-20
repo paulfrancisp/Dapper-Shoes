@@ -20,10 +20,8 @@ class Coupon(models.Model):
         # Compare expire_date with current_date
         if self.total_coupons <= 0 or self.expire_date < current_date:
             self.is_expired = True
-            # self.is_active = False
         else:
             self.is_expired = False
-            # self.is_active = True
         
         # Call the parent class's save method
         super().save(*args, **kwargs)
@@ -44,8 +42,6 @@ class UserCoupon(models.Model):
         if self.usage_count >= self.coupon.max_uses:
             print('Maximum uses reached')
             return False
-        
-        # self.usage_count += 1
-        # self.save()
+
         print('Coupon applied successfully In UserCoupon')
         return True

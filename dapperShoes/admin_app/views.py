@@ -61,18 +61,12 @@ def admin_orders_detail(request,user_id,order_number):
     orders = Order.objects.filter(user_id=user.id)
     ord=Order.objects.get(order_number=order_number)
 
-    # print("Orders:", orders)  # Print the orders queryset
     print("Orders:", ord)
 
     if orders.exists():
         order = orders.first()
-        # print("First Order:", order)  # Print the first order instance
-        # print("Address:", order.first_name, order.last_name, order.address, order.town_city, order.state, order.zip_code)  # Print address details
     else:
         order = None
-
-    # user = User.objects.get(id = user_id)
-    # order = Order.objects.filter(user_id = user.id)
 
     orderproduct = OrderProduct.objects.filter(order = ord).order_by("-created_at")
     
@@ -81,11 +75,7 @@ def admin_orders_detail(request,user_id,order_number):
         "ord":ord,
         "order":order,
         "orderproduct":orderproduct,
-        # "user_address":user_address,
         "user":user,
-        # "discount":discount,
-        # "grant_total":grant_total,
-        # "total_product_price":total_product_price
     }
 
 
@@ -96,8 +86,6 @@ def change_order_status(request, order_id, status, user_id):
     order = get_object_or_404(OrderProduct, id=order_id)
     order.order_status = status
     order.save()
-
-    print("ssssssssssssss",status)
 
     if status == "Delivered":
         try:
@@ -111,14 +99,11 @@ def change_order_status(request, order_id, status, user_id):
             print("payment_status///", payment.payment_status)
         except ObjectDoesNotExist:
             print("Inside except block")
-            # Handle the case where the Payment object does not exist
-            # You can log an error, display a message, or perform any other action here
             print("Payment does not exist for order ID:", order_id)
 
 
     print("user_id",user_id)
 
-    # Redirect to some page after changing status
     return redirect(reverse('admin_app:admin_orders_detail', kwargs={'user_id': user_id, 'order_number': order.order.order_number}))
 
 
@@ -172,11 +157,9 @@ def sales_report(request):
 
 @login_required(login_url='admin_app:admin_login')
 def admin_dashboard(request):
-    # orders = Order.objects.exclude(payment__payment_status="FAILED").order_by("-created_at")
     orders = Order.objects.all().order_by("-created_at")
 
     if request.method == 'POST':
-        # Get the form data
         date = request.POST.get('date')
         payment_status = request.POST.get('payment_status')
 
@@ -225,10 +208,8 @@ def admin_dashboard(request):
         product_variant = i['product_variant']
         product_name = product_variant[0:] if len(product_variant) > 0 else product_variant
         product_name = product_name[:10]
-        # product = Product.objects.filter(product_name__contains=product_name)
         filtered_products = Product.objects.filter(product_name__contains=product_name)
         product.extend(filtered_products)  # Append filtered products to the list
-    print("#############productddd############",product)
 
     for i in product:
         top_10_product.append(i)
@@ -252,7 +233,6 @@ def admin_dashboard(request):
     
     revenue = 0
     for i in order_products:
-        # revenue += i.total
         if i.total is not None:  # Check if total is not None
             revenue += i.total
     
@@ -284,29 +264,10 @@ def admin_dashboard(request):
 
         orders_count.append(order_c)
         total_orders = len(orders)
-
-        orders_list = Order.objects.all().order_by("-created_at")[:10]
-
-
-
-    # print("total_orders",total_orders,
-    #     "\n total_products",len(products),
-    #     "\n total_categories",len(categories),
-    #     "\n chart_month",chart_month,
-    #     "\n new_users",new_users,
-    #     "\n orders_count",orders_count,
-    #     '\n categories',categories,
-    #     '\n payment',payment,
-    #     "\n top_selling_products",top_10_product,
-    #     "\n top_selling_brands",top_selling_brands,
-    #     "\n top_selling_categories",top_selling_categories,
-    #     "\n total_earnings",total_earnings,)
-
     
 
     context = {
         "orders":orders,
-        "orders_list":orders_list,
         "revenue":revenue,
         "total_orders":total_orders,
         "total_products":len(products),

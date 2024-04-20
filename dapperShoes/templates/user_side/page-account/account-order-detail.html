@@ -74,7 +74,6 @@
                                             <td class="image product-thumbnail "><img src="{{ item.images.url }}" alt="{{ item.product_variant }}" alt="#"></td>
                                             <td>
                                                 <h5><a href="shop-product-full.html">{{ item.product_variant }}</a></h5> 
-                                                {% comment %} <span class="product-qty">Qty: {{ item.quantity }}</span> {% endcomment %}
                                             </td>
                                             <td>{{ item.quantity }} </td>
                                             <td>₹{{ item.product_price }} </td>
@@ -84,8 +83,11 @@
                                             <td><a href="{% url 'account_app:cancel_product' item.id %}" class="btn cancel-product">Cancel</a></td>
                                             {% elif item.order_status == "Delivered"%}
                                             <td><a href="{% url 'account_app:return_product' item.id %}" class="btn return-product">Return</a></td>
+                                            {% elif item.order_status == "Pending Payment" %}
+                                            <td><div class="" disabled>Payment failed!!<br> Repay through wallet to complete the order.</div></td>
                                             {% else %}
-                                            <td><div class="" disabled>Payment failed!!<br> Repay through wallet complete the order.</div></td>
+                                            <td><a  class="btn " style="background-color:rgba(255, 0, 0, 0.5); border-color: red;" disabled>Cancel</a></td>
+
                                                 
                                             {% endif %}
                                             
@@ -98,12 +100,11 @@
                                 
                             </table>
                         </div>
-                        {% comment %} <p><strong>Grand Total : ₹{{ order_detail.order_total }}</strong></p> {% endcomment %}
-                        {% comment %} {% if product_ispaid == True %} {% endcomment %}
                         {% if order_detail.payment.payment_status == "FAILED" %}
                         <a href="{% url 'account_app:repay_payment' order_detail.id %}" >
                             <div class="text-center"> <!-- Add this div to center align the button -->
                                 <button class="btn btn-primary">Repay from wallet</button>
+                                <p class="ms-1" >Wallet Balance: ₹{{user_wallet.balance}}</p>
                             </div>
                         </a>
                         {% else %}
@@ -118,7 +119,6 @@
                         <span class="error" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
                         {% endfor %}
                         {% endif %}
-                        {% comment %} {% endif %} {% endcomment %}
                     </div>
                 </div>
             </div>

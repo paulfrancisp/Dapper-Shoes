@@ -50,7 +50,6 @@
     <div id="invoice">
         <h1 style="color: rgb(96, 166, 192);">Invoice:</h1>
         <div class="address">
-            {% comment %} <p><strong>User Name:</strong> {{user.username}}</p> {% endcomment %}
             <p class="card-text mb-0"><strong>User Name:</strong> {{order.first_name}} {{order.last_name}}</p>
             <p class="card-text mb-0" style="font-weight: 500;">{{ order.address }}</p>    
             <p class="card-text mb-0" style="font-weight: 500;">{{ order.town_city }}, {{ order.state }}</p>  
@@ -63,7 +62,6 @@
         <div class="invoice-id">
             <p><strong>Invoice ID:</strong> {{order.order_number}}</p>
         </div>
-        {% comment %} {% if order.coupon_discount > 0 %} {% endcomment %}
 
         <div class="order-details">
             <h3 style="color:#6F6F6F">Order Details</h3>
@@ -101,48 +99,6 @@
                 <h6>Grand total: {{order.order_total}}</h6>
             </div>
         </div>
-
-
-        {% comment %} {% else %}
-        <div class="order-details">
-            <h2 style="color:#6F6F6F">Order Details</h2>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            Product Name 1 <br>
-                            <span style="color: rgb(175, 144, 103); font-size: small;">Variant 1, Variant 2</span>
-                        </td>
-                        <td>2</td>
-                        <td>$20.00</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Product Name 2 <br>
-                            <span style="color: rgb(175, 144, 103); font-size: small;">Variant 3</span>
-                        </td>
-                        <td>1</td>
-                        <td>$15.00</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="mt-3 ">
-                <h6>Subtotal: $35.00</h6>
-                <h6>Coupon discount: $5.00</h6>
-                <h6>Grand total: $30.00</h6>
-            </div>
-        </div> {% endcomment %}
-
-
-        {% comment %} {% endif %} {% endcomment %}
         
     </div>
     <div class="mt-4 mb-2">

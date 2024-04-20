@@ -18,6 +18,7 @@ class Payment(models.Model):
         ("PENDING", "Pending"),
         ("FAILED", "Failed"),
         ("SUCCESS", "Success"),
+        ("Repayed User","Repayed User"),
         )
     
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
@@ -38,8 +39,6 @@ class Payment(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        # return str(self.payment_id)
-        # f"{str(self.user)}  {self.payment_method}"
         return str(self.payment_method.method_name)
 
 
@@ -60,16 +59,10 @@ class Order(models.Model):
     first_name      = models.CharField(max_length=50,default='')
     last_name       = models.CharField(max_length=50,default='')
     phone_number    = models.CharField(max_length=50,default='')
-    # email           = models.EmailField(max_length=50,default='')
     town_city       = models.CharField(max_length=100,default='')
     address         = models.CharField(max_length=255,default='')
     state           = models.CharField(max_length=50,default='')
-    # country_region  = models.CharField(max_length=50,default='')
     zip_code        = models.CharField(max_length=20,default='')
-    # coupon_code = models.ForeignKey(Coupon,on_delete=models.SET_NULL,null=True,blank=True)
-    # additional_discount = models.IntegerField(default=0,null=True)
-    # wallet_discount = models.IntegerField(default=0,null=True)
-    # order_note = models.CharField(max_length=100,blank=True,null=True)
     order_total = models.DecimalField(max_digits=12, decimal_places=2)
     order_status= models.CharField(choices = ORDER_STATUS_CHOICES,max_length=20,default='New')
     ip = models.CharField(max_length=50,blank=True)
@@ -78,7 +71,6 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     coupon_applied = models.ForeignKey(Coupon,on_delete=models.CASCADE, default = None,null = True)
     coupon_discount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
-    # total_after_coupon_discount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
     
     
     def generate_order_number(self):    
@@ -134,9 +126,7 @@ class OrderProduct(models.Model):
     order_status    = models.CharField(choices = ORDER_STATUS_CHOICES,max_length=20,default='New')
 
     
-    def save(self, *args, **kwargs):
-        # self.total=self.product_price*self.quantity
-   
+    def save(self, *args, **kwargs):   
         super().save(*args, **kwargs)
 
     def __str__(self):

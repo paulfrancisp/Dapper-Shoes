@@ -3,15 +3,6 @@
 
 {% block content%}
     <main class="main">
-        {% comment %} <div class="page-header breadcrumb-wrap">
-            <div class="container">
-                <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
-                    <span></span> Pages
-                    <span></span> Account
-                </div>
-            </div>
-        </div> {% endcomment %}
         <section class="pt-120 pb-120">
             <div class="container">
                 <div class="row">
@@ -26,14 +17,6 @@
                                         <li class="nav-item">
                                             <a href="{% url 'account_app:account_my_orders' %}" class="nav-link active" id="orders-tab"  role="tab" aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                                         </li>
-                                        {% comment %} <li class="nav-item">
-                                            <a href="{% url 'account_app:account_my_address' %}" class="nav-link" id="address-tab"  role="tab" aria-controls="address" aria-selected="true"><i class="fi-rs-marker mr-10"></i>My Address</a>
-                                        </li> {% endcomment %}
-                                        
-                                        
-                                        {% comment %} <li class="nav-item">
-                                            <a href="{% url 'account_app:account_create_address' %}" class="nav-link" id="account-detail-tab"  role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Add Address</a>
-                                        </li> {% endcomment %}
                                         <li class="nav-item">
                                             <a href="{% url 'account_app:account_edit_address' %}" class="nav-link" id="account-detail-tab"  role="tab" aria-controls="account-detail" aria-selected="true"><i class="fi-rs-user mr-10"></i>Edit Profile</a>
                                         </li>
@@ -74,11 +57,8 @@
                                                                         <td>{{ order.payment.payment_status }}</td>
                                                                         
                                                                         <td>
-                                                                            {% comment %} {% for order_product in order.order_product.all %}
-                                                                            ₹{{ order_product.total}} for {{ order_product.quantity }} item<br>                  
-                                                                            {% endfor %} {% endcomment %}
                                                                             ₹{{ order.order_total }}
-                                                                        </td>{% comment %} {{ order_product.total|floatformat:"0" }} {% endcomment %}
+                                                                        </td>
                                                                         <td><a href="{% url 'account_app:account_order_detail' order.id %}" class="btn-small d-block">View</a></td>
                                                                     </tr>
                                                                 

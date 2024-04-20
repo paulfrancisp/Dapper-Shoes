@@ -3,83 +3,19 @@
 
 {% block content%}
     <main class="main">
-        {% comment %} <div class="page-header breadcrumb-wrap">
-            <div class="container">
-                <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
-                    <span></span> Shop
-                    <span></span> Checkout
-                </div>
-            </div>
-        </div> {% endcomment %}
         <section class="mt-50 mb-50">
             <div class="container">
-                {% comment %} <div class="row">
-                    <div class="col-lg-6 mb-sm-15">
-                        <div class="toggle_info">
-                            <span><i class="fi-rs-user mr-10"></i><span class="text-muted">Already have an account?</span> <a href="#loginform" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to login</a></span>
-                        </div>
-                        <div class="panel-collapse collapse login_form" id="loginform">
-                            <div class="panel-body">
-                                <p class="mb-30 font-sm">If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing &amp; Shipping section.</p>
-                                <form method="post">
-                                    <div class="form-group">
-                                        <input type="text" name="email" placeholder="Username Or Email">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" name="password" placeholder="Password">
-                                    </div>
-                                    <div class="login_footer form-group">
-                                        <div class="chek-form">
-                                            <div class="custome-checkbox">
-                                                <input class="form-check-input" type="checkbox" name="checkbox" id="remember" value="">
-                                                <label class="form-check-label" for="remember"><span>Remember me</span></label>
-                                            </div>
-                                        </div>
-                                        <a href="#">Forgot password?</a>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-md" name="login">Log in</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div> 
-                    <div class="col-lg-6">
-                        <div class="toggle_info">
-                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
-                        </div>
-                        <div class="panel-collapse collapse coupon_form " id="coupon">
-                            <div class="panel-body">
-                                <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
-                                <form method="post">
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Enter Coupon Code...">
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn  btn-md" name="login">Apply Coupon</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>{% endcomment %}
-                {% comment %} <div class="row">
-                    <div class="col-12">
-                        <div class="divider mt-50 mb-50"></div>
-                    </div>
-                </div> {% endcomment %}
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-25">
                             <h4>Billing Details</h4>
                         </div>
-                        <form  id="myForm"  method="POST">           {% comment %} {% url 'order_app:place_order_cod' %} {% endcomment %}
+                        <form  id="myForm"  method="POST">           
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
-                                        <input type="text" required="" name="first_name" placeholder="First name *" >                    {% comment %} {% if add_value %}value="{{ address.first_name }}"{% endif %} {% endcomment %}
+                                        <input type="text" required="" name="first_name" placeholder="First name *" >                  
 
                                     </div>
                                 </div>
@@ -91,15 +27,9 @@
                             </div>
                             
                             
-                            {% comment %} <div class="form-group">
-                                <input required="" type="text" name="cname" placeholder="Company Name">
-                            </div> {% endcomment %}
                             <div class="form-group">
                                 <input type="text" name="address" required="" placeholder="Address *">
                             </div>
-                            {% comment %} <div class="form-group">
-                                <input type="text" name="billing_address2" required="" placeholder="Address line2">
-                            </div> {% endcomment %}
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
@@ -125,26 +55,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            {% comment %} <div class="form-group">
-                                <input required="" type="text" name="email" placeholder="Email address *">
-                            </div> {% endcomment %}
-                            {% comment %} <div class="form-group">
-                                <div class="checkbox">
-                                    <div class="custome-checkbox">
-                                        <input class="form-check-input" type="checkbox" name="checkbox" id="createaccount">
-                                        <label class="form-check-label label_info" data-bs-toggle="collapse" href="#collapsePassword" data-target="#collapsePassword" aria-controls="collapsePassword" for="createaccount"><span>Create an account?</span></label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="collapsePassword" class="form-group create-account collapse in">
-                                <input required="" type="password" placeholder="Password" name="password">
-                            </div> {% endcomment %}
-
-
-
-
-
                             <div class="ship_detail">
                                 <div class="form-group">
                                     <div class="check-form">
@@ -171,19 +81,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
-
-
-
-
-
-                            
-                            {% comment %} <div class="mb-20">
-                                <h5>Additional information</h5>
-                            </div>
-                            <div class="form-group mb-30">
-                                <textarea rows="5" placeholder="Order notes"></textarea>
-                            </div> {% endcomment %}
                             <hr>
                             <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                             <div class="payment_method">
@@ -218,11 +115,6 @@
                                         </label>
                                     </div>
                                 </div>
-                                
-                                {% comment %} <div class="hidden mt-30 "> 
-                                </div>{% endcomment %}
-
-                                
                                 <div id="card-button-container" >
                                     <button id="cod-button" type="submit" name="submit" class="btn btn-fill-out btn-block mt-30">Place Order</button>
                                 </div>
@@ -244,17 +136,8 @@
                                 </p>
                                  
                             </div>
-                            {% comment %} <a href="#" class="btn btn-fill-out btn-block mt-30">Place Order</a> {% endcomment %}
-                            {% comment %} <a href="{% url 'order_app:place_order_cod' %}"> {% endcomment %}
-                            
-                            {% comment %} {{ form.as_p }} {% endcomment %}
-                            {% comment %} <button type="submit" name="submit" class="btn btn-fill-out btn-block mt-30">Place Order</button> {% endcomment %}
-                            {% comment %} </a> {% endcomment %}
 
-                        </form>  {% comment %} ###### Closing this FORM at the bottom ###### {% endcomment %}
-
-
-                        {% comment %} <button id="rzp_button1">Pay with Razorpay</button> {% endcomment %}
+                        </form>  
                     </div>
                     <div class="col-md-6">
                         <div class="order_review" style="margin-top:-25px">
@@ -309,7 +192,6 @@
                             
                             
                         </div>
-                     {% comment %} </form> {% endcomment %}
                      <div class="mb-30 mt-50 me-3">
                         <div class="heading_s1 mb-3 ms-4">
                             <h4>&nbsp;Apply Coupon</h4>
@@ -318,7 +200,7 @@
                             <div class="left ms-4">
                                 <div class="coupon">
                                     <form id="couponform">
-                                        <div class="form-row row justify-content-center">     {% comment %} action="{% url 'user_app:user_login' %}" method="post" {% endcomment %}
+                                        <div class="form-row row justify-content-center">     
                                             <div class="form-group col-lg-6">
                                                 <input class="font-medium" id="coupon_code" name="Coupon" placeholder="Enter Your Coupon">
                                             </div>
@@ -332,8 +214,6 @@
                         </div>
                     </div> 
 
-
-                    
                     </div>
                 </div>
             </div>
@@ -343,7 +223,6 @@
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    {% comment %} ---------- For cod, razorpay, wallet respective buttons to come up onclick ---------- {% endcomment %} 
     <script>
         // Get references to the buttons
         const codButton = document.getElementById('cod-button');

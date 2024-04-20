@@ -44,28 +44,6 @@
                             </div>
                         </div>
 
-                        
-
-                        {% comment %} <div class="mb-3">
-                            <label class="form-label">Colour</label>
-                            <select class="form-select" id="color" name="color">
-                                {% for attribute in attribute_value %}
-                                    {% if attribute.attribute_value|length > 2 %}
-                                        <option value="{{ attribute.id }}" {% if attribute in product_variant.attributes.all %} selected {% endif %}>
-                                            {{ attribute.attribute_value }}
-                                        </option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                            
-                            
-                        </div> {% endcomment %}
-                        
-                            {% comment %} </div>
-                        </div> <!-- card end// -->
-                            Image
-                            <div class="card mb-4"> {% endcomment %}
-                            {% comment %} <div class="card-body"> {% endcomment %}
                         <div class="mb-3">
                             <label class="form-label">Size</label>
                             <select class="form-select" id="color" name="size">
@@ -79,30 +57,6 @@
                             </select>
                             
                         </div>
-
-
-                        {% comment %} <div class="row gx-3">
-                            {% for attribute_name, attribute_values in attribute_dict.items %}                                        <option>{{atribute. }}</option>
-                            <div class="col-md-4  mb-3">
-                                <label class="form-label">{{attribute_name}}</label>
-                                <select class="form-select" name="attribute">
-                                    {% for value in attribute_values %}
-                                    {% if value.atribute_value in attr %}
-                                    <option value="{{ value.id }}"  selected>{{ value.atribute_value }}</option>
-                                    {% else %}
-                                    <option value="{{ value.id }}">{{ value.atribute_value }}</option>    
-                                    {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>  
-                             
-                            {% endfor %}
-                        </div> {% endcomment %}
-
-
-
-
-
 
                         <div class="d-grid mt-30">
                             <a href="#">
@@ -122,10 +76,7 @@
                         <div class="card-header">
                             <h6>Thumbnail Image</h6>
                         </div>
-                        {% comment %} <div class="card-body">
-                            <img src="{{ product.images.url }}" class="img-thumbnail" alt="Main Image">
-                            <input type="file" class="form-control mt-3" id="category_image" name="thumbnail_image">
-                        </div> {% endcomment %}
+                        
 
                         <div class="input-upload">
 
@@ -134,12 +85,7 @@
                                     <img src="{{ product_variant.thumbnail_image.url }}" alt="Thumbnail Image">
                                 </div>
                             {% endif %}
-                            {% comment %} {% if product_variant.image %}
-                                <img src="{{ product_variant.image.url }}" alt="" > {% comment %}style="max-width: 100%; height: auto;"{% endcomment %}
-                                {% comment %} <input type="file" class="form-control" id="category_image" name="image"/> {% endcomment %}
-                            {% comment %} {% else %}
-                                <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
-                            {% endif %} {% endcomment %}
+                            
                             <input type="file" class="form-control" id="product_varient_image" name="product_varient_image"/>
                         
                         </div>
@@ -148,56 +94,10 @@
 
 
                 </div>
-
-                {% comment %} <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h6>Additional Images</h6>
-                        </div>
-                        <div class="input-upload">
-                            {% comment %} <label for="additional_image_1" class="form-label">Additional Images</label> {% endcomment %}{% comment %} 
-                            <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple >
-                        </div> <!-- card end// -->
-
-
-                    </div>
-                </div> {% endcomment %}
-
-                <!-- End of card for main image upload -->
-                
-                <!-- Card for additional images -->
-                 {% comment %} <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h4>Additional Images</h4>
-                        </div>
-                        <div class="card-body">
-                            <!-- Additional image fields -->
-                            {% for image in product.product_images.all %}
-                            <div class="input-upload mb-3">
-                                <img src="{{ image.image.url }}" class="img-thumbnail" alt="Additional Image">
-                                {% comment %} <input type="file" class="form-control mt-3" name="additional_image_{{ forloop.counter }}" multiple> {% endcomment %}{% comment %} 
-                                <input type="file" class="form-control mt-3" name="additional_image_1" multiple>
-
-                            </div>
-                            {% endfor %}
-                            <!-- End of additional image fields -->
-                        </div>
-                    </div> <!-- card end// -->
-                </div>  {% endcomment %}
-                <!-- End of card for additional images -->
             </div>
         </div>
     </form>
    
 </section>
-
-
-
-
-
-
-
-
 
 {% endblock %}

@@ -27,8 +27,6 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     images = models.ImageField(upload_to='products/', blank=True, default="")
-    # product_price = models.DecimalField(max_digits=8, decimal_places=2, default="0.00")
-    # stock = models.IntegerField()
 
     # New offer fields
     expire_date = models.DateField(null=True, blank=True)
@@ -94,10 +92,6 @@ class Product_variant(models.Model):
     variant_is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    # sku_id = models.CharField(max_length=30,unique=True,default='')
-    # description = models.CharField(max_length=200)
-    # discount_percentage = models.IntegerField(null=True,blank=True)
     
     def __str__(self):
         attribute_values_str = ', '.join([str(attr.attribute_value) for attr in self.attribute.all()])
@@ -138,24 +132,6 @@ class Product_variant(models.Model):
         product = self.product
         product_offer = Product.objects.get(product_name=product)
 
-        # if category_offer.discount_percentage > product_offer.discount_percentage:
-        #     if category_offer.offer_is_active and category_offer.discount_percentage > 0:
-        #         discount_amount = self.max_price * (category_offer.discount_percentage / Decimal(100))
-        #         self.sale_price = self.max_price - discount_amount
-        #         return self.sale_price
-        #     else:
-        #         self.sale_price = self.max_price
-        #         return self.sale_price
-        
-        # elif product_offer.discount_percentage > category_offer.discount_percentage :
-        #     if product_offer.offer_is_active and product_offer.discount_percentage > 0:
-        #         discount_amount = self.max_price * (product_offer.discount_percentage / Decimal(100))
-        #         self.sale_price = self.max_price - discount_amount
-        #         return self.sale_price
-        #     else:
-        #         self.sale_price = self.max_price
-        #         return self.sale_price
-
         # Determine the maximum discount percentage between category and product offers
         max_discount_percentage = max(category_offer.discount_percentage, product_offer.discount_percentage)
 
@@ -167,9 +143,6 @@ class Product_variant(models.Model):
             self.sale_price = self.max_price
 
         return self.sale_price
-
-
-
 
 
 class Product_Image(models.Model):

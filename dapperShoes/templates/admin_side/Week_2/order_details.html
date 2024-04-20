@@ -8,31 +8,10 @@
     <div class="content-header">
         <div>
             <h2 class="content-title card-title">Order detail</h2>
-            {% comment %} <p>Details for Order ID: {{ order.order_number }}</p> {% endcomment %}
         </div>
     </div>
     <div class="card">
-        {% comment %} <header class="card-header">
-            <div class="row align-items-center">
-                <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
-                    <span>
-                        <i class="material-icons md-calendar_today"></i> <b>Wed, Aug 13, 2020, 4:34PM</b>
-                    </span> <br>
-                    <small class="text-muted">Order ID: 3453012</small>
-                </div>
-                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                    <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
-                        <option>Change status</option>
-                        <option>Awaiting payment</option>
-                        <option>Confirmed</option>
-                        <option>Shipped</option>
-                        <option>Delivered</option>
-                    </select>
-                    <a class="btn btn-primary" href="#">Save</a>
-                    <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
-                </div>
-            </div>
-        </header> <!-- card-header end// --> {% endcomment %}
+        
         <div class="card-body">
             <div class="row mb-50 mt-20 order-info-wrap">
                 <div class="col-md-4">
@@ -44,29 +23,13 @@
                             <h6 class="mb-1">Customer</h6>
                             <p class="mb-1">
                                 Name: {{user.username}}  <br>
-                                {% comment %} <template class="__cf_email__" data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template> <br>  {% endcomment %}
                                 Email: {{user.email}}
                                 
                             </p>
-                            {% comment %} <a href="#">View profile</a> {% endcomment %}
                         </div>
                     </article>
                 </div> <!-- col// -->
-                {% comment %} <div class="col-md-4">
-                    
-                    <article class="icontext align-items-start">
-                        <span class="icon icon-sm rounded-circle bg-primary-light">
-                            <i class="text-primary material-icons md-local_shipping"></i>
-                        </span>
-                        <div class="text">
-                            <h6 class="mb-1">Order info</h6>
-                            <p class="mb-1">
-                                Shipping: Fargo express <br> Pay method: card <br> Status: new
-                            </p>
-                            <a href="#">Download info</a>
-                        </div>
-                    </article>
-                </div> <!-- col// --> {% endcomment %}  
+                  
                 <div class="col-md-4">
                     <article class="icontext align-items-start">
                         <span class="icon icon-sm rounded-circle bg-primary-light">
@@ -95,22 +58,13 @@
                         </span>
                         <div class="text">
                             <h6 class="mb-1">Payment info</h6>
-
-                            
-                                <p class="mb-1">
-                                    Type: {{ ord.payment.payment_method }}<br>
-                                    Order: {{ ord.order_number }} <br>
-                                    Total: ₹ <br>
-                                    Coupon discount: ₹ <br>
-                                    Coupon applied:  <br>
-                                    {% comment %} <strong style="font-weight: bold;">Grand total: ₹{{ ord.order_total }}</strong> {% endcomment %}
-                                </p>
-                            
-
-                            {% comment %} <p class="mb-1">
-                                Shipping: Fargo express <br> Pay method: card <br> Status: new
+                            <p class="mb-1">
+                                Type: {{ ord.payment.payment_method }}<br>
+                                Order: {{ ord.order_number }} <br>
+                                Total: ₹ <br>
+                                Coupon discount: ₹ <br>
+                                Coupon applied:  <br>
                             </p>
-                            <a href="#">Download info</a> {% endcomment %}
                         </div>
                     </article>
                 </div>
@@ -147,21 +101,14 @@
                                     <td> {{ order_product.quantity }} </td>
                                     <td> {{ order_product.total }} </td>
                                     {% if order_product.order_status != "Cancelled User" and order_product.order_status != "Returned User"%}
-                                    {% comment %} <td class="text-end" disabled></td>
-                                        <td>
-                                    {% else %} {% endcomment %}
+
                                     <td>
                                         <select onchange="handleChange(this)">
                                             <option value="" disabled selected>Change status</option>
                                             <option value="{% url 'admin_app:change_status' order_product.id 'Accepted' user.id %}">Accepted</option>
                                             <option value="{% url 'admin_app:change_status' order_product.id 'Delivered' user.id %}">Delivered</option>
                                             <option value="{% url 'admin_app:change_status' order_product.id 'Cancelled Admin' user.id %}">Cancelled Admin</option>
-                                            {% comment %} <option value="{% url 'admin_app:change_status' order_product.id 'Return Pending' user.id %}">Return Pending</option> {% endcomment %}
-                                            {% comment %} <option value="">Accepted</option>
-                                            <option value="">Delivered</option>
-                                            <option value="">Cancelled Admin</option>
-                                            <option value="">Return Pending</option> {% endcomment %}
-                                        
+
                                         </select>
                                     </td>
                                     {% elif order_product.order_status == "Cancelled User" %}
@@ -175,30 +122,6 @@
 
                                 {% endfor %}
 
-                                {% comment %} <tr>
-                                    <td colspan="">
-                                        <article class="float-end">
-                                            <dl class="dlist">
-                                                <dt>Total Price:</dt>
-                                                <dd>{{ order.order_total }}</dd>
-                                            </dl>
-                                            <dl class="dlist">
-                                                <dt>Discount:</dt>
-                                                <dd>{{ discount }}</dd>
-                                            </dl>
-                                            <dl class="dlist">
-                                                <dt>Grand total:</dt>
-                                                <dd> <b class="h5">{{ grant_total }}</b> </dd>
-                                            </dl> {% endcomment %}
-                                            {% comment %} <dl class="dlist">
-                                                <dt class="text-muted">Status:</dt>
-                                                <dd>
-                                                    <span class="badge rounded-pill alert-success text-success">Payment done</span>
-                                                </dd>
-                                            </dl> 
-                                        </article>
-                                    </td>
-                                </tr>{% endcomment %}
                             </tbody>
                         </table>
                     </div> <!-- table-responsive// -->
@@ -208,22 +131,6 @@
                 </div>
                 <div class="col-lg-2">
                     
-                    {% comment %} <div class="box shadow-sm bg-light">
-                        <h6 class="mb-15">Payment info</h6>
-                        <p>
-                            Cash On Delivery
-                            {% comment %} <img src="assets/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br>
-                            Business name: Grand Market LLC <br>
-                            Phone: +1 (800) 555-154-52 
-                        </p>
-                    </div> {% endcomment %}
-                    {% comment %} <div class="h-25 pt-4">
-                        <div class="mb-3">
-                            <label>Notes</label>
-                            <textarea class="form-control" name="notes" id="notes" placeholder="Type some note"></textarea>
-                        </div>
-                        <button class="btn btn-primary">Save note</button>
-                    </div> {% endcomment %}
                 </div> <!-- col// -->
                
             </div>

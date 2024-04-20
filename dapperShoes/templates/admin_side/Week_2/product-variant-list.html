@@ -9,7 +9,6 @@
             <h2 class="content-title card-title">Product Variants - {{ product.product_name }}</h2>
         </div>
         <div>
-            {% comment %} <a href="{% url 'product_management_app:Week_2/add-product-variant' selected_product.id %}" class="btn btn-primary btn-sm rounded">Add New Variant</a> {% endcomment %}
             <a href="{% url 'product_management_app:add_variant' product.id %}" class="btn btn-primary btn-sm rounded">Add New Variant</a>
 
         </div>
@@ -53,14 +52,6 @@
 
                                 <p class="card-text category-text ms-3" style="margin-top: -3px;">Quantity : {{ variant.stock }}</p>
                                 </div>
-                                {% comment %} {% if variant.product_var.category %}
-                                    <p class="card-text category-text" style="margin-top: -5px;">Category : {{ variant.product_var.category }}</p>
-                                {% else %}
-                                    <p class="card-text category-text"  style="margin-top: -5px;">Category : No Category</p>
-                                {% endif %} {% endcomment %}
-                                
-                                
-                                
                             </div>
     
                             <div class="mt-auto text-center" >
@@ -68,8 +59,6 @@
                                 <p class="card-text price-text" style="margin-top: -5px;"><strong>Sale price : </strong> {{ variant.sale_price }} INR</p>
                                 <p class="card-text date-text" style="margin-top: -5px;"><strong>Created date : </strong> {{ variant.created_at|date:"F d, Y" }}</p>
                                 <div class="d-flex justify-content-center">
-                                {% comment %} <a href="{% url 'product_management_app:edit-product-variant' variant.id %}" class="btn btn-sm btn-primary me-2">Edit</a>
-                                <a href="{% url 'product_management_app:delete-product-variant' variant.id %}" class="btn btn-sm btn-danger">Delete</a> {% endcomment %}
                                 <a href="{% url 'product_management_app:edit_variant' variant.id %}" class="btn btn-sm btn-primary me-2">Edit</a>
                                 <a href="{% url 'product_management_app:delete_variant' variant.id%}" class="btn btn-sm btn-danger me-2" style="padding: 10px 32px">Delete</a>
                                 </div>

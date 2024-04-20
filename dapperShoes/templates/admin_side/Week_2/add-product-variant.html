@@ -40,28 +40,6 @@
                             </div>
                         </div>
 
-                        {% comment %} <div class="mb-3">
-                            <label class="form-label">Colour</label>
-                            <select class="form-select" id="color" name="color">
-                                {% for attribute in attribute_values %}
-                                    {% if attribute.attribute_value|length > 2 %}
-                                        <option value="{{ attribute.id }}">{{ attribute.attribute_value }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div> {% endcomment %}
-                        
-                        {% comment %} <div class="mb-3">   ##################  Recent change made here!!!
-                            <label class="form-label">Size</label>
-                            <select class="form-select" id="size" name="size">
-                                {% for attribute in attribute_value %}
-                                    {% if attribute.attribute_value %}
-                                        <option value="Select from below options">{{ attribute.attribute_value }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div> {% endcomment %}
-
                         <div class="mb-3">
                             <label class="form-label">Size</label>
                             <select class="form-select" id="size" name="size">
@@ -96,17 +74,6 @@
                         </div>
                     </div> <!-- card end// -->
                 </div>
-
-                {% comment %} <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h6>Additional Images</h6>
-                        </div>
-                        <div class="input-upload">
-                            <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple >
-                        </div> <!-- card end// -->
-                    </div>
-                </div> {% endcomment %}
             </div>
         </div>
     </form>

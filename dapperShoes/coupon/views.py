@@ -21,7 +21,6 @@ def coupon_list(request):
 
 def add_coupon(request):
     if request.method == 'POST':
-        print('inside POST QQQQQQQQ')
         coupon_code = request.POST.get('coupon_code')
         discount_percentage = request.POST.get('discount_percentage')
         minimum_amount = request.POST.get('minimum_amount')
@@ -44,7 +43,6 @@ def add_coupon(request):
         # Check if expire_date is a valid date
         try:
             expire_date = timezone.datetime.strptime(expire_date, '%Y-%m-%d').date()
-            print("datae created")
         except ValueError:
             print("EXcetion in date")
             messages.error(request, 'Invalid date format. Please use YYYY-MM-DD format.')
@@ -52,7 +50,6 @@ def add_coupon(request):
 
         # Create the coupon
         try:
-            print('iiii',coupon_code,discount_percentage,minimum_amount,max_uses,expire_date,total_coupons)
             new_coupon = Coupon.objects.create(
                 coupon_code=coupon_code,
                 discount_percentage=discount_percentage,
@@ -62,13 +59,11 @@ def add_coupon(request):
                 total_coupons=total_coupons
             )
             new_coupon.save()
-            print('iiiijjjj11111')
             messages.success(request, 'Coupon added successfully.')
             return redirect('coupon_app:coupon_list')
         except Exception as e:
             print('exceptionnnnn',str(e))
             messages.error(request, f'An error occurred: {e}')
-            print('iiiijjjj2222')
             return redirect('coupon_app:add_coupon')
 
     return render(request, 'admin_side/Week 3/add-coupon.html')
@@ -93,15 +88,8 @@ def activate_coupon(request, id):
 def delete_coupon(request,id):
     if request.user.is_authenticated and request.user.is_superuser:
         coupon = get_object_or_404(Coupon, id=id)
-        # coupon_id = coupon.id
         coupon.delete()
     return redirect(reverse('coupon_app:coupon_list'))
-
-
-
-
-
-
 
 
 
@@ -109,7 +97,6 @@ def delete_coupon(request,id):
 
 def apply_coupon(request):
     if request.method == "POST":
-        # discount_amount = 0 
 
         data = json.loads(request.body)
         coupon_code = data.get('coupon_code')
@@ -128,14 +115,7 @@ def apply_coupon(request):
                 for cart_item in cart_items:
                     total += (cart_item.variant.calculate_discounted_price() * cart_item.quantity)
                     quantity += cart_item.quantity
-                
-        #         cart.coupon_applied = coupon
 
-        #         cart_item_instance= CartItem.objects.filter(user=request.user)
-        #         total = 0
-        #         for cart_item in cart_item_instance:
-        #             total += cart_item.subtotal()
-                print('total.....',total)
                 total = Decimal(total)
                 
                 coupon_discount = Decimal(coupon.discount_percentage)
@@ -196,5 +176,3 @@ def apply_coupon(request):
             # Handle the case where the coupon does not exist
             data = {'error': 'Coupon does not exist'}
             return JsonResponse(data, status=200)
-        
-        # return JsonResponse(data, status=200)

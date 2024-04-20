@@ -48,7 +48,6 @@ def admin_categories(request):
             else:
                 expire_date = None
 
-            print('.............',category,discount_percentage,expire_date)
             if discount_percentage:
                 categories = Category.objects.create(category_image=image, category_name=category,
                                                   description=description, discount_percentage=discount_percentage,
@@ -118,7 +117,6 @@ def edit_categories(request,id):
         return render(request,'admin_side/page-edit-categories.html',context)
     else:
         return redirect('admin_app:admin_login')
-    ####return render(request,'admin_side/page-edit-categories.html')
 
 @never_cache
 def delete_categories(request,id):
@@ -137,7 +135,6 @@ def activate_category(request, id):
     current_category.is_active = True
     current_category.save()
 
-    # Update is_active for all related subcategories.
     # Updating is_active field for all related subcategories directly with a single database query is more efficient and faster than individually retrieving each subcategory.
     current_subcategories.update(is_active=True)
 
@@ -215,13 +212,6 @@ def edit_sub_categories(request,id):
             subcategory_name = request.POST.get('name')
             description = request.POST.get('description')
             subcategory_image = request.FILES.get('image')
-
-            # try:
-            #     image = request.FILES.get('image')
-            #     print(image)
-            # except :
-            #     messages.warning(request,"Add category image")
-            #     return redirect('category_app:edit_categories')
         
             if subcategory_name:
                 subcategory.sub_category_name = subcategory_name
@@ -241,16 +231,12 @@ def edit_sub_categories(request,id):
         
         sub_category_object = SubCategory.objects.get(id=id)
 
-        # Fetch all categories for dynamic display in the template #Added in 2nd week
-        # subcategories = SubCategory.objects.filter(is_active = True).all()
-
         context = {
             'sub_category_object' : sub_category_object
         }
         return render(request,'admin_side/page-edit-sub-categories.html',context)
     else:
         return redirect('admin_app:admin_login')
-#     ####return render(request,'admin_side/page-edit-categories.html')
 
 @never_cache
 def delete_sub_categories(request,id):

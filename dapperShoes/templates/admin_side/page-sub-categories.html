@@ -6,7 +6,6 @@
             <div class="content-header">
                 <div>
                     <h2 class="content-title card-title">Sub-categories </h2>
-                    {% comment %} <p>Add, edit or delete a sub-category</p> {% endcomment %}
                 </div>
             </div>
             <div class="card">
@@ -25,12 +24,9 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_slug" class="form-label">Category</label>
-                                    {% comment %} <input type="text" placeholder="Type here" class="form-control" id="slug" name="slug" /> {% endcomment %}
                                     <select type="text" placeholder="Type here" class="form-control" id="parent-category" name="parent-category">
                                         {% for category in categories %}
                                         <option>{{category.category_name}}</option>
-                                        {% comment %} <option>Women</option>
-                                        <option>Kids</option> {% endcomment %}
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -52,11 +48,6 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            {% comment %} <th class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </th> {% endcomment %}
                                             <th>ID</th>
                                             <th>Name</th>
                                             <th>Slug</th>
@@ -70,20 +61,13 @@
                                     <tbody>
                                         {% for sub_category in sub_categories %}
                                         <tr>
-                                            {% comment %} <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td> {% endcomment %}
                                             <td>{{sub_category.id}}</td>
                                             <td>
-                                                {% comment %} {{sub_category.sub_category_name}} {% endcomment %}
                                                 <a href="{% url 'category_app:edit_sub_categories' sub_category.id%}">
                                                     <strong style="font-weight: bold;">{{sub_category.sub_category_name}}</strong>
                                                 </a>
                                             </td>
                                             <td>{{sub_category.sub_slug}}</td>
-                                            {% comment %} <td>{{sub_category.category_id}}</td> {% endcomment %}
                                             <td>{{ sub_category.category.category_name}}</td>      
                                             <td>
                                                 {% if sub_category.is_active %}
@@ -95,25 +79,13 @@
                                             <td>{{sub_category.description}}</td>
                                             
                                             <td class="pt-2">
-                                                {% comment %} <img src="{{sub_category.sub_category_image.url}}" style="max-width: 40px; height: auto;"></td> {% endcomment %}
-                                            {% comment %} <td>{{category.created_at}}</td> {% endcomment %}
                                                 {% if sub_category.sub_category_image %}
                                                     <img src="{{ sub_category.sub_category_image.url }}" style="max-width: 40px; height: auto;">
                                                 {% else %}
-                                                    {% comment %} <img src="{{ 'Uavailable' }}" style="max-width: 40px; height: auto;"> {% endcomment %}
                                                     <span>Unavailable</span>
                                                 {% endif %}
 
                                             <td class="text-end">
-                                                {% comment %} <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        {% comment %} <a class="dropdown-item" href="#">View detail</a> {% endcomment %}{% comment %}
-                                                        <a class="dropdown-item" href="{% url 'category_app:edit_sub_categories' id=sub_category.id%}">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="{% url 'category_app:delete_sub_categories' id=sub_category.id%}">Delete</a> 
-                                                    </div>
-                                                </div> <!-- dropdown //end --> {% endcomment %}
-
                                                 {% if  sub_category.is_active %}
                                                 <a   href="{% url 'category_app:deactivate_sub_category' sub_category.id %}"  class="btn btn-sm font-sm alert-danger rounded block-user-btn">
                                                     Block
@@ -128,28 +100,6 @@
                                             </td>
                                         </tr>
                                         {% endfor%}
-                                        {% comment %} <tr>
-                                            <td class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </td>
-                                            <td>1</td>
-                                            <td><b>Men clothes</b></td>
-                                            <td>Men clothes</td>
-                                            <td>/men</td>
-                                            <td>1</td>
-                                            <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            </td>
-                                        </tr> {% endcomment %}
                                         
                                     </tbody>
                                 </table>

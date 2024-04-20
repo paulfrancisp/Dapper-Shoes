@@ -10,8 +10,6 @@ class Category(models.Model):
     category_image = models.ImageField(upload_to='category_images/', blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     is_active =  models.BooleanField(default=True)
-    # parent_category = models.ForeignKey('self', null=True, blank=True, related_name='child_categories', on_delete=models.CASCADE)
-    # category_thumbnail = models.ImageField(upload_to='category_thumbnails/', null=True, blank=True)
 
     # New offer fields
     expire_date = models.DateField(null=True, blank=True)

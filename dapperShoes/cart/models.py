@@ -7,7 +7,6 @@ from decimal import Decimal
 # Create your models here.
 class Cart(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE,null=True)
-    # cart_id = models.CharField(max_length=250,blank=True)
     date_added = models.DateField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     coupon_applied = models.ForeignKey(Coupon,on_delete=models.CASCADE, default = None,null = True)
@@ -18,7 +17,6 @@ class Cart(models.Model):
         return self.id
 
 class CartItem(models.Model):
-    # user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     variant = models.ForeignKey(Product_variant,on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart,on_delete=models.CASCADE,null=True)   # null is for anonymous users 
     quantity = models.IntegerField()
@@ -26,7 +24,6 @@ class CartItem(models.Model):
 
 
     def sub_total(self):
-        # return self.variant.calculate_discounted_price * self.quantity
         return self.variant.calculate_discounted_price() * self.quantity
 
     def __str__(self):

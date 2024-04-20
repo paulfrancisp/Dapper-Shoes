@@ -24,11 +24,6 @@ def add_cart(request, variant_id):
     except Cart.DoesNotExist:
         # For anonymous users, use some other logic to identify the cart (if needed)
         cart= Cart.objects.create(user=current_user)
-    # try:
-    #     cart = Cart.objects.get(id=_cart_id(request))
-    # except Cart.DoesNotExist:
-    #    pass
-    # cart.save()
 
     try:
         cart_item = CartItem.objects.get(variant=variant , cart=cart) #,user = current_user
@@ -36,7 +31,6 @@ def add_cart(request, variant_id):
             cart_item.quantity +=1
             cart_item.save()
         else:
-            # messages.error(request,"No more stock available for this product")
             error_message = "No more stock available for this product"
             response_data = {
                 'error': error_message
@@ -50,7 +44,6 @@ def add_cart(request, variant_id):
             variant=variant,
             cart=cart,
             quantity = 1,
-            # user = current_user
         )
         cart_item.save()
         return redirect('cart_app:cart_list')
@@ -63,12 +56,9 @@ def add_cart(request, variant_id):
     for cart_item1 in cart_items:
         total += (cart_item1.variant.calculate_discounted_price() * cart_item1.quantity)
         print('  checkout total cart_list',total)
-    # return HttpResponse(cart_item.quantity)
-    ## return redirect(reverse('store_app:product_detail', kwargs={'id': product.id}))
     # Instead of using reverse, you can directly use the URL
     data = {'qty':cart_item.quantity, 'total':total,'subtotal':subtotal}
     return JsonResponse(data)
-    ## return render(request, 'user_side/shop-detail-product-page.html')
 
 
 def cart_list(request, total=0, quantity=0, cart_items=None):
@@ -83,7 +73,7 @@ def cart_list(request, total=0, quantity=0, cart_items=None):
 
 
         
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') #,user = current_user
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True).order_by('id') 
         
         print('cart_items cart_list',cart_items)
         for cart_item in cart_items:
@@ -108,8 +98,6 @@ def remove_cart(request, variant_id):
     try:
         cart= Cart.objects.get(user=current_user)
     except Cart.DoesNotExist:
-        # For anonymous users, use some other logic to identify the cart (if needed)
-        # cart= Cart.objects.create(user=current_user)
         pass
 
     variant = get_object_or_404(Product_variant, id=variant_id)
@@ -120,7 +108,7 @@ def remove_cart(request, variant_id):
         cart_item.save()
     else:
         cart_item.delete()
-    # return redirect('cart_app:cart_list')
+
     subtotal = cart_item.quantity * cart_item.variant.calculate_discounted_price()
     total=0
     cart_items=None
@@ -139,8 +127,6 @@ def remove_cart_item(request, variant_id):
     try:
         cart= Cart.objects.get(user=current_user)
     except Cart.DoesNotExist:
-        # For anonymous users, use some other logic to identify the cart (if needed)
-        # cart= Cart.objects.create(user=current_user)
         pass
 
     variant = get_object_or_404(Product_variant, id=variant_id)
@@ -156,8 +142,6 @@ def checkout(request, total=0, quantity=0, cart_items=None):
     try:
         cart= Cart.objects.get(user=current_user)
     except Cart.DoesNotExist:
-        # For anonymous users, use some other logic to identify the cart (if needed)
-        # cart= Cart.objects.create(user=current_user)
         pass
     
     if cart.coupon_applied :
@@ -204,7 +188,6 @@ def checkout(request, total=0, quantity=0, cart_items=None):
                 'quantity' : quantity,
                 'cart_items' : cart_items,
                 'address':address,
-                # 'payment': payment,
                 'user_wallet': user_wallet,
             }
             return render(request,'user_side/shop-checkout.html',context)
