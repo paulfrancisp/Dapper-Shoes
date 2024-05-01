@@ -50,7 +50,7 @@
                                                         </thead>
                                                         <tbody>
                                                             {% for order in orders %}
-                                                                
+                                                                    {% if order.payment.payment_status %}
                                                                     <tr>
                                                                         <td>{{ order.order_number }}</td>
                                                                         <td>{{ order.created_at }}</td>
@@ -61,6 +61,7 @@
                                                                         </td>
                                                                         <td><a href="{% url 'account_app:account_order_detail' order.id %}" class="btn-small d-block">View</a></td>
                                                                     </tr>
+                                                                    {% endif %}
                                                                 
                                                             {% endfor %}
                                                         </tbody>
