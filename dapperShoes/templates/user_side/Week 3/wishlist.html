@@ -7,45 +7,52 @@
    
     <section class="mt-50 mb-50 mr-80">
         <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="table-responsive">
-                        <table class="table shopping-summery text-center">
-                            <thead>
-                                <tr class="main-heading">
-                                    <th scope="col">Product Image</th>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Remove</th>
+            {% if not request.user.is_authenticated %}
+                <h2 class="text-center">Please login to view the wishlist</h2>
+                <br>
+                <div class="text-center">
+                    <a href="{% url 'shop_app:index'  %}" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+            {% else %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table shopping-summery text-center">
+                                <thead>
+                                    <tr class="main-heading">
+                                        <th scope="col">Product Image</th>
+                                        <th scope="col">Product</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Remove</th>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for wishlist_item in wishlist_items %}
-                                <tr>
-                                    <td class="image product-thumbnail" colspan="1"><img src="{{wishlist_item.product.thumbnail_image.url}}" alt="#" style="width:40%"></td>
-                                    <td class="product-des product-name" colspan="1">
-                                        <h5 class="product-name" style="color:black"><a href="{% url 'shop_app:product_detail_attribute' product_id=wishlist_item.product.product.id attribute_value=wishlist_item.product.attribute.attribute_value|default:'9' %}">{{wishlist_item.product.variant_name}}</a></h5>
-                                        <p class="font-xs">Brand:{{wishlist_item.product.product.product_brand.brand_name}} &nbsp;&nbsp;&nbsp;&nbsp;Subcategory:{{wishlist_item.product.product.sub_category}}</p>
-                                    </td>
-                                    <td class="price" colspan="1" data-title="Price"><span>{{wishlist_item.product.calculate_discounted_price}} INR</span><br>
-                                    {% if wishlist_item.product.stock < 10 %}
-                                        <span class="color3 font-weight-bold" style="color:red">{{wishlist_item.product.stock}} units remaining.</span>
-                                    {% elif wishlist_item.product.stock == 0 %}
-                                        <span class="color3 font-weight-bold" style="color:red">Out Of Stock</span>
-                                    {%endif%}
-                                    </td>    
-                                    
-                                    <td class="text-right"> 
-                                        <a href="{% url 'shop_app:wishlist_remove' id=wishlist_item.product.id %}" class="btn btn-danger"> Remove</a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for wishlist_item in wishlist_items %}
+                                    <tr>
+                                        <td class="image product-thumbnail" colspan="1"><img src="{{wishlist_item.product.thumbnail_image.url}}" alt="#" style="width:40%"></td>
+                                        <td class="product-des product-name" colspan="1">
+                                            <h5 class="product-name" style="color:black"><a href="{% url 'shop_app:product_detail_attribute' product_id=wishlist_item.product.product.id attribute_value=wishlist_item.product.attribute.attribute_value|default:'9' %}">{{wishlist_item.product.variant_name}}</a></h5>
+                                            <p class="font-xs">Brand:{{wishlist_item.product.product.product_brand.brand_name}} &nbsp;&nbsp;&nbsp;&nbsp;Subcategory:{{wishlist_item.product.product.sub_category}}</p>
+                                        </td>
+                                        <td class="price" colspan="1" data-title="Price"><span>{{wishlist_item.product.calculate_discounted_price}} INR</span><br>
+                                        {% if wishlist_item.product.stock < 10 %}
+                                            <span class="color3 font-weight-bold" style="color:red">{{wishlist_item.product.stock}} units remaining.</span>
+                                        {% elif wishlist_item.product.stock == 0 %}
+                                            <span class="color3 font-weight-bold" style="color:red">Out Of Stock</span>
+                                        {%endif%}
+                                        </td>    
+                                        
+                                        <td class="text-right"> 
+                                            <a href="{% url 'shop_app:wishlist_remove' id=wishlist_item.product.id %}" class="btn btn-danger"> Remove</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         </div>
     </section>
     

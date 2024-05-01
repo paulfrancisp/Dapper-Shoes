@@ -23,8 +23,10 @@
                             <h6 class="mb-1">Customer</h6>
                             <p class="mb-1">
                                 Name: {{user.username}}  <br>
-                                Email: {{user.email}}
-                                
+                                Email: {{user.email}} <br>
+                                {% if order %}
+                                    Phone: {{ order.phone_number }}
+                                {% endif %}
                             </p>
                         </div>
                     </article>
@@ -61,9 +63,11 @@
                             <p class="mb-1">
                                 Type: {{ ord.payment.payment_method }}<br>
                                 Order: {{ ord.order_number }} <br>
-                                Total: ₹ <br>
-                                Coupon discount: ₹ <br>
-                                Coupon applied:  <br>
+                                {% if ord.coupon_applied %}
+                                    Total: ₹{{ order_actual_total }} <br>
+                                    Coupon discount: ₹{{ ord.coupon_discount }} <br>
+                                    Coupon applied: {{ ord.coupon_applied.coupon_code }} <br>
+                                {% endif %}
                             </p>
                         </div>
                     </article>

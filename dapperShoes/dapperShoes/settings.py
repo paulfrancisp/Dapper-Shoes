@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['127.0.0.1','16.16.215.123','0.0.0.0','dappershoes.store']
+ALLOWED_HOSTS = ['127.0.0.1','16.16.215.123','0.0.0.0','dappershoes.store','localhost']
 CSRF_TRUSTED_ORIGINS = ['http://16.16.215.123','http://dappershoes.store','https://dappershoes.store','https://api.razorpay.com']
 
 

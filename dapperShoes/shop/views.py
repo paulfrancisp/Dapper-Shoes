@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.db.models import Q
 from wallet.models import *
 from cart.models import *
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
@@ -294,19 +295,22 @@ def price_range(request,lower_price=0,upper_price=100000):
 
 
 def wishlist(request):
-    user_id = request.user.id
-    user = User.objects.get(id = user_id)
-    try:
-        user_wishlist = Wishlist.objects.get(user=user)
-    except:
-        user_wishlist = Wishlist.objects.create(user=user)
+    user_wishlist = None
+
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        user = User.objects.get(id = user_id)
+        try:
+            user_wishlist = Wishlist.objects.get(user=user)
+        except:
+            user_wishlist = Wishlist.objects.create(user=user)
 
     wishlist_items = WishlistItem.objects.filter(wishlist=user_wishlist)
 
     context = {
        'wishlist_items':wishlist_items ,
     }
-    return render(request,'user_side/Week 3/wishlist.html',context) #
+    return render(request,'user_side/Week 3/wishlist.html',context) 
 
 def add_wishlist(request,id):
     user_id = request.user.id
