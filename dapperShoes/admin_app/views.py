@@ -23,23 +23,20 @@ def admin_logout(request):
 
 @never_cache
 def admin_login(request):
-    if request.user.is_authenticated and request.user.is_superuser:
-        if request.method == 'POST':
-            # email = request.POST['email']
-            uname = request.POST.get('username')
-            password = request.POST.get('password')
-            admin = authenticate(request,username=uname, password=password)
-            print(admin)
-            if admin is not None and admin.is_superuser:
-                login(request,admin)
-                return redirect('admin_app:admin_dashboard')  
-            else:
-                messages.warning(request,'wrong credentials !')
-                return redirect('admin_app:admin_login')
-            
-        return render(request,'admin_side/page-account-login.html')
-    else:
-        return render(request,'admin_side/page-account-login.html')
+    if request.method == 'POST':
+        # email = request.POST['email']
+        uname = request.POST.get('username')
+        password = request.POST.get('password')
+        admin = authenticate(request,username=uname, password=password)
+        print(admin)
+        if admin is not None and admin.is_superuser:
+            login(request,admin)
+            return redirect('admin_app:admin_dashboard')  
+        else:
+            messages.warning(request,'wrong credentials !')
+            return redirect('admin_app:admin_login')
+        
+    return render(request,'admin_side/page-account-login.html')
 
 
 
