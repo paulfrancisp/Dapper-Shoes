@@ -424,7 +424,8 @@
                         "description": "Test Transaction",
                         "image": "https://example.com/your_logo",
                         "order_id": order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                        "callback_url": "http://127.0.0.1:8000/place_order_razpay/",
+                        //"callback_url": "http://127.0.0.1:8000/place_order_razpay/",  // WHILE RUNNING IN LOCAL SHOULD USE THIS URL!!
+                        "callback_url": "https://dappershoes.store/place_order_razpay/",
                         "prefill": {
                             "name": "Gaurav Kumar",
                             "email": "gaurav.kumar@example.com",
